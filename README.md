@@ -38,11 +38,11 @@ Say goodbye to basic “motion-on / timeout-off” automations – this blueprin
 
 3️⃣ Added snapshot/restore feature:
 
-Capture and restore a single light
+💡 Capture and restore a single light
 
-Capture and restore a custom list of lights
+💡💡 Capture and restore a custom list of lights
 
-Capture and restore all lights in a chosen area
+🏠💡 Capture and restore all lights in a chosen area
 
 🎯 Benefits of This Update:
 
