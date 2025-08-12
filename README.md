@@ -23,7 +23,7 @@ This blueprint allows you to control your bathroom lights with a motion sensor, 
 4. Save and enjoy smarter bathroom lighting!
 
 ### Support  
-Questions or suggestions? Please open an issue in the [GitHub repo](https://github.com/razzietheman/badrum-tand-slack-blueprint).
+Questions or suggestions? Please open an issue in the [GitHub repo](https://github.com/razzietheman/Smarter-Bathroom-Lighting-Blueprint).
 
 ---
 
