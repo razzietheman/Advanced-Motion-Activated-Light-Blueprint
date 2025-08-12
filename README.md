@@ -5,7 +5,7 @@
 
 💡 Advanced Motion-Activated Light Blueprint
 
-Say goodbye to basic “motion-on / timeout-off” automations – this blueprint gives you full and real control over your bathroom lighting.
+Say goodbye to basic “motion-on / timeout-off” automations – this blueprint gives you full and real control over your lighting.
 
 ✨ Features:
 
