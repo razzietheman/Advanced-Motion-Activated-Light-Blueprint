@@ -254,5 +254,5 @@ action:
               entity_id: !input light_entity
           - service: logbook.log
             data:
-              name: Bathroom
+              name: Light
               message: "Failsafe: Light was automatically turned off after timeout."
