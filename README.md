@@ -8,14 +8,23 @@
 Say goodbye to basic “motion-on / timeout-off” automations – this blueprint gives you full and real control over your bathroom lighting.
 
 ✨ Features:
+
 ✅ Separate schedules for daylight and nightlight modes
+
 ✅ Custom active hours and weekdays – perfect for weekdays vs weekends
+
 ✅ Choice between scenes or direct light control for each mode
+
 ✅ Optional area-based snapshot to restore all lights in a room to their exact previous state
+
 ✅ Adjustable lux threshold – only turns on when it’s dark enough
+
 ✅ Dynamic failsafe timer for automatic turn-off after no motion
+
 ✅ Manual-friendly – won’t turn off lights you turned on yourself
+
 ✅ Fully UI-configurable – no YAML editing required
+
 
 🔧 Changes Made in V2.2:
 1️⃣ Separate time windows and weekdays for each scene
