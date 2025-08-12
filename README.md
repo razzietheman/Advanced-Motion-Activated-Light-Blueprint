@@ -31,7 +31,7 @@ Questions or suggestions? Please open an issue in the [GitHub repo](https://gith
 ---
 
 ## Author  
-Rasmus Sjöberg (@razzietheman)  
+Rasmus Sjöberg (https://github.com/razzietheman @razzietheman)
 2025
 
 ---
