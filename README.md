@@ -26,17 +26,17 @@ Say goodbye to basic “motion-on / timeout-off” automations – this blueprin
 ✅ Fully UI-configurable – no YAML editing required
 
 
-🔧 Changes Made in V2.2:
+# 🔧 Changes Made in V2.2:
 
-1️⃣ Separate time windows and weekdays for each scene
+1️⃣  Separate time windows and weekdays for each scene
 
 🌞 Daylight Scene: active start time day, active end time day, active weekdays day
 
 🌙 Nightlight Scene: active start time night, active end time night, active weekdays night
 
-2️⃣ Logic split for scene control – now respects both time and weekday for better precision
+2️⃣  Logic split for scene control – now respects both time and weekday for better precision
 
-3️⃣ Added snapshot/restore feature:
+3️⃣  Added snapshot/restore feature:
 
 💡 Capture and restore a single light
 
@@ -44,7 +44,8 @@ Say goodbye to basic “motion-on / timeout-off” automations – this blueprin
 
 🏠💡 Capture and restore all lights in a chosen area
 
-🎯 Benefits of This Update:
+
+# 🎯 Benefits of This Update:
 
 💪 More flexibility – tailor lighting to your lifestyle
 
@@ -63,7 +64,7 @@ Say goodbye to basic “motion-on / timeout-off” automations – this blueprin
 🛠 Designed to be fully UI-configurable – no YAML tweaking needed
 
 
-📦 Installation:
+# 📦 Installation:
 
 1️⃣ Import the blueprint into Home Assistant via the UI
 
