@@ -1,4 +1,4 @@
-# Bathroom Motion Light Blueprint
+# 💡 Advanced Motion-Activated Bathroom Light Blueprint – Now in English!
 
 ---
 # Description
