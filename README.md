@@ -1,9 +1,9 @@
-# 💡 Advanced Motion-Activated Bathroom Light Blueprint – Now in English!
+# 💡 Advanced Motion-Activated Light Blueprint!
 
 ---
 # Description
 
-💡 Advanced Motion-Activated Bathroom Light Blueprint – Now in English! V2.2
+💡 Advanced Motion-Activated Light Blueprint
 
 Say goodbye to basic “motion-on / timeout-off” automations – this blueprint gives you full and real control over your bathroom lighting.
 
@@ -24,25 +24,6 @@ Say goodbye to basic “motion-on / timeout-off” automations – this blueprin
 ✅ Manual-friendly – won’t turn off lights you turned on yourself
 
 ✅ Fully UI-configurable – no YAML editing required
-
-
-# 🔧 Changes Made in V2.2:
-
-1️⃣  Separate time windows and weekdays for each scene
-
-🌞 Daylight Scene: active start time day, active end time day, active weekdays day
-
-🌙 Nightlight Scene: active start time night, active end time night, active weekdays night
-
-2️⃣  Logic split for scene control – now respects both time and weekday for better precision
-
-3️⃣  Added snapshot/restore feature:
-
-💡 Capture and restore a single light
-
-💡💡 Capture and restore a custom list of lights
-
-🏠💡 Capture and restore all lights in a chosen area
 
 
 # 🎯 Benefits of This Update:
