@@ -45,21 +45,36 @@ Capture and restore a custom list of lights
 Capture and restore all lights in a chosen area
 
 🎯 Benefits of This Update:
+
 💪 More flexibility – tailor lighting to your lifestyle
+
 🎯 Better control – works great for night shifts, early risers, or lazy weekends
+
 📈 Scalable – easy to extend (e.g., “Evening Relax Scene” or “Cleaning Mode”)
+
 🌙 Smart night mode – switches scenes automatically outside your preferred schedule
+
 💡 Adjustable lux threshold – only turns on when it’s actually dark enough
+
 ⏱ Failsafe timer – set your own timeout; light turns off only if no motion is detected
+
 🙌 Manual-friendly – won’t shut off lights you turned on yourself
+
 🛠 Designed to be fully UI-configurable – no YAML tweaking needed
 
+
 📦 Installation:
+
 1️⃣ Import the blueprint into Home Assistant via the UI
+
 2️⃣ Link your devices: motion sensor, main light, lux sensor, and (optionally) scenes or direct light entities
+
 3️⃣ (Optional) Select a snapshot area if you want to restore all lights in that room when motion ends
+
 4️⃣ Configure times, weekdays, and lux threshold as desired
+
 5️⃣ Save & enjoy smarter, more flexible bathroom lighting!
+
 
 ### Support  
 Questions or suggestions? Please open an issue in the [GitHub repo](https://github.com/razzietheman/Smarter-Bathroom-Lighting-Blueprint).
