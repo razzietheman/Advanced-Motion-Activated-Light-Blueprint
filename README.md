@@ -27,6 +27,7 @@ Say goodbye to basic “motion-on / timeout-off” automations – this blueprin
 
 
 🔧 Changes Made in V2.2:
+
 1️⃣ Separate time windows and weekdays for each scene
 
 🌞 Daylight Scene: active start time day, active end time day, active weekdays day
