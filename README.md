@@ -3,46 +3,97 @@
 ---
 # Description
 
-💡 Advanced Motion-Activated Light Blueprint
+# 🌞🌙 Motion-Activated Lighting (Scene or Direct Lights) with Schedules, Night Mode, Sun Control & Failsafe
 
-Say goodbye to basic “motion-on / timeout-off” automations – this blueprint gives you full and real control over your lighting.
+This Home Assistant blueprint allows you to control your lights using one or more motion sensors, with **day/night schedules**, **lux threshold**, **optional scenes**, **sunrise/sunset control**, and a **failsafe timer**. Includes snapshot restore of previous light states.
 
-✨ Features:
+---
 
-✅ Separate schedules for daylight and nightlight modes
+## ⚙️ Features
 
-✅ Custom active hours and weekdays – perfect for weekdays vs weekends
+- ✅ Multiple motion sensors
+- ✅ Optional manual switches to trigger lights
+- ✅ Day and night modes (time-based or sun-based)
+- ✅ Lux threshold control (optional)
+- ✅ Scenes or direct lights
+- ✅ Snapshot restore for previous light states
+- ✅ Failsafe timer (automatically turns off lights after timeout)
 
-✅ Choice between scenes or direct light control for each mode
+---
 
-✅ Optional area-based snapshot to restore all lights in a room to their exact previous state
+## 🛠️ Inputs
 
-✅ Adjustable lux threshold – only turns on when it’s dark enough
+| Input | Description | Default |
+|-------|------------|---------|
+| `motion_sensors` | Motion sensor(s) to trigger lights | None |
+| `optional_switches` | Optional switches that can also trigger lights | [] |
+| `light_entity` | Lights to control (used if no scene) | None |
+| `scene_day` | Scene to activate during day (optional) | [] |
+| `scene_night` | Scene to activate during night (optional) | [] |
+| `day_lights` | Lights to turn on during day if no scene is set | [] |
+| `night_lights` | Lights to turn on during night if no scene is set | [] |
+| `lux_sensor` | Optional lux sensor | [] |
+| `lux_threshold` | Only turn on lights if lux is below this | 50 lx |
+| `use_sun_times` | Use sunrise/sunset instead of fixed times | false |
+| `day_start` / `day_end` | Start and end times for day | 07:00 / 22:00 |
+| `night_start` / `night_end` | Start and end times for night | 22:00 / 07:00 |
+| `active_weekdays_day` | Active days for day mode | All days |
+| `active_weekdays_night` | Active days for night mode | All days |
+| `failsafe_timer` | Minutes before automatic light off | 30 |
+| `input_text_last_scene` | Tracks last activated scene | None |
 
-✅ Dynamic failsafe timer for automatic turn-off after no motion
+---
 
-✅ Manual-friendly – won’t turn off lights you turned on yourself
+## 🏃‍♂️ How It Works
 
-✅ Fully UI-configurable – no YAML editing required
+1. **Day Mode 🌞**
+   - Motion detected during day time (or sunrise/sunset if enabled)
+   - Lux below threshold (optional)
+   - Activates either **day scene** or **day lights**
+   - Snapshots current light state
+   - Updates `input_text_last_scene` to `"day"`
 
+2. **Night Mode 🌙**
+   - Motion detected during night time (or sunset/sunrise if enabled)
+   - Lux below threshold (optional)
+   - Activates either **night scene** or **night lights**
+   - Snapshots current light state
+   - Updates `input_text_last_scene` to `"night"`
 
-# 🎯 Benefits of This Update:
+3. **Turn Off 💡**
+   - When motion stops and lights are on
+   - Restores previous snapshot after delay:
+     - Day mode: 2 minutes
+     - Night mode: 1 minute
 
-💪 More flexibility – tailor lighting to your lifestyle
+4. **Failsafe ⏱**
+   - Ensures lights do not stay on indefinitely
+   - Activates after `failsafe_timer` if motion is gone and lights are still on
+   - Turns off lights and logs action
 
-🎯 Better control – works great for night shifts, early risers, or lazy weekends
+---
 
-📈 Scalable – easy to extend (e.g., “Evening Relax Scene” or “Cleaning Mode”)
+## 🔗 Notes
 
-🌙 Smart night mode – switches scenes automatically outside your preferred schedule
+- Works with **multiple motion sensors**.
+- Optional **manual switches** can trigger lights.
+- Supports **scenes or direct lights**.
+- Can be used **with or without lux sensor**.
+- Supports **sunrise/sunset timing** if enabled.
 
-💡 Adjustable lux threshold – only turns on when it’s actually dark enough
+---
 
-⏱ Failsafe timer – set your own timeout; light turns off only if no motion is detected
+## 📌 Example Use Cases
 
-🙌 Manual-friendly – won’t shut off lights you turned on yourself
+- Hallway lights that turn on at night but only if dark 🌙
+- Living room lights that react to motion during day and night 🌞🌙
+- Kitchen lights that automatically turn off if forgotten ⏱
+- Snapshots previous lighting state to restore ambience 🎨
 
-🛠 Designed to be fully UI-configurable – no YAML tweaking needed
+---
+
+**Enjoy your smart motion-controlled lighting!** 💡🚀
+
 
 
 # 📦 Installation:
@@ -59,12 +110,12 @@ Say goodbye to basic “motion-on / timeout-off” automations – this blueprin
 
 
 ### Support  
-Questions or suggestions? Please open an issue in the [GitHub repo](https://github.com/razzietheman/Smarter-Bathroom-Lighting-Blueprint).
+Questions or suggestions? Please open an issue in the [GitHub repo](https://github.com/razzietheman/Advanced-Motion-Activated-Light-Blueprint).
 
 ---
 
 ## Author  
-Rasmus Sjöberg (https://github.com/razzietheman @razzietheman)
+Rasmus Sjöberg @razzietheman (https://github.com/razzietheman)
 2025
 
 ---
