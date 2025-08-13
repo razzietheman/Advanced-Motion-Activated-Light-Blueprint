@@ -1,7 +1,9 @@
 blueprint:
   name: Motion-activated lighting (Scene or Direct Lights) with schedules, night mode, and failsafe
   description: >
-    Control your bathroom lights using a motion sensor, with separate day and night schedules, customizable weekdays, dynamic failsafe timer, and optional scenes or direct light selection. Includes snapshot restore.
+    Control any lights using a motion sensor, with separate day and night schedules, customizable weekdays,
+    dynamic failsafe timer, and optional scenes or direct light selection. Fully language-independent.
+    Includes snapshot restore for previous light state.
   domain: automation
   input:
     binary_sensor_motion:
@@ -40,7 +42,7 @@ blueprint:
           domain: input_text
 
     # --- DAY SETTINGS ---
-    scene_klart_ljus:
+    scene_day:
       name: Day Scene (optional)
       description: Scene to activate during the day (leave empty if using direct lights)
       default: []
@@ -71,7 +73,7 @@ blueprint:
         time:
 
     # --- NIGHT SETTINGS ---
-    scene_nattlampa:
+    scene_night:
       name: Night Scene (optional)
       description: Scene to activate during night (leave empty if using direct lights)
       default: []
@@ -145,7 +147,7 @@ action:
         sequence:
           - service: scene.create
             data:
-              scene_id: bathroom_before
+              scene_id: before_motion
               snapshot_entities: !input light_entity
           - choose:
               - conditions:
@@ -158,11 +160,11 @@ action:
               - default:
                   - service: scene.turn_on
                     target:
-                      entity_id: !input scene_klart_ljus
+                      entity_id: !input scene_day
           - service: input_text.set_value
             data:
               entity_id: !input input_text_last_scene
-              value: klart_ljus
+              value: bright_light
 
       # --- NIGHT MODE ---
       - conditions:
@@ -175,7 +177,7 @@ action:
         sequence:
           - service: scene.create
             data:
-              scene_id: bathroom_before
+              scene_id: before_motion
               snapshot_entities: !input light_entity
           - choose:
               - conditions:
@@ -188,11 +190,11 @@ action:
               - default:
                   - service: scene.turn_on
                     target:
-                      entity_id: !input scene_nattlampa
+                      entity_id: !input scene_night
           - service: input_text.set_value
             data:
               entity_id: !input input_text_last_scene
-              value: nattlampa
+              value: night_light
 
       # --- TURN OFF ---
       - conditions:
@@ -206,7 +208,7 @@ action:
               - conditions:
                   - condition: state
                     entity_id: !input input_text_last_scene
-                    state: klart_ljus
+                    state: bright_light
                 sequence:
                   - delay: "00:02:00"
                   - condition: state
@@ -214,11 +216,11 @@ action:
                     state: "off"
                   - service: scene.turn_on
                     target:
-                      entity_id: scene.bathroom_before
+                      entity_id: scene.before_motion
               - conditions:
                   - condition: state
                     entity_id: !input input_text_last_scene
-                    state: nattlampa
+                    state: night_light
                 sequence:
                   - delay: "00:01:00"
                   - condition: state
@@ -226,7 +228,7 @@ action:
                     state: "off"
                   - service: scene.turn_on
                     target:
-                      entity_id: scene.bathroom_before
+                      entity_id: scene.before_motion
 
   # --- FAILSAFE ---
   - choose:
