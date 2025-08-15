@@ -1,90 +1,92 @@
-# # Motion-Activated Lighting Blueprint (v3.0)
+# 🌟 Motion-Activated Lighting 3.2 – Your Personal Light Maestro 🌟
 
-![Home Assistant](https://www.home-assistant.io/images/favicon-192x192.png)
+# ✨ Welcome to a Smarter Home
 
-## Description
-This Home Assistant blueprint lets you control your lights based on:
+Imagine this: you wake up, and your home gently welcomes you with light.  
+You come home after work, and the evening unfolds with cozy, subtle illumination.  
+Motion-Activated Lighting 3.2 does all this – but **exactly the way you like it**.  
 
-- Motion sensors
-- Optional manual switches
-- Day/Night schedules or sunrise/sunset
-- Adjustable lux threshold
-- Optional workday sensor
-- Snapshot restore of previous light states
-- Dynamic failsafe timer with gradual turn-off
+It combines:
 
-### Features
-- Automatic Day and Night modes
-- Ability to use scenes or direct light control
-- Lux threshold to prevent unnecessary light activation
-- Optional workday sensor logic
-- Failsafe timer for automatic light turn-off
-- Logging of all events in Home Assistant Logbook
-- Gradual light turn-off for smooth transitions
+🚶 Motion  
+🌅 Sun Position  
+💡 Lux Awareness  
+🎨 Scenes  
+⏰ Fixed Off-Times  
+🛡️ Failsafe Protection  
+
+…and everything is **optional**. You choose your rhythm, your moods, your magic.  
 
 ---
 
-## Inputs
+# 🎨 Bring Your Home to Life
 
-| Name | Description |
-|------|------------|
-| Motion Sensor(s) | Motion sensors that trigger the automation |
-| Optional Manual Switch | Switches that can also trigger the lights manually |
-| Lights | Lights to control if no scenes are set |
-| Day Scene / Night Scene | Scenes to activate during day/night |
-| Day Lights / Night Lights | Lights to turn on during day/night if no scenes are set |
-| Lux Sensor | Optional sensor for light level (lx) |
-| Lux Threshold | Maximum lux value for activating lights |
-| Use Sunrise/Sunset | Enable to determine day/night based on the sun |
-| Workday Sensor | Optional sensor for workday logic |
-| Failsafe Timer | Timer for automatic light turn-off |
-| Input Text – Last Scene | Tracks the last activated scene/mode |
-| Light Duration Day/Night | Duration lights stay on after motion stops |
+### 🌅 Morning Glow – Rise and Shine
 
----
+It’s 7:00 on a weekday. You step out of bed.  
+Motion sensors detect your movement, gently fading on lights in the kitchen or living room.  
 
-## Installation
+If the sun is already bright, nothing happens – natural light does the work.  
+The **day scene** is triggered and logged, so your home remembers it.  
 
-1. Copy the blueprint YAML into Home Assistant via:  
-   `Configuration > Blueprints > Import Blueprint`.
-2. Create an automation based on the blueprint.
-3. Fill in all inputs according to your setup:
-   - Motion sensors
-   - Lights or scenes
-   - Optional lux sensor and threshold
-   - Day/Night times or sun-trigger
-   - Optional workday sensor
-   - Failsafe timer and light duration
+### 🌞 Daytime with Sun Trigger
+
+Lights can turn on automatically before sunset (with your **sunset offset**)  
+Perfect for long summer afternoons when daylight starts to fade.  
+
+Want a strict evening routine? The same lights can switch off automatically at **22:00** – no questions asked.  
+
+### 🌙 Evening Cozy Mode
+
+Motion sensors or manual switches trigger **night mode**.  
+Lights fade on subtly, creating a calm, cozy atmosphere.  
+No one moving around? No problem – lights fade off gradually after the set **light duration**.  
+
+### ⏰ Workday vs Weekend Magic
+
+Use a **workday sensor** to adapt lighting to your weekly schedule.  
+Weekends? Lights can wait a bit longer to turn on… or stay off entirely. Your choice, fully automated.  
 
 ---
 
-## Tips
+# 🛡️ Never Forget: Failsafe
 
-- Using both lux sensor and sun-trigger provides automatic adaptation to both daylight and sun position.
-- Scenes are optional – if not using scenes, the blueprint will control Day/Night Lights directly.
-- The failsafe timer prevents lights from staying on too long.
-- All automation events can be tracked via **Logbook** in Home Assistant.
-
----
-
-## Example Use Cases
-
-- **Hall or Entrance**:
-  - Day: Turn on lights when motion is detected if lux < 100
-  - Night: Turn on dimmed lighting at night
-- **Kitchen**:
-  - Use scenes for different moods (day/night)
-  - Failsafe timer of 10 minutes to automatically turn off lights
+Left the lights on again? Don’t worry – the failsafe takes care of it.  
+Lights gradually turn off automatically after a timeout, depending on the **last scene** and **light duration**.  
+No more wasted energy, no more worries.  
 
 ---
 
-## License
-This blueprint is open-source and free to use, modify, and share.
+## 🔧 Features at a Glance
+
+| Feature | How it Works |
+|---------|--------------|
+| 🚶 Motion Sensor (optional) | Trigger lighting with or without motion |
+| 🔘 Manual Switch (optional) | Take control whenever you want |
+| 🌞 Day & Night Scenes | Set the mood with scenes or individual lights |
+| 💡 Lux Sensor | Smart lighting based on how bright it is outside |
+| 🌅 Sunrise/Sunset | With offset for perfect timing |
+| ⏱ Fixed Off-Time | Lights always turn off at your chosen hour |
+| 📅 Workday Control | Weekday or weekend – your lights follow your schedule |
+| 🛡️ Failsafe | Automatic, gradual turn-off after timeout |
+| ⏳ Light Duration | How long lights stay on after no motion |
+| 📝 Input Text Logging | Tracks last scene or sun-trigger for smarter behavior |
 
 ---
 
-### Support  
-Questions or suggestions? Please open an issue in the [GitHub repo](https://github.com/razzietheman/Advanced-Motion-Activated-Light-Blueprint).
+# 🌈 Pro Tips
+
+- Combine sun triggers with fixed off-times for **perfect evenings**.  
+- Use **separate day and night scenes** to create dynamic, living moods.  
+- Leave optional fields blank if you want a **simpler, streamlined setup**.  
+
+With Motion-Activated Lighting 3.2, your home becomes **smarter, cozier, and more energy-efficient** – all without touching a switch. ✨  
+
+---
+
+### Support
+Questions? Ideas? Suggestions?  
+Open an issue on [GitHub repo](https://github.com/razzietheman/Advanced-Motion-Activated-Light-Blueprint).
 
 ---
 
