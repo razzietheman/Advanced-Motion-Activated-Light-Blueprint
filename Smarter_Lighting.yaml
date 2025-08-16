@@ -1,21 +1,18 @@
 blueprint:
-  name: Motion-activated Lighting 3.0 – Dynamic with Sun, Workday, and Failsafe
+  name: Motion-activated Lighting 3.3 – Full Corrected Version
   description: >
-    Control any lights with one or more motion sensors, time, sunrise/sunset,
-    lux threshold, workday control, snapshot restore, and failsafe timer.
-    Dynamic sun trigger automatically selects day or night mode.
+    Control lights with motion sensors, optional manual switches, scenes,
+    time schedules, sun triggers, lux threshold, workday sensor, and failsafe timer.
   domain: automation
   input:
     motion_sensors:
       name: Motion Sensor(s)
-      description: Select one or more motion sensors
       selector:
         entity:
           domain: binary_sensor
           multiple: true
     optional_switches:
       name: Optional Manual Switch
-      description: Select switches that can trigger the lights manually
       default: []
       selector:
         entity:
@@ -23,7 +20,6 @@ blueprint:
           multiple: true
     light_entity:
       name: Lights
-      description: Lights to control if no scene is used
       default: []
       selector:
         entity:
@@ -31,7 +27,6 @@ blueprint:
           multiple: true
     scene_day:
       name: Day Scene
-      description: Scene to activate during day
       default: []
       selector:
         entity:
@@ -39,7 +34,6 @@ blueprint:
           multiple: false
     scene_night:
       name: Night Scene
-      description: Scene to activate at night
       default: []
       selector:
         entity:
@@ -47,7 +41,6 @@ blueprint:
           multiple: false
     day_lights:
       name: Day Lights (optional)
-      description: Lights to turn on during day if no scene is used
       default: []
       selector:
         entity:
@@ -55,7 +48,6 @@ blueprint:
           multiple: true
     night_lights:
       name: Night Lights (optional)
-      description: Lights to turn on at night if no scene is used
       default: []
       selector:
         entity:
@@ -63,7 +55,6 @@ blueprint:
           multiple: true
     lux_sensor:
       name: Lux Sensor (optional)
-      description: Leave empty to ignore lux
       default: []
       selector:
         entity:
@@ -72,7 +63,6 @@ blueprint:
           multiple: false
     lux_threshold:
       name: Lux Threshold
-      description: Only turn on lights if lux is below this value
       default: 50
       selector:
         number:
@@ -82,19 +72,16 @@ blueprint:
           unit_of_measurement: lx
     use_sun_times:
       name: Use Sunrise/Sunset
-      description: Determine day/night based on sun position
       default: false
       selector:
         boolean: {}
     sunset_offset:
       name: Sunset Offset
-      description: Offset for sun-trigger (e.g., "-02:00:00")
       default: "00:00:00"
       selector:
         text: {}
     sun_trigger_text:
       name: Input Text for Sun Trigger
-      description: Logs the latest sun-trigger
       default: []
       selector:
         entity:
@@ -121,19 +108,20 @@ blueprint:
         time: {}
     active_weekdays_day:
       name: Active Weekdays (Day)
+      default: [mon, tue, wed, thu, fri]
       selector:
         select:
           multiple: true
           options: [mon, tue, wed, thu, fri, sat, sun]
     active_weekdays_night:
       name: Active Weekdays (Night)
+      default: [mon, tue, wed, thu, fri]
       selector:
         select:
           multiple: true
           options: [mon, tue, wed, thu, fri, sat, sun]
     workday_sensor:
       name: Workday Sensor (optional)
-      description: Indicates if it is a workday (binary_sensor). Leave empty to ignore
       default: []
       selector:
         entity:
@@ -159,14 +147,12 @@ blueprint:
           unit_of_measurement: min
     input_text_last_scene:
       name: Input Text – Last Scene
-      description: Tracks last activated scene/mode (optional)
       default: []
       selector:
         entity:
           domain: input_text
     light_duration_day:
       name: Light Duration Day (minutes)
-      description: How long lights stay on after motion stops during day
       default: 2
       selector:
         number:
@@ -177,7 +163,6 @@ blueprint:
           mode: box
     light_duration_night:
       name: Light Duration Night (minutes)
-      description: How long lights stay on after motion stops during night
       default: 1
       selector:
         number:
@@ -235,6 +220,7 @@ variables:
 condition: []
 
 action:
+  # Day mode
   - choose:
       - conditions:
           - condition: trigger
@@ -268,32 +254,15 @@ action:
               {% if w == [] %} true {% else %} is_state(w, 'on') {% endif %}
         sequence:
           - choose:
-              - conditions: "{{ light_entity != [] }}"
-                sequence:
-                  - service: scene.create
-                    data:
-                      scene_id: before_day_scene
-                      snapshot_entities: !input light_entity
-          - choose:
               - conditions: "{{ scene_day != [] }}"
                 sequence:
                   - service: scene.turn_on
                     target:
                       entity_id: !input scene_day
-              - default:
-                  - choose:
-                      - conditions: "{{ day_lights != [] }}"
-                        sequence:
-                          - service: light.turn_on
-                            target:
-                              entity_id: !input day_lights
-                      - default:
-                          - choose:
-                              - conditions: "{{ light_entity != [] }}"
-                                sequence:
-                                  - service: light.turn_on
-                                    target:
-                                      entity_id: !input light_entity
+            default:
+              - service: light.turn_on
+                target:
+                  entity_id: !input day_lights
           - choose:
               - conditions: "{{ last_scene_entity != [] }}"
                 sequence:
@@ -305,9 +274,19 @@ action:
             data:
               name: Motion Lighting
               message: "Day mode activated via motion."
+
+  # Night mode
+  - choose:
       - conditions:
           - condition: trigger
             id: motion_on
+          - condition: or
+            conditions:
+              - condition: template
+                value_template: "{{ lux_sensor == [] }}"
+              - condition: numeric_state
+                entity_id: !input lux_sensor
+                below: !input lux_threshold
           - condition: or
             conditions:
               - condition: and
@@ -324,45 +303,21 @@ action:
                     value_template: "{{ use_sun_times }}"
                   - condition: sun
                     after: sunset
-          - condition: or
-            conditions:
-              - condition: template
-                value_template: "{{ lux_sensor == [] }}"
-              - condition: numeric_state
-                entity_id: !input lux_sensor
-                below: !input lux_threshold
           - condition: template
             value_template: >-
               {% set w = workday_sensor %}
               {% if w == [] %} true {% else %} is_state(w, 'on') {% endif %}
         sequence:
           - choose:
-              - conditions: "{{ light_entity != [] }}"
-                sequence:
-                  - service: scene.create
-                    data:
-                      scene_id: before_night_scene
-                      snapshot_entities: !input light_entity
-          - choose:
               - conditions: "{{ scene_night != [] }}"
                 sequence:
                   - service: scene.turn_on
                     target:
                       entity_id: !input scene_night
-              - default:
-                  - choose:
-                      - conditions: "{{ night_lights != [] }}"
-                        sequence:
-                          - service: light.turn_on
-                            target:
-                              entity_id: !input night_lights
-                      - default:
-                          - choose:
-                              - conditions: "{{ light_entity != [] }}"
-                                sequence:
-                                  - service: light.turn_on
-                                    target:
-                                      entity_id: !input light_entity
+            default:
+              - service: light.turn_on
+                target:
+                  entity_id: !input night_lights
           - choose:
               - conditions: "{{ last_scene_entity != [] }}"
                 sequence:
@@ -370,96 +325,20 @@ action:
                     data:
                       entity_id: !input input_text_last_scene
                       value: "night"
+          - choose:
+              - conditions: "{{ sun_trigger_text != [] }}"
+                sequence:
+                  - service: input_text.set_value
+                    data:
+                      entity_id: !input sun_trigger_text
+                      value: "sun trigger activated"
           - service: logbook.log
             data:
               name: Motion Lighting
-              message: "Night mode activated via motion."
-      - conditions:
-          - condition: or
-            conditions:
-              - condition: trigger
-                id: sun_rise
-              - condition: trigger
-                id: sun_set
-        sequence:
-          - choose:
-              - conditions:
-                  - condition: sun
-                    after: sunrise
-                sequence:
-                  - choose:
-                      - conditions: "{{ scene_day != [] }}"
-                        sequence:
-                          - service: scene.turn_on
-                            target:
-                              entity_id: !input scene_day
-                      - default:
-                          - choose:
-                              - conditions: "{{ day_lights != [] }}"
-                                sequence:
-                                  - service: light.turn_on
-                                    target:
-                                      entity_id: !input day_lights
-                              - default:
-                                  - choose:
-                                      - conditions: "{{ light_entity != [] }}"
-                                        sequence:
-                                          - service: light.turn_on
-                                            target:
-                                              entity_id: !input light_entity
-                  - choose:
-                      - conditions: "{{ last_scene_entity != [] }}"
-                        sequence:
-                          - service: input_text.set_value
-                            data:
-                              entity_id: !input input_text_last_scene
-                              value: "day"
-                  - service: logbook.log
-                    data:
-                      name: Motion Lighting
-                      message: "Day mode activated via sun trigger."
-              - conditions:
-                  - condition: sun
-                    after: sunset
-                sequence:
-                  - choose:
-                      - conditions: "{{ scene_night != [] }}"
-                        sequence:
-                          - service: scene.turn_on
-                            target:
-                              entity_id: !input scene_night
-                      - default:
-                          - choose:
-                              - conditions: "{{ night_lights != [] }}"
-                                sequence:
-                                  - service: light.turn_on
-                                    target:
-                                      entity_id: !input night_lights
-                              - default:
-                                  - choose:
-                                      - conditions: "{{ light_entity != [] }}"
-                                        sequence:
-                                          - service: light.turn_on
-                                            target:
-                                              entity_id: !input light_entity
-                  - choose:
-                      - conditions: "{{ last_scene_entity != [] }}"
-                        sequence:
-                          - service: input_text.set_value
-                            data:
-                              entity_id: !input input_text_last_scene
-                              value: "night"
-                  - choose:
-                      - conditions: "{{ sun_trigger_text != [] }}"
-                        sequence:
-                          - service: input_text.set_value
-                            data:
-                              entity_id: !input sun_trigger_text
-                              value: "sun trigger activated"
-                  - service: logbook.log
-                    data:
-                      name: Motion Lighting
-                      message: "Night mode activated via sun trigger."
+              message: "Night mode activated via motion or sun trigger."
+
+  # Motion off & Failsafe combined
+  - choose:
       - conditions:
           - condition: trigger
             id: motion_off
@@ -478,23 +357,16 @@ action:
                   - condition: state
                     entity_id: !input motion_sensors
                     state: "off"
-                  - choose:
-                      - conditions: "{{ light_entity != [] }}"
-                        sequence:
-                          - service: light.turn_off
-                            target:
-                              entity_id: !input light_entity
-                            data:
-                              transition: 30
-                      - default:
-                          - choose:
-                              - conditions: "{{ day_lights != [] }}"
-                                sequence:
-                                  - service: light.turn_off
-                                    target:
-                                      entity_id: !input day_lights
-                                    data:
-                                      transition: 30
+                  - service: light.turn_off
+                    target:
+                      entity_id: >
+                        {% if light_entity != [] %}
+                          {{ light_entity }}
+                        {% else %}
+                          {{ day_lights }}
+                        {% endif %}
+                    data:
+                      transition: 30
                   - service: logbook.log
                     data:
                       name: Motion Lighting
@@ -506,28 +378,20 @@ action:
                   - condition: state
                     entity_id: !input motion_sensors
                     state: "off"
-                  - choose:
-                      - conditions: "{{ light_entity != [] }}"
-                        sequence:
-                          - service: light.turn_off
-                            target:
-                              entity_id: !input light_entity
-                            data:
-                              transition: 30
-                      - default:
-                          - choose:
-                              - conditions: "{{ night_lights != [] }}"
-                                sequence:
-                                  - service: light.turn_off
-                                    target:
-                                      entity_id: !input night_lights
-                                    data:
-                                      transition: 30
+                  - service: light.turn_off
+                    target:
+                      entity_id: >
+                        {% if light_entity != [] %}
+                          {{ light_entity }}
+                        {% else %}
+                          {{ night_lights }}
+                        {% endif %}
+                    data:
+                      transition: 30
                   - service: logbook.log
                     data:
                       name: Motion Lighting
                       message: "Night mode turned off gradually after inactivity."
-  - choose:
       - conditions:
           - condition: or
             conditions:
@@ -550,41 +414,23 @@ action:
                 {% else %}
                   {{ failsafe_timer_day }}
                 {% endif %}
-          - condition: or
-            conditions:
-              - condition: template
-                value_template: "{{ light_entity != [] }}"
-              - condition: template
-                value_template: "{{ day_lights != [] or night_lights != [] }}"
           - condition: state
             entity_id: !input motion_sensors
             state: "off"
-          - choose:
-              - conditions: "{{ light_entity != [] }}"
-                sequence:
-                  - service: light.turn_off
-                    target:
-                      entity_id: !input light_entity
-                    data:
-                      transition: 30
-              - default:
-                  - choose:
-                      - conditions: "{{ day_lights != [] }}"
-                        sequence:
-                          - service: light.turn_off
-                            target:
-                              entity_id: !input day_lights
-                            data:
-                              transition: 30
-                      - default:
-                          - choose:
-                              - conditions: "{{ night_lights != [] }}"
-                                sequence:
-                                  - service: light.turn_off
-                                    target:
-                                      entity_id: !input night_lights
-                                    data:
-                                      transition: 30
+          - service: light.turn_off
+            target:
+              entity_id: >
+                {% if light_entity != [] %}
+                  {{ light_entity }}
+                {% elif day_lights != [] and is_state(last_scene_entity, 'day') %}
+                  {{ day_lights }}
+                {% elif night_lights != [] and is_state(last_scene_entity, 'night') %}
+                  {{ night_lights }}
+                {% else %}
+                  []
+                {% endif %}
+            data:
+              transition: 30
           - service: logbook.log
             data:
               name: Motion Lighting
