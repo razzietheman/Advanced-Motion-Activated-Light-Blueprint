@@ -7,13 +7,14 @@ Evenings flow with warmth, mornings greet you gently, and motion, sun, and sched
 
 Motion-Activated Lighting 3.5 brings you full control, full flexibility, full magic:
 
-🚶 Motion
-🌅 Sun Position
-💡 Lux Awareness
-🎨 Day & Night Scenes
-⏰ Dual Fixed Off-Times
-📅 Workday Schedule Awareness
-🛡️ Failsafe with Activation Toggle
+🚶 Motion – Trigger lighting with motion  
+🌅 Sun Position – Reacts to sunrise/sunset  
+💡 Lux Awareness – Only triggers when dark enough  
+🎨 Day & Night Scenes – Create mood with scenes or individual lights  
+⏰ Dual Fixed Off-Times – Lights turn off at exact times  
+📅 Workday Schedule – Adapts to weekday/weekend  
+🛡️ Failsafe w/ Activation Toggle – Gradual auto turn-off, can be toggled on/off
+
 
 …and everything is optional. You define the rhythm, moods, and automation rules.
 
