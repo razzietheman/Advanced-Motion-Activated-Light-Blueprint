@@ -1,86 +1,87 @@
-# 🌟 Motion-Activated Lighting 3.2 – Your Personal Light Maestro 🌟
+# 🌟 Motion-Activated Lighting 3.5 – Your Ultimate Light Maestro 🌟
 
-# ✨ Welcome to a Smarter Home
+# ✨ Welcome to Your Smartest Home Yet
 
-Imagine this: you wake up, and your home gently welcomes you with light.  
-You come home after work, and the evening unfolds with cozy, subtle illumination.  
-Motion-Activated Lighting 3.2 does all this – but **exactly the way you like it**.  
+Imagine this: you enter a room and your home welcomes you with the perfect light.
+Evenings flow with warmth, mornings greet you gently, and motion, sun, and schedule all work in harmony.
 
-It combines:
+Motion-Activated Lighting 3.5 brings you full control, full flexibility, full magic:
 
-🚶 Motion  
-🌅 Sun Position  
-💡 Lux Awareness  
-🎨 Scenes  
-⏰ Fixed Off-Times  
-🛡️ Failsafe Protection  
+🚶 Motion
+🌅 Sun Position
+💡 Lux Awareness
+🎨 Day & Night Scenes
+⏰ Dual Fixed Off-Times
+📅 Workday Schedule Awareness
+🛡️ Failsafe with Activation Toggle
 
-…and everything is **optional**. You choose your rhythm, your moods, your magic.  
-
----
+…and everything is optional. You define the rhythm, moods, and automation rules.
 
 # 🎨 Bring Your Home to Life
 
-### 🌅 Morning Glow – Rise and Shine
+# 🌅 Morning Glow – Rise and Shine
 
-It’s 7:00 on a weekday. You step out of bed.  
-Motion sensors detect your movement, gently fading on lights in the kitchen or living room.  
+It’s 7:00 on a weekday. You step out of bed.
+Motion sensors detect your presence, gently fading on lights in your kitchen, hallway, or living area.
 
-If the sun is already bright, nothing happens – natural light does the work.  
-The **day scene** is triggered and logged, so your home remembers it.  
+If the sun is bright, no lights are triggered – natural light takes over.
+The day scene is activated and logged, so your home remembers the last state.
 
-### 🌞 Daytime with Sun Trigger
+# 🌞 Daytime with Sun Trigger
 
-Lights can turn on automatically before sunset (with your **sunset offset**)  
-Perfect for long summer afternoons when daylight starts to fade.  
+Lights can switch on automatically after sunrise or before sunset using your sun offsets.
+Perfect for long summer days or cloudy mornings.
 
-Want a strict evening routine? The same lights can switch off automatically at **22:00** – no questions asked.  
+Dual fixed off-times ensure your lights never overstay their welcome, for example 22:00 on weekdays, 23:00 on weekends.
 
-### 🌙 Evening Cozy Mode
+# 🌙 Evening Cozy Mode
 
-Motion sensors or manual switches trigger **night mode**.  
-Lights fade on subtly, creating a calm, cozy atmosphere.  
-No one moving around? No problem – lights fade off gradually after the set **light duration**.  
+Motion sensors or manual switches trigger night mode.
+Lights fade on softly to create a calm, relaxing atmosphere.
+No movement? No worries – lights fade off gradually after your set light duration.
 
-### ⏰ Workday vs Weekend Magic
+# ⏰ Workday vs Weekend Magic
 
-Use a **workday sensor** to adapt lighting to your weekly schedule.  
-Weekends? Lights can wait a bit longer to turn on… or stay off entirely. Your choice, fully automated.  
+Use a workday sensor to tailor lighting to your weekly schedule.
+Weekends? Lights can behave differently – longer durations, different scenes, or remain off entirely. Your home adapts automatically.
 
+# 🛡️ Failsafe – Now with Activation Switch
+
+Forget to turn off the lights? The failsafe timer has you covered.
+Lights gradually turn off after a timeout, depending on the last scene and light duration.
+
+And now you can enable or disable failsafe at will – giving you full control over automation safety.
 ---
 
-# 🛡️ Never Forget: Failsafe
-
-Left the lights on again? Don’t worry – the failsafe takes care of it.  
-Lights gradually turn off automatically after a timeout, depending on the **last scene** and **light duration**.  
-No more wasted energy, no more worries.  
-
----
-
-## 🔧 Features at a Glance
+## 🔧 Features in Detail
 
 | Feature | How it Works |
 |---------|--------------|
 | 🚶 Motion Sensor (optional) | Trigger lighting with or without motion |
-| 🔘 Manual Switch (optional) | Take control whenever you want |
-| 🌞 Day & Night Scenes | Set the mood with scenes or individual lights |
-| 💡 Lux Sensor | Smart lighting based on how bright it is outside |
-| 🌅 Sunrise/Sunset | With offset for perfect timing |
-| ⏱ Fixed Off-Time | Lights always turn off at your chosen hour |
-| 📅 Workday Control | Weekday or weekend – your lights follow your schedule |
-| 🛡️ Failsafe | Automatic, gradual turn-off after timeout |
-| ⏳ Light Duration | How long lights stay on after no motion |
-| 📝 Input Text Logging | Tracks last scene or sun-trigger for smarter behavior |
+| 🔘 Manual Switch (optional) | Take control of lights anytime |
+| 🌞 Day & Night Scenes | Create mood with scenes or individual lights |
+| 💡 Lux Sensor | Lights only trigger if it’s dark enough |
+| 🌅 Sunrise/Sunset | Optional, with offset for precise timing |
+| ⏱ Two Fixed Off-Times | Lights always turn off at exact times – e.g., weekday & weekend |
+| 📅 Workday Control | Adapt lighting depending on weekday or weekend |
+| 🛡️ Failsafe | Gradual auto turn-off after timeout, now with activation switch |
+| ⏳ Light Duration | Set how long lights stay on after no motion |
+| 📝 Input Text Logging | Tracks last scene or sun-trigger for smarter automation |
+
 
 ---
 
 # 🌈 Pro Tips
 
-- Combine sun triggers with fixed off-times for **perfect evenings**.  
-- Use **separate day and night scenes** to create dynamic, living moods.  
-- Leave optional fields blank if you want a **simpler, streamlined setup**.  
+Combine sun triggers, workday sensor, and dual fixed off-times for the perfect automated flow.
 
-With Motion-Activated Lighting 3.2, your home becomes **smarter, cozier, and more energy-efficient** – all without touching a switch. ✨  
+Use separate day and night scenes to create dynamic, living moods.
+
+Leave optional inputs blank for a simpler, streamlined setup.
+
+Enable failsafe for peace of mind, or disable for complete manual control.
+
+With Motion-Activated Lighting 3.5, your home becomes smarter, cozier, and more energy-efficient – all effortlessly. ✨
 
 ---
 
