@@ -6,7 +6,7 @@ Picture this:
 You step into a room, and your home greets you with the perfect light.  
 Mornings awaken you softly, evenings wrap you in cozy tones, and motion, sun, and schedule all dance in harmony.  
 
-**Motion-Activated Lighting 3.7** gives you full control, full flexibility, full magic :
+**Motion-Activated Lighting 3.7** gives you full control, full flexibility, full magic:
 
 🚶 Motion – Trigger lighting with motion  
 🌅 Sun Position – Reacts to sunrise/sunset with offsets  
@@ -57,8 +57,8 @@ Failsafe ensures lights shut off automatically after a max duration – with the
 | 🌅 Sunrise/Sunset | Customizable offsets for smarter timing |
 | ⏱ Two Fixed Off-Times | Guaranteed light shutdown at set times |
 | 📅 Workday Control | Different rules for weekdays/weekends |
-| 🛡️ Failsafe | Auto-off after maximum runtime + optional activation switch |
-| ⏳ On-Time (Day/Night) | Lights fade off after motion stops |
+| 🛡️ Failsafe | Auto-off after max runtime (activation switch included) |
+| ⏳ On-Time (Day/Night) | Adjustable fade-out after inactivity |
 | 📝 Scene Logging | Keeps track of last state |
 
 ---
@@ -74,7 +74,8 @@ With **Motion-Activated Lighting 3.7**, your home isn’t just smart – it’s 
 ---
 
 ## 📥 Installation
-1. Import this blueprint into Home Assistant  
+1. [Import this blueprint into Home Assistant](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://github.com/razzietheman/Advanced-Motion-Activated-Light-Blueprint/blob/main/Smarter_Lighting.yaml)  
+
 2. Create an automation based on it  
 3. Choose your lights, motion sensors, and optional extras  
 4. Enjoy your perfectly tuned smart lighting 🎉  
@@ -94,3 +95,4 @@ Created with ❤️ by Rasmus Sjöberg [@razzietheman](https://github.com/razzie
 ---
 
 💡 Thank you for using and sharing!
+If you enjoy this blueprint, consider giving it a ⭐ on GitHub.
