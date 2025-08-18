@@ -88,7 +88,7 @@ Questions? Ideas? Suggestions?
 ---
 
 ## 👨‍💻 Author
-Rasmus Sjöberg [@razzietheman](https://github.com/razzietheman)  
+Created with ❤️ by Rasmus Sjöberg [@razzietheman](https://github.com/razzietheman)  
 2025  
 
 ---
