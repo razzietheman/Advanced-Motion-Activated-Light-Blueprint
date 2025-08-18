@@ -1,5 +1,5 @@
 blueprint:
-  name: Motion-Controlled Lighting 3.5 – Fully Optional with Two Fixed Off-Times, Weekdays, Sun, Workday, and Failsafe
+  name: Motion-Controlled Lighting 3.7 – Fully Optional with Two Fixed Off-Times, Weekdays, Sun, Workday, and Failsafe
   description: >
     Control optional lighting with one or more motion sensors, time, sunrise/sunset,
     lux threshold, workday control, snapshot restoration, and failsafe timer.
@@ -13,6 +13,7 @@ blueprint:
         entity:
           domain: binary_sensor
           multiple: true
+          
     optional_switches:
       name: Optional manual switch
       default: []
@@ -20,13 +21,14 @@ blueprint:
         entity:
           domain: switch
           multiple: true
+          
     light_entity:
       name: Lights (optional)
       default: []
       selector:
-        entity:
-          domain: light
-          multiple: true
+        target:
+          entity:
+            domain: light
     scene_day:
       name: Daytime Scene (optional)
       default: []
@@ -45,16 +47,16 @@ blueprint:
       name: Day Lights (optional)
       default: []
       selector:
-        entity:
-          domain: light
-          multiple: true
+        target:
+          entity:
+            domain: light
     night_lights:
       name: Night Lights (optional)
       default: []
       selector:
-        entity:
-          domain: light
-          multiple: true
+        target:
+          entity:
+            domain: light
     lux_sensor:
       name: Lux Sensor (optional)
       default: []
@@ -63,6 +65,7 @@ blueprint:
           domain: sensor
           device_class: illuminance
           multiple: false
+          
     lux_threshold:
       name: Lux Threshold
       default: 50
@@ -72,6 +75,7 @@ blueprint:
           max: 1000
           step: 1
           unit_of_measurement: lx
+          
     use_sun_times:
       name: Use Sunrise/Sunset
       default: false
@@ -82,12 +86,18 @@ blueprint:
       default: "00:00:00"
       selector:
         text: {}
+    sunrise_offset:
+      name: Sunrise offset
+      default: "00:00:00"
+      selector:
+        text: {}
     sun_trigger_text:
       name: Input Text for Sun Trigger (optional)
       default: []
       selector:
         entity:
           domain: input_text
+          
     fixed_off_time_1:
       name: Fixed Off-Time 1 (optional)
       default: []
@@ -99,7 +109,21 @@ blueprint:
       selector:
         select:
           multiple: true
-          options: [mon, tue, wed, thu, fri, sat, sun]
+          options:
+            - label: Monday
+              value: mon
+            - label: Tuesday
+              value: tue
+            - label: Wednesday
+              value: wed
+            - label: Thursday
+              value: thu
+            - label: Friday
+              value: fri
+            - label: Saturday
+              value: sat
+            - label: Sunday
+              value: sun
     fixed_off_time_2:
       name: Fixed Off-Time 2 (optional)
       default: []
@@ -111,7 +135,22 @@ blueprint:
       selector:
         select:
           multiple: true
-          options: [mon, tue, wed, thu, fri, sat, sun]
+          options:
+            - label: Monday
+              value: mon
+            - label: Tuesday
+              value: tue
+            - label: Wednesday
+              value: wed
+            - label: Thursday
+              value: thu
+            - label: Friday
+              value: fri
+            - label: Saturday
+              value: sat
+            - label: Sunday
+              value: sun
+          
     day_start:
       name: Day Start (optional)
       default: "07:00:00"
@@ -138,14 +177,42 @@ blueprint:
       selector:
         select:
           multiple: true
-          options: [mon, tue, wed, thu, fri, sat, sun]
+          options:
+            - label: Monday
+              value: mon
+            - label: Tuesday
+              value: tue
+            - label: Wednesday
+              value: wed
+            - label: Thursday
+              value: thu
+            - label: Friday
+              value: fri
+            - label: Saturday
+              value: sat
+            - label: Sunday
+              value: sun
     active_weekdays_night:
       name: Active Weekdays (Night, optional)
       default: []
       selector:
         select:
           multiple: true
-          options: [mon, tue, wed, thu, fri, sat, sun]
+          options:
+            - label: Monday
+              value: mon
+            - label: Tuesday
+              value: tue
+            - label: Wednesday
+              value: wed
+            - label: Thursday
+              value: thu
+            - label: Friday
+              value: fri
+            - label: Saturday
+              value: sat
+            - label: Sunday
+              value: sun
     workday_sensor:
       name: Workday Sensor (optional)
       default: []
@@ -153,6 +220,12 @@ blueprint:
         entity:
           domain: binary_sensor
           multiple: false
+          
+    enable_failsafe:
+      name: Enable Failsafe
+      default: true
+      selector:
+        boolean: {}
     failsafe_timer_day:
       name: Failsafe Timer Day (minutes)
       default: 15
@@ -171,11 +244,7 @@ blueprint:
           max: 120
           step: 1
           unit_of_measurement: min
-    enable_failsafe:
-      name: Enable Failsafe
-      default: true
-      selector:
-        boolean: {}
+
     input_text_last_scene:
       name: Input Text – Last Scene (optional)
       default: []
@@ -187,9 +256,9 @@ blueprint:
       default: 2
       selector:
         number:
-          min: 0.1
+          min: 0.5
           max: 120
-          step: 0.1
+          step: 0.5
           unit_of_measurement: minutes
           mode: box
     on_time_night:
@@ -197,12 +266,13 @@ blueprint:
       default: 1
       selector:
         number:
-          min: 0.1
+          min: 0.5
           max: 120
-          step: 0.1
+          step: 0.5
           unit_of_measurement: minutes
           mode: box
 
+# --- TRIGGERS ---
 trigger:
   - platform: state
     entity_id: !input motion_sensors
@@ -210,24 +280,24 @@ trigger:
     id: motion_on
   - platform: state
     entity_id: !input motion_sensors
-    from: "on"
     to: "off"
     id: motion_off
-  - platform: state
-    entity_id: !input optional_switches
-    to: "on"
-    id: switch_on
   - platform: state
     entity_id: !input light_entity
     to: "on"
     id: light_on
-  - platform: sun
-    event: sunrise
-    id: sun_rise
+  - platform: state
+    entity_id: !input optional_switches
+    to: "on"
+    id: switch_on
   - platform: sun
     event: sunset
     offset: !input sunset_offset
     id: sun_set
+  - platform: sun
+    event: sunrise
+    offset: !input sunrise_offset
+    id: sun_rise
   - platform: time
     at: !input fixed_off_time_1
     id: fixed_off_1
@@ -238,26 +308,27 @@ trigger:
 mode: parallel
 max: 100
 
+# --- VARIABLES ---
 variables:
-  lux_sensor: !input lux_sensor
-  lux_threshold: !input lux_threshold
-  scene_day: !input scene_day
-  scene_night: !input scene_night
+  light_entity_list: !input light_entity
   day_lights: !input day_lights
   night_lights: !input night_lights
-  light_entity_list: !input light_entity
-  workday_sensor: !input workday_sensor
-  sun_trigger_text: !input sun_trigger_text
+  scene_day: !input scene_day
+  scene_night: !input scene_night
+  last_scene_entity: !input input_text_last_scene
+  lux_sensor: !input lux_sensor
+  lux_threshold: !input lux_threshold
   use_sun_times: !input use_sun_times
+  sunset_offset: !input sunset_offset
+  sunrise_offset: !input sunrise_offset
+  sun_trigger_text: !input sun_trigger_text
+  workday_sensor: !input workday_sensor
+  enable_failsafe: !input enable_failsafe
   failsafe_timer_day: !input failsafe_timer_day
   failsafe_timer_night: !input failsafe_timer_night
-  enable_failsafe: !input enable_failsafe
-  on_time_day: !input on_time_day
-  on_time_night: !input on_time_night
-  last_scene_entity: !input input_text_last_scene
   fixed_off_time_1: !input fixed_off_time_1
-  fixed_off_time_2: !input fixed_off_time_2
   fixed_off_weekdays_1: !input fixed_off_weekdays_1
+  fixed_off_time_2: !input fixed_off_time_2
   fixed_off_weekdays_2: !input fixed_off_weekdays_2
 
 condition: []

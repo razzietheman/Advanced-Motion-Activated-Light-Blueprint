@@ -1,101 +1,96 @@
-# 🌟 Motion-Activated Lighting 3.5 – Your Ultimate Light Maestro 🌟
+# 🌟 Motion-Activated Lighting 3.7 – Your Ultimate Light Maestro 🌟
 
-# ✨ Welcome to Your Smartest Home Yet
+## ✨ Welcome to Your Smartest Home Yet
 
-Imagine this: you enter a room and your home welcomes you with the perfect light.
-Evenings flow with warmth, mornings greet you gently, and motion, sun, and schedule all work in harmony.
+Picture this:  
+You step into a room, and your home greets you with the perfect light.  
+Mornings awaken you softly, evenings wrap you in cozy tones, and motion, sun, and schedule all dance in harmony.  
 
-Motion-Activated Lighting 3.5 brings you full control, full flexibility, full magic:
+**Motion-Activated Lighting 3.7** gives you full control, full flexibility, full magic :
 
 🚶 Motion – Trigger lighting with motion  
-🌅 Sun Position – Reacts to sunrise/sunset  
+🌅 Sun Position – Reacts to sunrise/sunset with offsets  
 💡 Lux Awareness – Only triggers when dark enough  
-🎨 Day & Night Scenes – Create mood with scenes or individual lights  
-⏰ Dual Fixed Off-Times – Lights turn off at exact times  
-📅 Workday Schedule – Adapts to weekday/weekend  
-🛡️ Failsafe w/ Activation Toggle – Gradual auto turn-off, can be toggled on/off
+🎨 Day & Night Scenes – Create moods with lights or full scenes  
+⏰ Dual Fixed Off-Times – Lights always turn off at exact times  
+📅 Workday Control – Different behavior on weekdays & weekends  
+🛡️ Failsafe Timer – Auto turn-off for peace of mind  
+🔘 Optional Switch Inputs – Manual override whenever you want  
 
+…and every feature is optional.  
+You set the rhythm, moods, and automation rules.  
 
-…and everything is optional. You define the rhythm, moods, and automation rules.
+---
 
-# 🎨 Bring Your Home to Life
+## 🌅 Example Flows
 
-# 🌅 Morning Glow – Rise and Shine
+### 🌄 Morning Glow – Rise and Shine  
+Weekday morning, 07:00. You step into the kitchen.  
+Motion triggers a gentle day scene – but if the sun is already up, natural light takes over instead.  
 
-It’s 7:00 on a weekday. You step out of bed.
-Motion sensors detect your presence, gently fading on lights in your kitchen, hallway, or living area.
+### 🌞 Daylight Awareness  
+With sunrise and sunset offsets, lights adapt to long summer days or dim winter afternoons.  
+Dual fixed off-times guarantee lights never stay on too long – e.g., 22:00 on weekdays, 23:00 on weekends.  
 
-If the sun is bright, no lights are triggered – natural light takes over.
-The day scene is activated and logged, so your home remembers the last state.
+### 🌙 Evening Cozy Mode  
+Motion or a switch sets night mode: soft, relaxing lighting.  
+No motion? Lights fade off after your chosen timer – calm, not abrupt.  
 
-# 🌞 Daytime with Sun Trigger
+### ⏰ Workday vs Weekend Magic  
+Workday sensor integration makes your lighting routine-aware:  
+Longer evening scenes on weekends, early shutoff on workdays.  
 
-Lights can switch on automatically after sunrise or before sunset using your sun offsets.
-Perfect for long summer days or cloudy mornings.
+### 🛡️ Failsafe Protection  
+Forgot the lights? No problem.  
+Failsafe ensures lights shut off automatically after a max duration – with the option to toggle it on/off.  
 
-Dual fixed off-times ensure your lights never overstay their welcome, for example 22:00 on weekdays, 23:00 on weekends.
-
-# 🌙 Evening Cozy Mode
-
-Motion sensors or manual switches trigger night mode.
-Lights fade on softly to create a calm, relaxing atmosphere.
-No movement? No worries – lights fade off gradually after your set light duration.
-
-# ⏰ Workday vs Weekend Magic
-
-Use a workday sensor to tailor lighting to your weekly schedule.
-Weekends? Lights can behave differently – longer durations, different scenes, or remain off entirely. Your home adapts automatically.
-
-# 🛡️ Failsafe – Now with Activation Switch
-
-Forget to turn off the lights? The failsafe timer has you covered.
-Lights gradually turn off after a timeout, depending on the last scene and light duration.
-
-And now you can enable or disable failsafe at will – giving you full control over automation safety.
 ---
 
 ## 🔧 Features in Detail
 
 | Feature | How it Works |
 |---------|--------------|
-| 🚶 Motion Sensor (optional) | Trigger lighting with or without motion |
-| 🔘 Manual Switch (optional) | Take control of lights anytime |
-| 🌞 Day & Night Scenes | Create mood with scenes or individual lights |
-| 💡 Lux Sensor | Lights only trigger if it’s dark enough |
-| 🌅 Sunrise/Sunset | Optional, with offset for precise timing |
-| ⏱ Two Fixed Off-Times | Lights always turn off at exact times – e.g., weekday & weekend |
-| 📅 Workday Control | Adapt lighting depending on weekday or weekend |
-| 🛡️ Failsafe | Gradual auto turn-off after timeout, now with activation switch |
-| ⏳ Light Duration | Set how long lights stay on after no motion |
-| 📝 Input Text Logging | Tracks last scene or sun-trigger for smarter automation |
-
-
----
-
-# 🌈 Pro Tips
-
-Combine sun triggers, workday sensor, and dual fixed off-times for the perfect automated flow.
-
-Use separate day and night scenes to create dynamic, living moods.
-
-Leave optional inputs blank for a simpler, streamlined setup.
-
-Enable failsafe for peace of mind, or disable for complete manual control.
-
-With Motion-Activated Lighting 3.5, your home becomes smarter, cozier, and more energy-efficient – all effortlessly. ✨
+| 🚶 Motion Sensor (optional) | Trigger lights automatically |
+| 🔘 Manual Switch (optional) | Override lights manually |
+| 🌞 Day & Night Scenes | Different moods depending on time |
+| 💡 Lux Sensor | Blocks triggers if it’s already bright |
+| 🌅 Sunrise/Sunset | Customizable offsets for smarter timing |
+| ⏱ Two Fixed Off-Times | Guaranteed light shutdown at set times |
+| 📅 Workday Control | Different rules for weekdays/weekends |
+| 🛡️ Failsafe | Auto-off after maximum runtime + optional activation switch |
+| ⏳ On-Time (Day/Night) | Lights fade off after motion stops |
+| 📝 Scene Logging | Keeps track of last state |
 
 ---
 
-### Support
+## 🌈 Pro Tips
+- Combine sunrise offsets, workday rules, and fixed off-times for the smoothest automation flow  
+- Use separate **day/night scenes** for truly dynamic moods  
+- Leave inputs blank for a simple setup – or fine-tune every detail  
+- Enable failsafe for energy savings and peace of mind  
+
+With **Motion-Activated Lighting 3.7**, your home isn’t just smart – it’s _alive_. ✨  
+
+---
+
+## 📥 Installation
+1. Import this blueprint into Home Assistant  
+2. Create an automation based on it  
+3. Choose your lights, motion sensors, and optional extras  
+4. Enjoy your perfectly tuned smart lighting 🎉  
+
+---
+
+## 🛠 Support
 Questions? Ideas? Suggestions?  
-Open an issue on [GitHub repo](https://github.com/razzietheman/Advanced-Motion-Activated-Light-Blueprint).
+👉 Open an issue on [GitHub repo](https://github.com/razzietheman/Advanced-Motion-Activated-Light-Blueprint)
 
 ---
 
-## Author  
-Rasmus Sjöberg @razzietheman (https://github.com/razzietheman)
-2025
+## 👨‍💻 Author
+Rasmus Sjöberg [@razzietheman](https://github.com/razzietheman)  
+2025  
 
 ---
 
-Thank you for using and sharing!
+💡 Thank you for using and sharing!
