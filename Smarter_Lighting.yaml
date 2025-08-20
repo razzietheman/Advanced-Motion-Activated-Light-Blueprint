@@ -1,5 +1,5 @@
 blueprint:
-  name: Motion-Controlled Lighting 3.7 – Fully Optional with Two Fixed Off-Times, Weekdays, Sun, Workday, and Failsafe
+  name: Motion-Controlled Lighting 3.8 – Fully Optional with Two Fixed Off-Times, Weekdays, Sun, Workday, and Failsafe
   description: >
     Control optional lighting with one or more motion sensors, time, sunrise/sunset,
     lux threshold, workday control, snapshot restoration, and failsafe timer.
@@ -124,11 +124,13 @@ blueprint:
               value: sat
             - label: Sunday
               value: sun
+              
     fixed_off_time_2:
       name: Fixed Off-Time 2 (optional)
       default: []
       selector:
         time: {}
+        
     fixed_off_weekdays_2:
       name: Active Weekdays (Fixed Off-Time 2)
       default: []
@@ -156,21 +158,25 @@ blueprint:
       default: "07:00:00"
       selector:
         time: {}
+        
     day_end:
       name: Day End (optional)
       default: "22:00:00"
       selector:
         time: {}
+        
     night_start:
       name: Night Start (optional)
       default: "22:00:00"
       selector:
         time: {}
+        
     night_end:
       name: Night End (optional)
       default: "07:00:00"
       selector:
         time: {}
+        
     active_weekdays_day:
       name: Active Weekdays (Day, optional)
       default: []
@@ -192,6 +198,7 @@ blueprint:
               value: sat
             - label: Sunday
               value: sun
+              
     active_weekdays_night:
       name: Active Weekdays (Night, optional)
       default: []
@@ -213,6 +220,7 @@ blueprint:
               value: sat
             - label: Sunday
               value: sun
+              
     workday_sensor:
       name: Workday Sensor (optional)
       default: []

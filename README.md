@@ -1,4 +1,4 @@
-# 🌟 Motion-Activated Lighting 3.7 – Your Ultimate Light Maestro 🌟
+# 🌟 Motion-Activated Lighting 3.8 – Your Ultimate Light Maestro 🌟
 
 ## ✨ Welcome to Your Smartest Home Yet
 
@@ -6,7 +6,7 @@ Picture this:
 You step into a room, and your home greets you with the perfect light.  
 Mornings awaken you softly, evenings wrap you in cozy tones, and motion, sun, and schedule all dance in harmony.  
 
-**Motion-Activated Lighting 3.7** gives you full control, full flexibility, full magic:
+**Motion-Activated Lighting 3.8** gives you full control, full flexibility, full magic:
 
 🚶 Motion – Trigger lighting with motion  
 🌅 Sun Position – Reacts to sunrise/sunset with offsets  
@@ -69,13 +69,12 @@ Failsafe ensures lights shut off automatically after a max duration – with the
 - Leave inputs blank for a simple setup – or fine-tune every detail  
 - Enable failsafe for energy savings and peace of mind  
 
-With **Motion-Activated Lighting 3.7**, your home isn’t just smart – it’s _alive_. ✨  
+With **Motion-Activated Lighting 3.8**, your home isn’t just smart – it’s _alive_. ✨  
 
 ---
 
 ## 📥 Installation
 1. [Import this blueprint into Home Assistant](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://github.com/razzietheman/Advanced-Motion-Activated-Light-Blueprint/blob/main/Smarter_Lighting.yaml)  
-
 2. Create an automation based on it  
 3. Choose your lights, motion sensors, and optional extras  
 4. Enjoy your perfectly tuned smart lighting 🎉  
