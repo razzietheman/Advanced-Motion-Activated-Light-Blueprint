@@ -69,7 +69,7 @@ Failsafe ensures lights automatically turn off after the maximum runtime – now
 
 ---
 
-# ## 🌈 Pro Tips
+# 🌈 Pro Tips
 
 - 🌅 Combine sunrise offsets, workday rules, and fixed off-times for seamless automation  
 - 🎨 Use separate day/night scenes for dynamic moods and energy efficiency  
