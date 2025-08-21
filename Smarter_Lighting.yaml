@@ -1,5 +1,5 @@
 blueprint:
-  name: Motion-Controlled Lighting 4.3 – Full Failsafe & Day/Night
+  name: Motion-Controlled Lighting 4.4 – Full Failsafe & Day/Night
   description: >
     Motion-controlled lighting with day/night, scenes, lux, sunrise/sunset,
     workday, failsafe (separate day/night timers), fixed off times (with weekdays),
@@ -7,7 +7,6 @@ blueprint:
   domain: automation
   input:
     # --- Sensors & switches ---
-    
     motion_sensors:
       name: Motion sensor(s)
       default: []
@@ -25,7 +24,6 @@ blueprint:
           multiple: true
 
     # --- Lights & scenes ---
-    
     main_lights:
       name: Main lights
       default: []
@@ -111,7 +109,6 @@ blueprint:
           domain: input_text
 
     # --- Fixed off time ---
-    
     fixed_off_time_1:
       name: Fixed off time 1 (optional)
       default: []
@@ -169,7 +166,6 @@ blueprint:
               value: sun
 
     # --- Time settings ---
-    
     day_start:
       name: Day start
       default: "07:00:00"
@@ -195,7 +191,6 @@ blueprint:
         time: {}
 
     # --- Active weekdays ---
-    
     active_weekdays_day:
       name: Active weekdays (Day)
       default: []
@@ -241,7 +236,6 @@ blueprint:
               value: sun
 
     # --- Workday & failsafe ---
-    
     workday_sensor:
       name: Workday sensor
       default: []
@@ -283,7 +277,6 @@ blueprint:
           domain: input_text
 
     # --- Auto-off durations ---
-    
     auto_off_main:
       name: Main lights duration (minutes)
       default: 10
@@ -318,9 +311,7 @@ blueprint:
           mode: box
 
 trigger:
-  
   # --- Motion triggers ---
-  
   - platform: state
     entity_id: !input motion_sensors
     to: "on"
@@ -331,7 +322,6 @@ trigger:
     id: motion_off
 
   # --- Optional switch triggers ---
-  
   - platform: state
     entity_id: !input optional_switches
     to: "on"
@@ -342,7 +332,6 @@ trigger:
     id: switch_off
 
   # --- Sun triggers ---
-  
   - platform: sun
     event: sunrise
     offset: !input sunrise_offset
@@ -353,7 +342,6 @@ trigger:
     id: sun_set
 
   # --- Fixed off times ---
-  
   - platform: time
     at: !input fixed_off_time_1
     id: fixed_off_1
@@ -385,9 +373,7 @@ variables:
   failsafe_timer_night_var: !input failsafe_timer_night
 
 action:
-  
   # --- Motion or switch ON ---
-  
   - choose:
       - conditions:
           - condition: or
@@ -423,9 +409,7 @@ action:
               {% set w = workday_sensor_var %}
               {% if w == [] %} true {% else %} {{ is_state(w[0], 'on') }} {% endif %}
         sequence:
-          
           # --- Snapshot ---
-          
           - choose:
               - conditions:
                   - condition: template
@@ -435,9 +419,7 @@ action:
                     data:
                       scene_id: snapshot_before_on
                       snapshot_entities: "{{ main_lights_var }}"
-          
           # --- Priority scene_day -> day_lights -> main_lights ---
-          
           - choose:
               - conditions:
                   - condition: template
@@ -460,9 +442,7 @@ action:
                   - service: light.turn_on
                     target:
                       entity_id: "{{ main_lights_var }}"
-          
           # --- Save last scene ---
-          
           - choose:
               - conditions:
                   - condition: template
@@ -472,16 +452,13 @@ action:
                     data:
                       entity_id: "{{ last_scene_entity }}"
                       value: "day/night ON"
-          
           # --- Logging ---
-          
           - service: logbook.log
             data:
               name: Motion Control
               message: "Day/night ON activated via motion or switch."
 
   # --- Motion or switch OFF, respecting fixed off ---
-  
   - choose:
       - conditions:
           - condition: or
@@ -503,33 +480,32 @@ action:
                         (fo2 != [] and now_ts < as_timestamp(fo2))
                       %}
                       {{ fo_active }}
-                sequence: [] # Do nothing if fixed off active
-              - default:
-                  - delay:
-                      minutes: "{{ auto_off_main_var }}"
-                  - service: light.turn_off
-                    target:
-                      entity_id: "{{ main_lights_var }}"
-                  - delay:
-                      minutes: "{{ auto_off_day_var }}"
-                  - service: light.turn_off
-                    target:
-                      entity_id: "{{ day_lights_var }}"
-                  - delay:
-                      minutes: "{{ auto_off_night_var }}"
-                  - service: light.turn_off
-                    target:
-                      entity_id: "{{ night_lights_var }}"
-                  - service: logbook.log
-                    data:
-                      name: Motion Control
-                      message: >
-                        Day/night OFF executed; main lights off after {{ auto_off_main_var }} min,
-                        day lights off after {{ auto_off_day_var }} min,
-                        night lights off after {{ auto_off_night_var }} min.
+                sequence: []  # Do nothing if fixed off active
+            default:
+              - delay:
+                  minutes: "{{ auto_off_main_var }}"
+              - service: light.turn_off
+                target:
+                  entity_id: "{{ main_lights_var }}"
+              - delay:
+                  minutes: "{{ auto_off_day_var }}"
+              - service: light.turn_off
+                target:
+                  entity_id: "{{ day_lights_var }}"
+              - delay:
+                  minutes: "{{ auto_off_night_var }}"
+              - service: light.turn_off
+                target:
+                  entity_id: "{{ night_lights_var }}"
+              - service: logbook.log
+                data:
+                  name: Motion Control
+                  message: >
+                    Day/night OFF executed; main lights off after {{ auto_off_main_var }} min,
+                    day lights off after {{ auto_off_day_var }} min,
+                    night lights off after {{ auto_off_night_var }} min.
 
   # --- Fixed off times ---
-  
   - choose:
       - conditions:
           - condition: trigger
@@ -561,7 +537,6 @@ action:
               message: "Fixed off time 2 executed."
 
   # --- Failsafe (separate day/night timers) ---
-  
   - choose:
       - conditions:
           - condition: template
