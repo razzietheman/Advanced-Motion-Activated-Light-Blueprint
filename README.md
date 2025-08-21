@@ -20,13 +20,14 @@ Motion-Controlled Lighting 4.0 isn’t just an upgrade – it’s a full rewrite
 📝 Logging – Keep track of every action
 
 
-…and every feature is fully optional. You set the rhythm. You set the mood.
+…and every feature is fully optional. You set the rhythm. You set the mood.  
 
-🌅 Example Flows
-🌄 Morning Glow – Rise and Shine
+# 🌅 Example Flows  
+# 🌄 Morning Glow – Rise and Shine  
 
-Weekday, 07:00. Motion triggers your gentle day scene.
+Weekday, 07:00. Motion triggers your gentle day scene.  
 If the sun is already up, natural light takes over – no wasted energy.
+
 
 # 🌞 Daytime Smartness
 
