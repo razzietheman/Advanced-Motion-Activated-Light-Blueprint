@@ -1,5 +1,5 @@
 blueprint:
-  name: Motion-Controlled Lighting 4.1 – Full-featured Fixed
+  name: Motion-Controlled Lighting 4.2 – Failsafe fix
   description: >
     Motion-controlled lighting with day/night, scenes, lux, sunrise/sunset,
     workday, failsafe, fixed off times (with weekdays), snapshots, and logging.
@@ -320,9 +320,7 @@ blueprint:
           mode: box
 
 trigger:
-  
   # --- Motion triggers ---
-  
   - platform: state
     entity_id: !input motion_sensors
     to: "on"
@@ -331,7 +329,7 @@ trigger:
     entity_id: !input motion_sensors
     to: "off"
     id: motion_off
-
+  
   # --- Optional switch triggers ---
   
   - platform: state
@@ -342,7 +340,7 @@ trigger:
     entity_id: !input optional_switches
     to: "off"
     id: switch_off
-
+  
   # --- Sun triggers ---
   
   - platform: sun
@@ -353,7 +351,7 @@ trigger:
     event: sunset
     offset: !input sunset_offset
     id: sun_set
-
+  
   # --- Fixed off times ---
   
   - platform: time
@@ -384,9 +382,7 @@ variables:
   fixed_off_weekdays_2_var: !input fixed_off_weekdays_2
 
 action:
-  
   # --- Motion or switch ON ---
-  
   - choose:
       - conditions:
           - condition: or
@@ -507,3 +503,66 @@ action:
                   - delay:
                       minutes: "{{ auto_off_night_var }}"
                   - service: light.turn_off
+                    target:
+                      entity_id: "{{ night_lights_var }}"
+                  - service: logbook.log
+                    data:
+                      name: Motion Control
+                      message: >
+                        Day/night OFF executed; main lights off after {{ auto_off_main_var }} min,
+                        day lights off after {{ auto_off_day_var }} min,
+                        night lights off after {{ auto_off_night_var }} min.
+
+  # --- Fixed off times with weekdays ---
+  
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: fixed_off_1
+          - condition: template
+            value_template: >
+              {{ now().strftime('%a').lower() in fixed_off_weekdays_1_var }}
+        sequence:
+          - service: light.turn_off
+            target:
+              entity_id: "{{ main_lights_var + day_lights_var + night_lights_var }}"
+          - service: logbook.log
+            data:
+              name: Motion Control
+              message: "Fixed off time 1 executed."
+      - conditions:
+          - condition: trigger
+            id: fixed_off_2
+          - condition: template
+            value_template: >
+              {{ now().strftime('%a').lower() in fixed_off_weekdays_2_var }}
+        sequence:
+          - service: light.turn_off
+            target:
+              entity_id: "{{ main_lights_var + day_lights_var + night_lights_var }}"
+          - service: logbook.log
+            data:
+              name: Motion Control
+              message: "Fixed off time 2 executed."
+
+  # --- Failsafe ---
+  
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ enable_failsafe }}"
+        sequence:
+          - delay:
+              minutes: >
+                {% if now().time() >= day_start | as_datetime and now().time() <= day_end | as_datetime %}
+                  {{ failsafe_timer_day }}
+                {% else %}
+                  {{ failsafe_timer_night }}
+                {% endif %}
+          - service: light.turn_on
+            target:
+              entity_id: "{{ main_lights_var + day_lights_var + night_lights_var }}"
+          - service: logbook.log
+            data:
+              name: Motion Control
+              message: "Failsafe activated, lights turned on after delay."
