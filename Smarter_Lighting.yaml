@@ -1,12 +1,11 @@
 blueprint:
-  name: Motion-Controlled Lighting 4.2 – Failsafe fix
+  name: Motion-Controlled Lighting 4.3 – Full Failsafe & Day/Night
   description: >
     Motion-controlled lighting with day/night, scenes, lux, sunrise/sunset,
-    workday, failsafe, fixed off times (with weekdays), snapshots, and logging.
-    Auto-off durations only run if no fixed off time is active.
+    workday, failsafe (separate day/night timers), fixed off times (with weekdays),
+    snapshots, logging, and auto-off timers respecting fixed times.
   domain: automation
   input:
-    
     # --- Sensors & switches ---
     
     motion_sensors:
@@ -68,7 +67,6 @@ blueprint:
             domain: light
 
     # --- Lux & sun ---
-    
     lux_sensor:
       name: Lux sensor
       default: []
@@ -320,7 +318,9 @@ blueprint:
           mode: box
 
 trigger:
+  
   # --- Motion triggers ---
+  
   - platform: state
     entity_id: !input motion_sensors
     to: "on"
@@ -329,7 +329,7 @@ trigger:
     entity_id: !input motion_sensors
     to: "off"
     id: motion_off
-  
+
   # --- Optional switch triggers ---
   
   - platform: state
@@ -340,7 +340,7 @@ trigger:
     entity_id: !input optional_switches
     to: "off"
     id: switch_off
-  
+
   # --- Sun triggers ---
   
   - platform: sun
@@ -351,7 +351,7 @@ trigger:
     event: sunset
     offset: !input sunset_offset
     id: sun_set
-  
+
   # --- Fixed off times ---
   
   - platform: time
@@ -380,9 +380,14 @@ variables:
   auto_off_night_var: !input auto_off_night
   fixed_off_weekdays_1_var: !input fixed_off_weekdays_1
   fixed_off_weekdays_2_var: !input fixed_off_weekdays_2
+  enable_failsafe_var: !input enable_failsafe
+  failsafe_timer_day_var: !input failsafe_timer_day
+  failsafe_timer_night_var: !input failsafe_timer_night
 
 action:
+  
   # --- Motion or switch ON ---
+  
   - choose:
       - conditions:
           - condition: or
@@ -418,6 +423,9 @@ action:
               {% set w = workday_sensor_var %}
               {% if w == [] %} true {% else %} {{ is_state(w[0], 'on') }} {% endif %}
         sequence:
+          
+          # --- Snapshot ---
+          
           - choose:
               - conditions:
                   - condition: template
@@ -427,6 +435,9 @@ action:
                     data:
                       scene_id: snapshot_before_on
                       snapshot_entities: "{{ main_lights_var }}"
+          
+          # --- Priority scene_day -> day_lights -> main_lights ---
+          
           - choose:
               - conditions:
                   - condition: template
@@ -449,6 +460,9 @@ action:
                   - service: light.turn_on
                     target:
                       entity_id: "{{ main_lights_var }}"
+          
+          # --- Save last scene ---
+          
           - choose:
               - conditions:
                   - condition: template
@@ -458,12 +472,15 @@ action:
                     data:
                       entity_id: "{{ last_scene_entity }}"
                       value: "day/night ON"
+          
+          # --- Logging ---
+          
           - service: logbook.log
             data:
               name: Motion Control
               message: "Day/night ON activated via motion or switch."
 
-  # --- Motion or switch OFF, with auto-off ignored if fixed off active ---
+  # --- Motion or switch OFF, respecting fixed off ---
   
   - choose:
       - conditions:
@@ -481,14 +498,12 @@ action:
                       {% set now_ts = now().timestamp() %}
                       {% set fo1 = fixed_off_time_1 %}
                       {% set fo2 = fixed_off_time_2 %}
-                      {% set fo1_ts = (fo1[0] if fo1 != [] else None) %}
-                      {% set fo2_ts = (fo2[0] if fo2 != [] else None) %}
                       {% set fo_active = 
-                        (fo1_ts is not none and now_ts < as_timestamp(fo1_ts)) or
-                        (fo2_ts is not none and now_ts < as_timestamp(fo2_ts))
+                        (fo1 != [] and now_ts < as_timestamp(fo1)) or
+                        (fo2 != [] and now_ts < as_timestamp(fo2))
                       %}
                       {{ fo_active }}
-                sequence: [] # Do nothing if fixed off is active
+                sequence: [] # Do nothing if fixed off active
               - default:
                   - delay:
                       minutes: "{{ auto_off_main_var }}"
@@ -513,7 +528,7 @@ action:
                         day lights off after {{ auto_off_day_var }} min,
                         night lights off after {{ auto_off_night_var }} min.
 
-  # --- Fixed off times with weekdays ---
+  # --- Fixed off times ---
   
   - choose:
       - conditions:
@@ -545,19 +560,22 @@ action:
               name: Motion Control
               message: "Fixed off time 2 executed."
 
-  # --- Failsafe ---
+  # --- Failsafe (separate day/night timers) ---
   
   - choose:
       - conditions:
           - condition: template
-            value_template: "{{ enable_failsafe }}"
+            value_template: "{{ enable_failsafe_var }}"
         sequence:
           - delay:
               minutes: >
-                {% if now().time() >= day_start | as_datetime and now().time() <= day_end | as_datetime %}
-                  {{ failsafe_timer_day }}
+                {% set now_time = now().time() %}
+                {% set day_start_dt = strptime(day_start, '%H:%M:%S').time() %}
+                {% set day_end_dt = strptime(day_end, '%H:%M:%S').time() %}
+                {% if day_start_dt <= now_time <= day_end_dt %}
+                  {{ failsafe_timer_day_var }}
                 {% else %}
-                  {{ failsafe_timer_night }}
+                  {{ failsafe_timer_night_var }}
                 {% endif %}
           - service: light.turn_on
             target:
