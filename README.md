@@ -8,16 +8,17 @@ Morning light awakens gently, evenings wrap you in cozy tones, and motion, lux, 
 
 Motion-Controlled Lighting 4.0 isn’t just an upgrade – it’s a full rewrite of your favorite automation, now smarter, safer, and more reliable:
 
-🚶 Motion – Trigger lights with one or multiple sensors
-🔘 Optional Switches – Manual override at your fingertips
-💡 Lux Awareness – Only turn on when it’s truly dark
-🌅 Sunrise/Sunset with offsets – Perfect timing, every day
-🎨 Day & Night Scenes – Set your moods with scenes or individual lights
-⏰ Dual Fixed Off-Times – Lights always turn off on schedule
-📅 Workday Awareness – Weekday/weekend differences built-in
-🛡️ Failsafe Protection – Maximum runtime control for peace of mind
-📸 Snapshots – Preserve your preferred light states before activating
+🚶 Motion – Trigger lights with one or multiple sensors  
+🔘 Optional Switches – Manual override at your fingertips  
+💡 Lux Awareness – Only turn on when it’s truly dark  
+🌅 Sunrise/Sunset with offsets – Perfect timing, every day  
+🎨 Day & Night Scenes – Set your moods with scenes or individual lights  
+⏰ Dual Fixed Off-Times – Lights always turn off on schedule  
+📅 Workday Awareness – Weekday/weekend differences built-in  
+🛡️ Failsafe Protection – Maximum runtime control for peace of mind  
+📸 Snapshots – Preserve your preferred light states before activating  
 📝 Logging – Keep track of every action
+
 
 …and every feature is fully optional. You set the rhythm. You set the mood.
 
