@@ -1,5 +1,5 @@
 blueprint:
-  name: Motion-Controlled Lighting 4.5 – Full Failsafe & Day/Night
+  name: Motion-Controlled Lighting 4.6 – Full Failsafe & Day/Night
   description: >
     Motion-controlled lighting with day/night, scenes, lux, sunrise/sunset,
     workday, failsafe (separate day/night timers), fixed off times (with weekdays),
@@ -303,6 +303,7 @@ blueprint:
           unit_of_measurement: min
           mode: box
 
+# --- Triggers ---
 trigger:
   - platform: state
     entity_id: !input motion_sensors
@@ -337,6 +338,7 @@ trigger:
 
 mode: restart
 
+# --- Variables ---
 variables:
   main_lights_var: !input main_lights
   day_lights_var: !input day_lights
@@ -363,8 +365,11 @@ variables:
   failsafe_timer_day_var: !input failsafe_timer_day
   failsafe_timer_night_var: !input failsafe_timer_night
 
+# --- Actions ---
 action:
+  
   # --- Motion or switch ON ---
+  
   - choose:
       - conditions:
           - condition: or
@@ -402,6 +407,7 @@ action:
         sequence:
           
           # --- Snapshot ---
+          
           - choose:
               - conditions:
                   - condition: template
@@ -413,6 +419,7 @@ action:
                       snapshot_entities: "{{ main_lights_var }}"
           
           # --- Scene priority: scene_day -> day_lights -> main_lights ---
+          
           - choose:
               - conditions:
                   - condition: template
@@ -437,6 +444,7 @@ action:
                       entity_id: "{{ main_lights_var }}"
           
           # --- Save last scene ---
+          
           - choose:
               - conditions:
                   - condition: template
@@ -448,12 +456,14 @@ action:
                       value: "day/night ON"
           
           # --- Logging ---
+          
           - service: logbook.log
             data:
               name: Motion Control
               message: "Day/night ON activated via motion or switch."
 
   # --- Motion or switch OFF, respecting fixed off ---
+  
   - choose:
       - conditions:
           - condition: or
@@ -501,6 +511,7 @@ action:
                     night lights off after {{ auto_off_night_var }} min.
 
   # --- Fixed off times ---
+  
   - choose:
       - conditions:
           - condition: trigger
@@ -532,6 +543,7 @@ action:
               message: "Fixed off time 2 executed."
 
   # --- Failsafe (separate day/night timers, only active lights) ---
+  
   - choose:
       - conditions:
           - condition: template
@@ -548,7 +560,9 @@ action:
                   {{ failsafe_timer_night_var }}
                 {% endif %}
           - choose:
+              
               # --- Failsafe day ---
+              
               - conditions:
                   - condition: template
                     value_template: >
@@ -568,6 +582,7 @@ action:
                         Failsafe day executed; all active main/day lights off after {{ failsafe_timer_day_var }} min.
               
               # --- Failsafe night ---
+              
               - conditions:
                   - condition: template
                     value_template: >
