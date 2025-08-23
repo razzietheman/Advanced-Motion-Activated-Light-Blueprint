@@ -172,12 +172,14 @@ blueprint:
 
     day_end:
       name: Day End
+      description: "Day end cannot be the same as Night start. Example: 22:00:00"
       default: "22:00:00"
       selector:
         time: {}
 
     night_start:
       name: Night Start
+      description: "Day end cannot be the same as Night start. Example: 22:00:00"
       default: "22:00:01"
       selector:
         time: {}
