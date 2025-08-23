@@ -1,4 +1,4 @@
-# 🌟 Motion-Controlled Lighting 4.0 – The Next-Level Light Maestro 🌟
+# 🌟 Motion-Controlled Lighting 4.8 – The Next-Level Light Maestro 🌟
 
 # ✨ Welcome to the Smartest, Most Flexible Home Yet
 
@@ -6,7 +6,7 @@ Imagine this:
 You enter a room, and your lights already know what you want.
 Morning light awakens gently, evenings wrap you in cozy tones, and motion, lux, sun, and schedule all work in perfect harmony.
 
-Motion-Controlled Lighting 4.0 isn’t just an upgrade – it’s a full rewrite of your favorite automation, now smarter, safer, and more reliable:
+Motion-Controlled Lighting 4.8 isn’t just an upgrade – it’s a full rewrite of your favorite automation, now smarter, safer, and more reliable:
 
 🚶 Motion – Trigger lights with one or multiple sensors  
 🔘 Optional Switches – Manual override at your fingertips  
