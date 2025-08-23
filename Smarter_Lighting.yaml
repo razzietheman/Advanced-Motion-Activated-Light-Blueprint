@@ -33,17 +33,20 @@ blueprint:
         target:
           entity:
             domain: light
+    
+    auto_off_main:
+      name: Main Lights Duration (minutes)
+      default: 10
+      selector:
+        number:
+          min: 1
+          max: 120
+          step: 1
+          unit_of_measurement: min
+          mode: box
 
     scene_day:
       name: Day Scene
-      default: []
-      selector:
-        entity:
-          domain: scene
-          multiple: false
-
-    scene_night:
-      name: Night Scene
       default: []
       selector:
         entity:
@@ -57,6 +60,25 @@ blueprint:
         target:
           entity:
             domain: light
+    
+    auto_off_day:
+      name: Day Lights Duration (minutes)
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 120
+          step: 1
+          unit_of_measurement: min
+          mode: box
+
+    scene_night:
+      name: Night Scene
+      default: []
+      selector:
+        entity:
+          domain: scene
+          multiple: false
 
     night_lights:
       name: Night Lights
@@ -65,7 +87,18 @@ blueprint:
         target:
           entity:
             domain: light
-
+            
+    auto_off_night:
+      name: Night Lights Duration (minutes)
+      default: 1
+      selector:
+        number:
+          min: 1
+          max: 120
+          step: 1
+          unit_of_measurement: min
+          mode: box
+          
     # --- Lux & Sun ---
     
     lux_sensor:
@@ -177,19 +210,6 @@ blueprint:
       selector:
         time: {}
 
-    night_start:
-      name: Night Start
-      description: "Night start cannot be the same as Day end. Example: 22:00:01"
-      default: "22:00:01"
-      selector:
-        time: {}
-
-    night_end:
-      name: Night End
-      default: "07:00:00"
-      selector:
-        time: {}
-
     active_weekdays_day:
       name: Active Weekdays (Day)
       default: []
@@ -211,6 +231,19 @@ blueprint:
               value: sat
             - label: Sunday
               value: sun
+              
+    night_start:
+      name: Night Start
+      description: "Night start cannot be the same as Day end. Example: 22:00:01"
+      default: "22:00:01"
+      selector:
+        time: {}
+
+    night_end:
+      name: Night End
+      default: "07:00:00"
+      selector:
+        time: {}
 
     active_weekdays_night:
       name: Active Weekdays (Night)
@@ -275,41 +308,6 @@ blueprint:
       selector:
         entity:
           domain: input_text
-
-    # --- Auto-Off Timers ---
-    
-    auto_off_main:
-      name: Main Lights Duration (minutes)
-      default: 10
-      selector:
-        number:
-          min: 1
-          max: 120
-          step: 1
-          unit_of_measurement: min
-          mode: box
-
-    auto_off_day:
-      name: Day Lights Duration (minutes)
-      default: 5
-      selector:
-        number:
-          min: 1
-          max: 120
-          step: 1
-          unit_of_measurement: min
-          mode: box
-
-    auto_off_night:
-      name: Night Lights Duration (minutes)
-      default: 1
-      selector:
-        number:
-          min: 1
-          max: 120
-          step: 1
-          unit_of_measurement: min
-          mode: box
 
 # --- Triggers & Mode ---
 
