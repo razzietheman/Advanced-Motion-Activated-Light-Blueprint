@@ -1,5 +1,5 @@
 blueprint:
-  name: Motion-Controlled Lighting 4.9 – Robust Release with Correct LUX & Day/Night Failsafe
+  name: Motion-Controlled Lighting 4.10 – Stable release with improved GUI and descriptions for every entity, stable release
   description: >
     Motion-controlled lighting with day/night, scenes, lux threshold, sunrise/sunset offsets,
     workday sensor, failsafe timers, fixed off-times, snapshots, and logging. Auto-off timers run only if no fixed off-time is active.
@@ -10,6 +10,7 @@ blueprint:
     
     motion_sensors:
       name: Motion Sensor(s)
+      description: "Sensor measuring brightness (lux) to control when lights should turn on."
       default: []
       selector:
         entity:
@@ -18,6 +19,7 @@ blueprint:
 
     optional_switches:
       name: Optional Manual Switch
+      description: "Optional smart switches or outlets that can also control the lights."
       default: []
       selector:
         entity:
@@ -28,6 +30,7 @@ blueprint:
     
     main_lights:
       name: Main Lights
+      description: "Lights that should always turn on when motion is detected, regardless of day/night."
       default: []
       selector:
         target:
@@ -36,6 +39,7 @@ blueprint:
     
     auto_off_main:
       name: Main Lights Duration (minutes)
+      description: "Duration in minutes for how long the main lights should stay on after the last motion."
       default: 10
       selector:
         number:
@@ -47,6 +51,7 @@ blueprint:
 
     scene_day:
       name: Day Scene
+      description: "Scene to activate during daytime (if set)."
       default: []
       selector:
         entity:
@@ -55,6 +60,7 @@ blueprint:
 
     day_lights:
       name: Day Lights
+      description: "Lights that should only turn on during the day."
       default: []
       selector:
         target:
@@ -63,6 +69,7 @@ blueprint:
     
     auto_off_day:
       name: Day Lights Duration (minutes)
+      description: "Duration in minutes for how long day lights should stay on after the last motion."
       default: 5
       selector:
         number:
@@ -74,6 +81,7 @@ blueprint:
 
     scene_night:
       name: Night Scene
+      description: "Scene to activate during nighttime (if set)."
       default: []
       selector:
         entity:
@@ -82,6 +90,7 @@ blueprint:
 
     night_lights:
       name: Night Lights
+      description: "Lights that should only turn on during the night."
       default: []
       selector:
         target:
@@ -90,6 +99,7 @@ blueprint:
             
     auto_off_night:
       name: Night Lights Duration (minutes)
+      description: "Duration in minutes for how long night lights should stay on after the last motion."
       default: 1
       selector:
         number:
@@ -103,6 +113,7 @@ blueprint:
     
     lux_sensor:
       name: Lux Sensor
+      description: "Sensor measuring brightness (lux) to control when lights should turn on."
       default: []
       selector:
         entity:
@@ -111,6 +122,7 @@ blueprint:
 
     lux_threshold:
       name: Lux Threshold
+      description: "Lights will only turn on if the measured lux is below this threshold."
       default: 50
       selector:
         number:
@@ -121,18 +133,21 @@ blueprint:
 
     use_sun_times:
       name: Use Sunrise/Sunset Times
+      description: "Enable to use sunrise and sunset times instead of fixed hours."
       default: false
       selector:
         boolean: {}
 
     sunrise_offset:
       name: Sunrise Offset
+      description: "Time adjustment for sunrise (earlier or later)."
       default: "00:00:00"
       selector:
         time: {}
 
     sunset_offset:
       name: Sunset Offset
+      description: "Time adjustment for sunset (earlier or later)."
       default: "00:00:00"
       selector:
         time: {}
@@ -141,12 +156,14 @@ blueprint:
     
     fixed_off_time_1:
       name: Fixed Off-Time 1
+      description: "Time when lights or smart plugs are automatically turned off."
       default: []
       selector:
         time: {}
 
     fixed_off_weekdays_1:
       name: Active Weekdays (Off-Time 1)
+      description: "Select weekdays when Off-Time 1 should be active."
       default: []
       selector:
         select:
@@ -169,12 +186,14 @@ blueprint:
 
     fixed_off_time_2:
       name: Fixed Off-Time 2
+      description: "Time when lights or smart plugs are automatically turned off."
       default: []
       selector:
         time: {}
 
     fixed_off_weekdays_2:
       name: Active Weekdays (Off-Time 2)
+      description: "Select weekdays when Off-Time 2 should be active."
       default: []
       selector:
         select:
@@ -199,19 +218,21 @@ blueprint:
     
     day_start:
       name: Day Start
+      description: "Time when daytime mode is activated."
       default: "07:00:00"
       selector:
         time: {}
 
     day_end:
       name: Day End
-      description: "Day end cannot be the same as Night start. Example: 22:00:00"
+      description: "Time when daytime mode ends. Cannot be same as Night Start. Example: 22:00:00"
       default: "22:00:00"
       selector:
         time: {}
 
     active_weekdays_day:
       name: Active Weekdays (Day)
+      description: "Select weekdays when daytime mode should be active."
       default: []
       selector:
         select:
@@ -234,19 +255,21 @@ blueprint:
               
     night_start:
       name: Night Start
-      description: "Night start cannot be the same as Day end. Example: 22:00:01"
+      description: "Time when night mode starts. Cannot be same as Day End. Example: 22:00:01"
       default: "22:00:01"
       selector:
         time: {}
 
     night_end:
       name: Night End
+      description: "Time when night mode ends."
       default: "07:00:00"
       selector:
         time: {}
 
     active_weekdays_night:
       name: Active Weekdays (Night)
+      description: "Select weekdays when night mode should be active."
       default: []
       selector:
         select:
@@ -271,6 +294,7 @@ blueprint:
     
     workday_sensor:
       name: Workday Sensor
+      description: "Sensor indicating workdays. Used to activate daytime mode only on workdays."
       default: []
       selector:
         entity:
@@ -278,12 +302,14 @@ blueprint:
 
     enable_failsafe:
       name: Enable Failsafe
+      description: "Enable failsafe function that automatically turns off lights if auto-off fails."
       default: true
       selector:
         boolean: {}
 
     failsafe_timer_day:
       name: Failsafe Timer Day (minutes)
+      description: "Number of minutes before day lights are automatically turned off if auto-off did not trigger."
       default: 15
       selector:
         number:
@@ -294,6 +320,7 @@ blueprint:
 
     failsafe_timer_night:
       name: Failsafe Timer Night (minutes)
+      description: "Number of minutes before night lights are automatically turned off if auto-off did not trigger."
       default: 15
       selector:
         number:
@@ -304,6 +331,7 @@ blueprint:
 
     input_text_last_scene:
       name: Input Text – Last Scene
+      description: "Input Text entity that stores the name of the last active scene."
       default: []
       selector:
         entity:
@@ -546,7 +574,7 @@ action:
           - condition: trigger
             id: fixed_off_1
           - condition: template
-            value_template: "{{ now().strftime('%a').lower() in fixed_off_weekdays_1_var }}"
+            value_template: "{{ workday_sensor_var == [] or is_state(workday_sensor_var[0], 'on') }}"
         sequence:
           - service: light.turn_off
             target:
@@ -555,11 +583,12 @@ action:
             data:
               name: Motion Control
               message: "Fixed Off-Time 1 executed."
+              
       - conditions:
           - condition: trigger
             id: fixed_off_2
           - condition: template
-            value_template: "{{ now().strftime('%a').lower() in fixed_off_weekdays_2_var }}"
+            value_template: "{{ workday_sensor_var != [] and not is_state(workday_sensor_var[0], 'on') }}"
         sequence:
           - service: light.turn_off
             target:
