@@ -1,8 +1,9 @@
 blueprint:
-  name: Motion-Controlled Lighting 4.10 – Stable release with improved GUI and descriptions for every entity, stable release
+  name: Motion-Controlled Lighting 4.11 – Stable release with improved GUI and descriptions for each input, better failsafe-logic , stable release
   description: >
-    Motion-controlled lighting with day/night, scenes, lux threshold, sunrise/sunset offsets,
-    workday sensor, failsafe timers, fixed off-times, snapshots, and logging. Auto-off timers run only if no fixed off-time is active.
+    Motion-controlled lighting with day/night, scenes, lux, sunrise/sunset,
+    workday sensor, failsafe (separate day/night), fixed off-times (with weekdays),
+    snapshots, and logging. Auto-off timers run only if no fixed off-time is active.
   domain: automation
   input:
 
@@ -10,7 +11,7 @@ blueprint:
     
     motion_sensors:
       name: Motion Sensor(s)
-      description: "Sensor measuring brightness (lux) to control when lights should turn on."
+      description: "One or more motion sensors that control the lighting."
       default: []
       selector:
         entity:
@@ -19,7 +20,7 @@ blueprint:
 
     optional_switches:
       name: Optional Manual Switch
-      description: "Optional smart switches or outlets that can also control the lights."
+      description: "Optional smart switches or outlets that can control the lights/devices."
       default: []
       selector:
         entity:
@@ -30,7 +31,7 @@ blueprint:
     
     main_lights:
       name: Main Lights
-      description: "Lights that should always turn on when motion is detected, regardless of day/night."
+      description: "Lights that always turn on when motion is detected (day or night)."
       default: []
       selector:
         target:
@@ -39,7 +40,7 @@ blueprint:
     
     auto_off_main:
       name: Main Lights Duration (minutes)
-      description: "Duration in minutes for how long the main lights should stay on after the last motion."
+      description: "How long the main lights should stay on after the last motion."
       default: 10
       selector:
         number:
@@ -51,7 +52,7 @@ blueprint:
 
     scene_day:
       name: Day Scene
-      description: "Scene to activate during daytime (if set)."
+      description: "Scene activated during daytime (if selected)."
       default: []
       selector:
         entity:
@@ -60,7 +61,7 @@ blueprint:
 
     day_lights:
       name: Day Lights
-      description: "Lights that should only turn on during the day."
+      description: "Lights that only turn on during daytime."
       default: []
       selector:
         target:
@@ -69,7 +70,7 @@ blueprint:
     
     auto_off_day:
       name: Day Lights Duration (minutes)
-      description: "Duration in minutes for how long day lights should stay on after the last motion."
+      description: "How long day lights should stay on after the last motion."
       default: 5
       selector:
         number:
@@ -81,7 +82,7 @@ blueprint:
 
     scene_night:
       name: Night Scene
-      description: "Scene to activate during nighttime (if set)."
+      description: "Scene activated during night-time (if selected)."
       default: []
       selector:
         entity:
@@ -90,7 +91,7 @@ blueprint:
 
     night_lights:
       name: Night Lights
-      description: "Lights that should only turn on during the night."
+      description: "Lights that only turn on during night-time."
       default: []
       selector:
         target:
@@ -99,7 +100,7 @@ blueprint:
             
     auto_off_night:
       name: Night Lights Duration (minutes)
-      description: "Duration in minutes for how long night lights should stay on after the last motion."
+      description: "How long night lights should stay on after the last motion."
       default: 1
       selector:
         number:
@@ -108,12 +109,12 @@ blueprint:
           step: 1
           unit_of_measurement: min
           mode: box
-          
+
     # --- Lux & Sun ---
     
     lux_sensor:
       name: Lux Sensor
-      description: "Sensor measuring brightness (lux) to control when lights should turn on."
+      description: "Sensor that measures illuminance (lux)."
       default: []
       selector:
         entity:
@@ -122,7 +123,7 @@ blueprint:
 
     lux_threshold:
       name: Lux Threshold
-      description: "Lights will only turn on if the measured lux is below this threshold."
+      description: "Lights will only turn on if the lux value is below this threshold."
       default: 50
       selector:
         number:
@@ -133,21 +134,21 @@ blueprint:
 
     use_sun_times:
       name: Use Sunrise/Sunset Times
-      description: "Enable to use sunrise and sunset times instead of fixed hours."
+      description: "Enable to use sun times instead of fixed times."
       default: false
       selector:
         boolean: {}
 
     sunrise_offset:
       name: Sunrise Offset
-      description: "Time adjustment for sunrise (earlier or later)."
+      description: "Adjust the sunrise time earlier or later."
       default: "00:00:00"
       selector:
         time: {}
 
     sunset_offset:
       name: Sunset Offset
-      description: "Time adjustment for sunset (earlier or later)."
+      description: "Adjust the sunset time earlier or later."
       default: "00:00:00"
       selector:
         time: {}
@@ -156,14 +157,14 @@ blueprint:
     
     fixed_off_time_1:
       name: Fixed Off-Time 1
-      description: "Time when lights or smart plugs are automatically turned off."
+      description: "Time when lights or smart switches automatically turn off."
       default: []
       selector:
         time: {}
 
     fixed_off_weekdays_1:
       name: Active Weekdays (Off-Time 1)
-      description: "Select weekdays when Off-Time 1 should be active."
+      description: "Weekdays when Fixed Off-Time 1 is active."
       default: []
       selector:
         select:
@@ -186,14 +187,14 @@ blueprint:
 
     fixed_off_time_2:
       name: Fixed Off-Time 2
-      description: "Time when lights or smart plugs are automatically turned off."
+      description: "Time when lights or smart switches automatically turn off."
       default: []
       selector:
         time: {}
 
     fixed_off_weekdays_2:
       name: Active Weekdays (Off-Time 2)
-      description: "Select weekdays when Off-Time 2 should be active."
+      description: "Weekdays when Fixed Off-Time 2 is active."
       default: []
       selector:
         select:
@@ -218,21 +219,21 @@ blueprint:
     
     day_start:
       name: Day Start
-      description: "Time when daytime mode is activated."
+      description: "Time when daytime mode activates."
       default: "07:00:00"
       selector:
         time: {}
 
     day_end:
       name: Day End
-      description: "Time when daytime mode ends. Cannot be same as Night Start. Example: 22:00:00"
+      description: "Day end cannot be the same as Night start. Example: 22:00:00"
       default: "22:00:00"
       selector:
         time: {}
 
     active_weekdays_day:
       name: Active Weekdays (Day)
-      description: "Select weekdays when daytime mode should be active."
+      description: "Select weekdays when daytime mode is active."
       default: []
       selector:
         select:
@@ -255,21 +256,21 @@ blueprint:
               
     night_start:
       name: Night Start
-      description: "Time when night mode starts. Cannot be same as Day End. Example: 22:00:01"
+      description: "Night start cannot be the same as Day end. Example: 22:00:01"
       default: "22:00:01"
       selector:
         time: {}
 
     night_end:
       name: Night End
-      description: "Time when night mode ends."
+      description: "Time when night mode deactivates."
       default: "07:00:00"
       selector:
         time: {}
 
     active_weekdays_night:
       name: Active Weekdays (Night)
-      description: "Select weekdays when night mode should be active."
+      description: "Select weekdays when night mode is active."
       default: []
       selector:
         select:
@@ -294,7 +295,7 @@ blueprint:
     
     workday_sensor:
       name: Workday Sensor
-      description: "Sensor indicating workdays. Used to activate daytime mode only on workdays."
+      description: "Sensor that indicates workdays. Used to select which fixed off-time applies."
       default: []
       selector:
         entity:
@@ -302,14 +303,14 @@ blueprint:
 
     enable_failsafe:
       name: Enable Failsafe
-      description: "Enable failsafe function that automatically turns off lights if auto-off fails."
+      description: "Enable failsafe to turn off lights if auto-off did not trigger."
       default: true
       selector:
         boolean: {}
 
     failsafe_timer_day:
       name: Failsafe Timer Day (minutes)
-      description: "Number of minutes before day lights are automatically turned off if auto-off did not trigger."
+      description: "Minutes before day lights are forcibly turned off if auto-off fails."
       default: 15
       selector:
         number:
@@ -320,7 +321,7 @@ blueprint:
 
     failsafe_timer_night:
       name: Failsafe Timer Night (minutes)
-      description: "Number of minutes before night lights are automatically turned off if auto-off did not trigger."
+      description: "Minutes before night lights are forcibly turned off if auto-off fails."
       default: 15
       selector:
         number:
@@ -331,21 +332,19 @@ blueprint:
 
     input_text_last_scene:
       name: Input Text – Last Scene
-      description: "Input Text entity that stores the name of the last active scene."
+      description: "Input Text entity to save the name of the last active scene."
       default: []
       selector:
         entity:
           domain: input_text
 
-# --- Triggers & Mode ---
+# --- Triggers and mode ---
 
 trigger:
   - platform: state
     entity_id: !input motion_sensors
-    id: motion_on
   - platform: state
     entity_id: !input optional_switches
-    id: switch_on
   - platform: sun
     event: sunrise
     offset: !input sunrise_offset
@@ -354,10 +353,8 @@ trigger:
     offset: !input sunset_offset
   - platform: time
     at: !input fixed_off_time_1
-    id: fixed_off_1
   - platform: time
     at: !input fixed_off_time_2
-    id: fixed_off_2
 
 mode: restart
 
@@ -390,8 +387,6 @@ variables:
   failsafe_timer_night_var: !input failsafe_timer_night
 
 condition: []
-
-# --- Actions ---
 
 action:
 
@@ -429,150 +424,21 @@ action:
           - condition: template
             value_template: >
               {% if workday_sensor_var == [] %} true
-              {% else %} {{ is_state(workday_sensor_var[0],'on') }} {% endif %}
+              {% else %} is_state(workday_sensor_var[0],'on') {% endif %}
         sequence:
-
-          # --- Snapshot ---
-          
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: "{{ main_lights_var | length > 0 }}"
-                sequence:
-                  - service: scene.create
-                    data:
-                      scene_id: snapshot_before_on
-                      snapshot_entities: "{{ main_lights_var }}"
-
-          # --- Day Scene ---
-          
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: >
-                      {% set t = now().time() %}
-                      {% set start = strptime(day_start_var, '%H:%M:%S').time() %}
-                      {% set end = strptime(day_end_var, '%H:%M:%S').time() %}
-                      {% if start <= end %} {{ t >= start and t <= end }}
-                      {% else %} {{ t >= start or t <= end }} {% endif %}
-                sequence:
-                  - choose:
-                      - conditions:
-                          - condition: template
-                            value_template: "{{ scene_day_var | length > 0 }}"
-                        sequence:
-                          - service: scene.turn_on
-                            target:
-                              entity_id: "{{ scene_day_var[0] }}"
-                      - conditions:
-                          - condition: template
-                            value_template: "{{ day_lights_var | length > 0 }}"
-                        sequence:
-                          - service: light.turn_on
-                            target:
-                              entity_id: "{{ day_lights_var }}"
-                      - conditions:
-                          - condition: template
-                            value_template: "{{ main_lights_var | length > 0 }}"
-                        sequence:
-                          - service: light.turn_on
-                            target:
-                              entity_id: "{{ main_lights_var }}"
-
-          # --- Night Scene ---
-          
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: >
-                      {% set t = now().time() %}
-                      {% set start = strptime(night_start_var, '%H:%M:%S').time() %}
-                      {% set end = strptime(night_end_var, '%H:%M:%S').time() %}
-                      {% if start <= end %} {{ t >= start and t <= end }}
-                      {% else %} {{ t >= start or t <= end }} {% endif %}
-                sequence:
-                  - choose:
-                      - conditions:
-                          - condition: template
-                            value_template: "{{ scene_night_var | length > 0 }}"
-                        sequence:
-                          - service: scene.turn_on
-                            target:
-                              entity_id: "{{ scene_night_var[0] }}"
-                      - conditions:
-                          - condition: template
-                            value_template: "{{ night_lights_var | length > 0 }}"
-                        sequence:
-                          - service: light.turn_on
-                            target:
-                              entity_id: "{{ night_lights_var }}"
-                      - conditions:
-                          - condition: template
-                            value_template: "{{ main_lights_var | length > 0 }}"
-                        sequence:
-                          - service: light.turn_on
-                            target:
-                              entity_id: "{{ main_lights_var }}"
-
-          # --- Save Last Scene ---
-          
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: "{{ last_scene_entity | length > 0 }}"
-                sequence:
-                  - service: input_text.set_value
-                    data:
-                      entity_id: "{{ last_scene_entity[0] }}"
-                      value: "day/night ON"
-
-          # --- Logging ---
-          
-          - service: logbook.log
-            data:
-              name: Motion Control
-              message: "Day/night ON triggered by motion or switch."
-
-  # --- Motion / Switch OFF with Auto-Off ---
-  
-  - choose:
-      - conditions:
-          - condition: or
-            conditions:
-              - condition: trigger
-                id: motion_off
-              - condition: trigger
-                id: switch_off
-        sequence:
-          - delay:
-              minutes: "{{ auto_off_main_var }}"
-          - service: light.turn_off
+          - service: light.turn_on
             target:
-              entity_id: "{{ main_lights_var }}"
-          - delay:
-              minutes: "{{ auto_off_day_var }}"
-          - service: light.turn_off
+              entity_id: "{{ main_lights_var + day_lights_var }}"
+          - service: scene.turn_on
             target:
-              entity_id: "{{ day_lights_var }}"
-          - delay:
-              minutes: "{{ auto_off_night_var }}"
-          - service: light.turn_off
-            target:
-              entity_id: "{{ night_lights_var }}"
-          - service: logbook.log
-            data:
-              name: Motion Control
-              message: >
-                Auto-off completed: Main lights {{ auto_off_main_var }} min,
-                Day lights {{ auto_off_day_var }} min,
-                Night lights {{ auto_off_night_var }} min.
+              entity_id: "{{ scene_day_var }}"
 
-  # --- Fixed Off-Times ---
+  # --- Fixed Off-Times with Workday Sensor ---
   
   - choose:
       - conditions:
           - condition: trigger
-            id: fixed_off_1
+            id: fixed_off_time_1
           - condition: template
             value_template: "{{ workday_sensor_var == [] or is_state(workday_sensor_var[0], 'on') }}"
         sequence:
@@ -581,12 +447,12 @@ action:
               entity_id: "{{ main_lights_var + day_lights_var + night_lights_var }}"
           - service: logbook.log
             data:
-              name: Motion Control
+              name: Motion Lighting
               message: "Fixed Off-Time 1 executed."
-              
+
       - conditions:
           - condition: trigger
-            id: fixed_off_2
+            id: fixed_off_time_2
           - condition: template
             value_template: "{{ workday_sensor_var != [] and not is_state(workday_sensor_var[0], 'on') }}"
         sequence:
@@ -595,7 +461,7 @@ action:
               entity_id: "{{ main_lights_var + day_lights_var + night_lights_var }}"
           - service: logbook.log
             data:
-              name: Motion Control
+              name: Motion Lighting
               message: "Fixed Off-Time 2 executed."
 
   # --- Failsafe Day/Night ---
@@ -607,8 +473,8 @@ action:
         sequence:
           - variables:
               failsafe_types:
-                - { name: "day", timer: failsafe_timer_day_var, lights: day_lights_var + main_lights_var }
-                - { name: "night", timer: failsafe_timer_night_var, lights: night_lights_var + main_lights_var }
+                - { name: "day", timer: failsafe_timer_day_var, lights: day_lights_var + main_lights_var, auto_off: auto_off_day_var }
+                - { name: "night", timer: failsafe_timer_night_var, lights: night_lights_var + main_lights_var, auto_off: auto_off_night_var }
           - repeat:
               count: "{{ failsafe_types | length }}"
               sequence:
@@ -620,15 +486,23 @@ action:
                     - conditions:
                         - condition: template
                           value_template: >
-                            {% set motion_ok = motion_sensors | length > 0 and is_state(motion_sensors[0], 'off') %}
-                            {% set motion_missing = motion_sensors | length == 0 %}
-                            {{ motion_ok or motion_missing }}
+                            {% set lights_on = fs.lights | select('state','on') | list %}
+                            {% if lights_on | length == 0 %}
+                              false
+                            {% else %}
+                              {% if motion_sensors | length == 0 %}
+                                true
+                              {% else %}
+                                {% set all_off = motion_sensors | map('states') | select('equalto','off') | list | length == motion_sensors | length %}
+                                {{ all_off }}
+                              {% endif %}
+                            {% endif %}
                       sequence:
                         - service: light.turn_off
                           target:
                             entity_id: "{{ fs.lights }}"
                         - service: logbook.log
                           data:
-                            name: Motion Control
+                            name: Motion Lighting
                             message: >
-                              Failsafe {{ fs.name }}: Lights turned off after {{ fs.timer }} min without motion or sensor missing.
+                              Failsafe {{ fs.name }}: Lights turned off after {{ fs.timer }} min, all sensors off and auto-off timers elapsed.
