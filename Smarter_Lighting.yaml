@@ -343,18 +343,24 @@ blueprint:
 trigger:
   - platform: state
     entity_id: !input motion_sensors
+    id: motion_on
   - platform: state
     entity_id: !input optional_switches
+    id: switch_on
   - platform: sun
     event: sunrise
     offset: !input sunrise_offset
+    id: sunrise_trigger
   - platform: sun
     event: sunset
     offset: !input sunset_offset
+    id: sunset_trigger
   - platform: time
     at: !input fixed_off_time_1
+    id: fixed_off_time_1_trigger
   - platform: time
     at: !input fixed_off_time_2
+    id: fixed_off_time_2_trigger
 
 mode: restart
 
