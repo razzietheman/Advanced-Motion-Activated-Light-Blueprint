@@ -1,5 +1,5 @@
 blueprint: 
-  name: Motion-Controlled Lighting 5.0 – Patched with Full Functionality, Improved GUI, and Failsafe Features
+  name: Motion-Controlled Lighting 5.1 – Patched Failsafe Features
   description: >
     Motion-controlled lighting with day/night, scenes, lux, sunrise/sunset,
     workday, failsafe (separate day/night), fixed off times (with weekdays),
@@ -41,7 +41,7 @@ blueprint:
     auto_off_main:
       name: Main Lights Duration (minutes)
       description: "How long the main lights should stay on after the last motion."
-      default: 10
+      default: []
       selector:
         number:
           min: 0
@@ -71,7 +71,7 @@ blueprint:
     auto_off_day:
       name: Day Lights Duration (minutes)
       description: "How long the day lights should stay on after the last motion."
-      default: 5
+      default: []
       selector:
         number:
           min: 0
@@ -101,7 +101,7 @@ blueprint:
     auto_off_night:
       name: Night Lights Duration (minutes)
       description: "How long the night lights should stay on after the last motion."
-      default: 1
+      default: []
       selector:
         number:
           min: 0
