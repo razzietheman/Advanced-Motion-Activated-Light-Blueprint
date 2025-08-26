@@ -311,7 +311,7 @@ blueprint:
     failsafe_timer_main:
       name: Failsafe Timer Main Lights (minutes)
       description: "Number of minutes before main lights automatically turn off if auto-off did not trigger as expected."
-      default: 20
+      default: []
       selector:
         number:
           min: 1
@@ -322,7 +322,7 @@ blueprint:
     failsafe_timer_day:
       name: Failsafe Timer Day Lights (minutes)
       description: "Number of minutes before day lights automatically turn off if auto-off did not trigger as expected."
-      default: 15
+      default: []
       selector:
         number:
           min: 1
@@ -333,7 +333,7 @@ blueprint:
     failsafe_timer_night:
       name: Failsafe Timer Night Lights (minutes)
       description: "Number of minutes before night lights automatically turn off if auto-off did not trigger as expected."
-      default: 10
+      default: []
       selector:
         number:
           min: 1
