@@ -1,5 +1,5 @@
 blueprint: 
-  name: Motion-Controlled Lighting 5.1 – Patched Failsafe Features
+  name: Motion-Controlled Lighting 5.1.1 – Patched Failsafe Features
   description: >
     Motion-controlled lighting with day/night, scenes, lux, sunrise/sunset,
     workday, failsafe (separate day/night), fixed off times (with weekdays),
@@ -128,7 +128,7 @@ blueprint:
       selector:
         number:
           min: 0
-          max: 1000
+          max: 3000
           step: 1
           unit_of_measurement: lx
 
