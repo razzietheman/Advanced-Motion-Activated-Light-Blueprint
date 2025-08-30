@@ -17,7 +17,7 @@ All features are optional, giving you full control over your home’s lighting r
 # 🚀 Highlights in 5.2
 
 - 🚶 **Motion Sensors** – lights react to one or multiple sensors  
-- 🔘 **Optional Switches** – manual override at your fingertips  
+- 🔘 **Optional Switches** – Optional smart plugs or switches that can control the lights/devices
 - 💡 **Lux Awareness** – only trigger when it’s truly dark  
 - 🌅 **Sunrise/Sunset with offsets** – perfect timing every day  
 - 🎨 **Day & Night Scenes** – mood settings for scenes or individual lights  
