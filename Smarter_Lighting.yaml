@@ -146,7 +146,7 @@ blueprint:
     lux_threshold:
       name: Lux Threshold
       description: "Lights only turn on if the lux value is below this threshold."
-      default: 150
+      default: []
       selector:
         number:
           min: 0
