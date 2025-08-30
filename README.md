@@ -1,54 +1,62 @@
-# 🌟 Motion-Controlled Lighting 5.0 – The Next-Level Light Maestro 🌟
+# 🌟 Motion-Controlled Lighting 5.2 – Smarter, Safer, More Alive 🌟
 
-# ✨ Welcome to the Smartest, Most Flexible Home Yet
+# ✨ Welcome to the Next-Level Smart Home
 
-Imagine this:
-You enter a room, and your lights already know what you want.
-Morning light awakens gently, evenings wrap you in cozy tones, and motion, lux, sun, and schedule all work in perfect harmony.
+Imagine a home that wakes up with you, follows the sun’s rhythm, and gently winds down on its own.  
+Motion-Controlled Lighting 5.2 is the next evolution of your favorite automation:
 
-Motion-Controlled Lighting 5.0 isn’t just an upgrade – it’s a full rewrite of your favorite automation, now smarter, safer, and more reliable:
+- **Improved failsafe** – turns off lights only if they’re still on, without conflicting with auto-off  
+- **Snapshots & state preservation** – save your preferred lighting before activation  
+- **Enhanced logging** – follow every action, change, and automation  
+- **Updated GUI** – clearer choices, smoother experience  
 
-🚶 Motion – Trigger lights with one or multiple sensors  
-🔘 Optional Switches – Manual override at your fingertips  
-💡 Lux Awareness – Only turn on when it’s truly dark  
-🌅 Sunrise/Sunset with offsets – Perfect timing, every day  
-🎨 Day & Night Scenes – Set your moods with scenes or individual lights  
-⏰ Dual Fixed Off-Times – Lights always turn off on schedule  
-📅 Workday Awareness – Weekday/weekend differences built-in  
-🛡️ Failsafe Protection – Maximum runtime control for peace of mind  
-📸 Snapshots – Preserve your preferred light states before activating  
-📝 Logging – Keep track of every action
+All features are optional, giving you full control over your home’s lighting rhythm and mood.
 
+---
+
+#🚀 Highlights in 5.2
+
+- 🚶 **Motion Sensors** – lights react to one or multiple sensors  
+- 🔘 **Optional Switches** – manual override at your fingertips  
+- 💡 **Lux Awareness** – only trigger when it’s truly dark  
+- 🌅 **Sunrise/Sunset with offsets** – perfect timing every day  
+- 🎨 **Day & Night Scenes** – mood settings for scenes or individual lights  
+- ⏰ **Dual Fixed Off-Times** – lights always turn off as scheduled  
+- 📅 **Workday Awareness** – different behavior on weekdays vs. weekends  
+- 🛡️ **Improved Failsafe** – automatic shutdown for peace of mind, only if lights are still on  
+- 📸 **Snapshots** – preserve preferred light states before activating  
+- 📝 **Logging** – track every action  
 
 …and every feature is fully optional. You set the rhythm. You set the mood.  
 
-# 🌅 Example Flows  
+# 🌅 Example Flows
+  
 # 🌄 Morning Glow – Rise and Shine  
 
-Weekday, 07:00. Motion triggers your gentle day scene.  
-If the sun is already up, natural light takes over – no wasted energy.
+Weekday, 07:00. Motion triggers your preferred day scene.  
+If sunlight is already bright, natural light takes over – zero wasted energy.
 
 
 # 🌞 Daytime Smartness
 
-Sunrise/sunset offsets ensure your lights match the season and daylight.
-Dual fixed off-times guarantee lights never stay on too long.
-Want a late evening on weekends? No problem.
+Sunrise/sunset offsets match the season and daylight.  
+Dual fixed off-times guarantee lights never stay on too long.  
+Late evenings on weekends? Fully configurable.
 
 # 🌙 Evening Cozy Mode
 
-Motion or a switch sets night mode: soft, relaxing light.
-Lights fade off after your chosen auto-off durations – calm, not abrupt.
+Motion or a manual switch triggers soft night lighting.  
+Lights fade out after your chosen auto-off durations – calm and natural.  
 
 # ⏰ Workday vs Weekend Magic
 
-Workday sensor integration makes your lighting routine-aware:
-Longer evening scenes on weekends, early shutoff on workdays.
+Workday sensor integration adjusts lighting routines:  
+longer, relaxed evenings on weekends; early shutoff on workdays.
 
 # 🛡️ Failsafe Protection
 
-Forgot the lights? Don’t worry.
-Failsafe ensures lights automatically turn off after the maximum runtime – now more robust and reliable than ever.  
+Forgot the lights? No worries.  
+Failsafe shuts lights off after max runtime, but only if they are still on – no conflicts with auto-off.
 
 ---
 
@@ -76,7 +84,7 @@ Failsafe ensures lights automatically turn off after the maximum runtime – now
 - ⚙️ Keep inputs blank for a simple setup – or customize every detail  
 - 🛡️ Enable failsafe for ultimate peace of mind  
 
-With **Motion-Controlled Lighting 5.0**, your home isn’t just smart – it’s _alive_. ✨
+With **Motion-Controlled Lighting 5.2**, your home isn’t just smart – it’s _alive_. ✨
 
 ---
 
