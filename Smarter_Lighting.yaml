@@ -1,5 +1,5 @@
 blueprint: 
-  name: Motion-Controlled Lighting 5.2.1 – Better Scene handling , Robust Failsafe & Day/Night Brightness
+  name: Motion-Controlled Lighting 5.2.2 – Better Scene handling , Robust Failsafe & Day/Night Brightness
   description: >
     Motion-controlled lighting with day/night, scenes, lux, sunrise/sunset,
     workday, failsafe (separate day/night), fixed off times (with weekdays),
