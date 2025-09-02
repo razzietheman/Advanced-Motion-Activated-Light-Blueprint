@@ -1,5 +1,5 @@
 blueprint:
-  name: Motion-Controlled Lighting 5.2.5 – Day/Night Off Scenes Added
+  name: Motion-Controlled Lighting 5.2.6 – Day/Night Off Scenes Added
   description: >
     Motion-controlled lighting with day/night, scenes, lux, sunrise/sunset,
     workday, failsafe (separate day/night), fixed off times (with weekdays),
@@ -651,7 +651,7 @@ action:
             data:
               name: Motion Control
               message: "Day/Night ON activated via motion or switch."
-  
+
   # --- Auto-off / Off Scene / Fixed Off / Failsafe ---
   
   - choose:
@@ -679,7 +679,7 @@ action:
                     value_template: "{{ auto_off_main_var | int > 0 }}"
                 sequence:
                   - delay:
-                      minutes: "{{ auto_off_main_var }}"
+                      minutes: "{{ auto_off_main_var | default(0) | int }}"
                   - service: light.turn_off
                     target:
                       entity_id: >
@@ -703,7 +703,7 @@ action:
                     value_template: "{{ auto_off_day_var | int > 0 }}"
                 sequence:
                   - delay:
-                      minutes: "{{ auto_off_day_var }}"
+                      minutes: "{{ auto_off_day_var | default(0) | int }}"
                   - choose:
                       - conditions:
                           - condition: template
@@ -743,7 +743,7 @@ action:
                     value_template: "{{ auto_off_night_var | int > 0 }}"
                 sequence:
                   - delay:
-                      minutes: "{{ auto_off_night_var }}"
+                      minutes: "{{ auto_off_night_var | default(0) | int }}"
                   - choose:
                       - conditions:
                           - condition: template
@@ -851,7 +851,7 @@ action:
                             value_template: "{{ main_lights_var | default('') != '' }}"
                         sequence:
                           - delay:
-                              minutes: "{{ failsafe_timer_main_var }}"
+                              minutes: "{{ failsafe_timer_main_var | default(0) | int }}"
                           - service: light.turn_off
                             target:
                               entity_id: >
@@ -875,7 +875,7 @@ action:
                             value_template: "{{ day_lights_var | default('') != '' }}"
                         sequence:
                           - delay:
-                              minutes: "{{ failsafe_timer_day_var }}"
+                              minutes: "{{ failsafe_timer_day_var | default(0) | int }}"
                           - choose:
                               - conditions:
                                   - condition: template
@@ -915,7 +915,7 @@ action:
                             value_template: "{{ night_lights_var | default('') != '' }}"
                         sequence:
                           - delay:
-                              minutes: "{{ failsafe_timer_night_var }}"
+                              minutes: "{{ failsafe_timer_night_var | default(0) | int }}"
                           - choose:
                               - conditions:
                                   - condition: template
