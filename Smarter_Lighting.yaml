@@ -1,12 +1,12 @@
-blueprint: 
-  name: Motion-Controlled Lighting 5.2.4 – Better Scene handling , Robust Failsafe & Day/Night Brightness
+blueprint:
+  name: Motion-Controlled Lighting 5.2.5 – Day/Night Off Scenes Added
   description: >
     Motion-controlled lighting with day/night, scenes, lux, sunrise/sunset,
     workday, failsafe (separate day/night), fixed off times (with weekdays),
-    snapshots, and logging. Auto-off times run only if no fixed off time is active.
+    snapshots, logging, and now with Off Scenes for Day and Night.
   domain: automation
   input:
-  
+
     # --- Sensors & Switches ---
   
     motion_sensors:
@@ -26,7 +26,7 @@ blueprint:
         entity:
           domain: switch
           multiple: true
-    
+
     # --- Lights & Scenes ---
     
     main_lights:
@@ -59,6 +59,15 @@ blueprint:
           domain: scene
           multiple: false
 
+    off_scene_day:
+      name: Off Scene Day
+      description: "Scene to activate when Day lights should turn off."
+      default: []
+      selector:
+        entity:
+          domain: scene
+          multiple: false
+    
     day_lights:
       name: Daytime Lights
       description: "Lights that should only turn on during the day."
@@ -100,6 +109,15 @@ blueprint:
           domain: scene
           multiple: false
 
+    off_scene_night:
+      name: Off Scene Night
+      description: "Scene to activate when Night lights should turn off."
+      default: []
+      selector:
+        entity:
+          domain: scene
+          multiple: false
+    
     night_lights:
       name: Night Lights
       description: "Lights that should only turn on during the night."
@@ -119,7 +137,7 @@ blueprint:
           max: 100
           step: 1
           unit_of_measurement: "%"
-    
+
     auto_off_night:
       name: Night Lights Duration (minutes)
       description: "How long the night lights should stay on after the last motion."
@@ -131,7 +149,7 @@ blueprint:
           step: 1
           unit_of_measurement: min
           mode: box
-    
+
     # --- Lux & Sun ---
     
     lux_sensor:
@@ -236,7 +254,7 @@ blueprint:
               value: sat
             - label: Sunday
               value: sun
-    
+
     # --- Time Settings ---
     
     day_start:
@@ -340,7 +358,7 @@ blueprint:
           max: 240
           step: 1
           unit_of_measurement: min
-    
+
     failsafe_timer_day:
       name: Failsafe Timer Day Lights (minutes)
       description: "Number of minutes before day lights automatically turn off if auto-off did not trigger as expected."
@@ -370,7 +388,7 @@ blueprint:
       selector:
         entity:
           domain: input_text
-          
+
 # --- Triggers ---
 
 trigger:
@@ -433,6 +451,8 @@ variables:
   brightness_night_var: !input brightness_night
   scene_day_var: !input scene_day
   scene_night_var: !input scene_night
+  off_scene_day_var: !input off_scene_day
+  off_scene_night_var: !input off_scene_night
   last_scene_entity: !input input_text_last_scene
   lux_sensor_var: !input lux_sensor
   lux_threshold_var: !input lux_threshold
@@ -631,9 +651,9 @@ action:
             data:
               name: Motion Control
               message: "Day/Night ON activated via motion or switch."
+              
+  # --- Auto-off / Off Scene / Fixed Off / Failsafe ---
 
-  # --- Auto-off / Fixed Off / Failsafe ---
-  
   - choose:
       - conditions:
           - condition: or
@@ -670,8 +690,12 @@ action:
                         {% elif main_lights_var is iterable %}
                           {{ main_lights_var | join(',') }}
                         {% endif %}
+                  - service: logbook.log
+                    data:
+                      name: Motion Control
+                      message: "Auto-off Main: Main lights turned off."
 
-          # --- Auto-off Day ---
+          # --- Auto-off Day / Off Scene ---
           
           - choose:
               - conditions:
@@ -683,15 +707,15 @@ action:
                   - choose:
                       - conditions:
                           - condition: template
-                            value_template: "{{ scene_day_var | default('') != '' }}"
+                            value_template: "{{ off_scene_day_var | default('') != '' }}"
                         sequence:
                           - service: scene.turn_on
                             target:
-                              entity_id: "{{ scene_day_var }}"
+                              entity_id: "{{ off_scene_day_var }}"
                           - service: logbook.log
                             data:
                               name: Motion Control
-                              message: "Auto-off Day: Day scene turned off."
+                              message: "Auto-off Day: Off Scene activated."
                       - conditions:
                           - condition: template
                             value_template: "{{ day_lights_var | default('') != '' }}"
@@ -711,7 +735,7 @@ action:
                               name: Motion Control
                               message: "Auto-off Day: Day lights turned off."
 
-          # --- Auto-off Night ---
+          # --- Auto-off Night / Off Scene ---
           
           - choose:
               - conditions:
@@ -723,15 +747,15 @@ action:
                   - choose:
                       - conditions:
                           - condition: template
-                            value_template: "{{ scene_night_var | default('') != '' }}"
+                            value_template: "{{ off_scene_night_var | default('') != '' }}"
                         sequence:
                           - service: scene.turn_on
                             target:
-                              entity_id: "{{ scene_night_var }}"
+                              entity_id: "{{ off_scene_night_var }}"
                           - service: logbook.log
                             data:
                               name: Motion Control
-                              message: "Auto-off Night: Night scene turned off."
+                              message: "Auto-off Night: Off Scene activated."
                       - conditions:
                           - condition: template
                             value_template: "{{ night_lights_var | default('') != '' }}"
@@ -750,9 +774,8 @@ action:
                             data:
                               name: Motion Control
                               message: "Auto-off Night: Night lights turned off."
-
           # --- Fixed Off 1 ---
-          
+
           - choose:
               - conditions:
                   - condition: trigger
@@ -776,14 +799,13 @@ action:
                           {% endif %}
                         {% endfor %}
                         {{ lights | join(',') }}
-
                   - service: logbook.log
                     data:
                       name: Motion Control
                       message: "Fixed Off 1: Lights turned off."
 
           # --- Fixed Off 2 ---
-          
+
           - choose:
               - conditions:
                   - condition: trigger
@@ -807,17 +829,13 @@ action:
                           {% endif %}
                         {% endfor %}
                         {{ lights | join(',') }}
-
                   - service: logbook.log
                     data:
                       name: Motion Control
                       message: "Fixed Off 2: Lights turned off."
 
-          
-          # --- Failsafe Section ---
-          
-          # Failsafe Main
-          
+          # --- Failsafe Main ---
+
           - choose:
               - conditions:
                   - condition: template
@@ -840,8 +858,8 @@ action:
                       name: Motion Control
                       message: "Failsafe Main: Lights turned off automatically."
 
-          # Failsafe Day
-          
+          # --- Failsafe Day ---
+
           - choose:
               - conditions:
                   - condition: template
@@ -864,8 +882,8 @@ action:
                       name: Motion Control
                       message: "Failsafe Day: Lights turned off automatically."
 
-          # Failsafe Night
-          
+          # --- Failsafe Night ---
+
           - choose:
               - conditions:
                   - condition: template
