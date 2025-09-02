@@ -248,8 +248,8 @@ blueprint:
 
     day_end:
       name: Day End
-      description: "Time when the day mode deactivates. Day End cannot be the same as Night Start. Example: 22:00:00"
-      default: ""
+      description: "Time when the day mode deactivates. Day End cannot be the same as Night Start. Example: 21:59:59"
+      default: "21:59:59"
       selector:
         time: {}
 
@@ -278,8 +278,8 @@ blueprint:
 
     night_start:
       name: Night Start
-      description: "Time when night mode activates. Night Start cannot be the same as Day End. Example: 22:00:01"
-      default: ""
+      description: "Time when night mode activates. Night Start cannot be the same as Day End. Example: 22:00:00"
+      default: "22:00:00"
       selector:
         time: {}
 
