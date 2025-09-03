@@ -84,7 +84,7 @@ Enable failsafe to sleep peacefully without worrying about forgotten lights.
 3. Choose your lights, motion sensors, and optional extras  
 4. Enjoy perfectly tuned, fully automated smart lighting 🎉
 
-👨‍💻 Creator
+# 👨‍💻 Creator
 
 Built with ❤️ by Rasmus Sjöberg [@razzietheman](https://github.com/razzietheman)
  – 2025
