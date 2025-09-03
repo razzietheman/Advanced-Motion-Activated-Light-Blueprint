@@ -775,7 +775,7 @@ action:
                               name: Motion Control
                               message: "Auto-off Night: Night lights turned off."
 
-          # --- Fixed Off 1 ---
+          # --- Fixed Off 1 & 2 ---
           
           - choose:
               - conditions:
@@ -805,8 +805,6 @@ action:
                       name: Motion Control
                       message: "Fixed Off 1: Lights turned off."
 
-          # --- Fixed Off 2 ---
-          
           - choose:
               - conditions:
                   - condition: trigger
@@ -835,7 +833,7 @@ action:
                       name: Motion Control
                       message: "Fixed Off 2: Lights turned off."
 
-          # --- Failsafe Main / Day / Night (med Off Scenes) ---
+          # --- Failsafe Main / Day / Night (med Snapshot Restore) ---
           
           - choose:
               - conditions:
@@ -906,6 +904,17 @@ action:
                                     data:
                                       name: Motion Control
                                       message: "Failsafe Day: Lights turned off automatically."
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ scene_day_var | default('') != '' }}"
+                                sequence:
+                                  - service: scene.turn_on
+                                    target:
+                                      entity_id: scene.snapshot_before_on
+                                  - service: logbook.log
+                                    data:
+                                      name: Motion Control
+                                      message: "Failsafe Day: Day scene restored from snapshot."
 
                   # --- Failsafe Night ---
                   
@@ -946,3 +955,14 @@ action:
                                     data:
                                       name: Motion Control
                                       message: "Failsafe Night: Lights turned off automatically."
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ scene_night_var | default('') != '' }}"
+                                sequence:
+                                  - service: scene.turn_on
+                                    target:
+                                      entity_id: scene.snapshot_before_on
+                                  - service: logbook.log
+                                    data:
+                                      name: Motion Control
+                                      message: "Failsafe Night: Night scene restored from snapshot."
