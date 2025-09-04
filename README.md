@@ -55,7 +55,7 @@ and only if auto-off hasn’t already done its job.
 | Feature | Description |
 |---------|-------------|
 | 🚶‍♂️ Motion sensor (optional) | Turn lights on/off with motion – leave empty for schedule-only |
-| 🔘 Manual switch (optional) | Override lights manually whenever you want |
+| 🔘 Optional Switches | Optional smart plugs or switches that can control the lights/devices |
 | 🌞 Day & night scenes | Create moods with scenes or individual lights |
 | 💡 Lux sensor | Only turns on lights when it’s dark enough |
 | 🌅 Sunrise/sunset | Add offsets for perfect timing |
