@@ -13,15 +13,16 @@ Your home **thinks for itself**, senses the rhythm of the sun, and knows exactly
 
 # 🚀 **What's New in 6.0**
 
-✨ **Off Scenes 2.0** – Turn off lights in style with smooth fades
-💡 **Auto-off + Scene Restore** – Automatically restore your favorite lighting setups
-🛡️ **Failsafe per category** – Lights turn off **only when truly needed**
-🌙 **Dynamic dimming** – Brightness follows the rhythm of the day
-📅 **Weekday logic** – Different schedules for weekdays and weekends
-📸 **Snapshot management** – Save & restore exactly the lighting you want
-📝 **Smart logging** – Full control over all events
+- ✨ **Off Scenes 2.0** – Turn off lights in style with smooth fades
+- 💡 **Auto-off + Scene Restore** – Automatically restore your favorite lighting setups
+- 🛡️ **Failsafe per category** – Lights turn off **only when truly needed**
+- 🌙 **Dynamic dimming** – Brightness follows the rhythm of the day
+- 📅 **Weekday logic** – Different schedules for weekdays and weekends
+- 📸 **Snapshot management** – Save & restore exactly the lighting you want
+- 📝 **Smart logging** – Full control over all events
 
 ✨ Small tweaks that make your home **alive, personal, and wow**
+
 
 ---
 
@@ -80,10 +81,10 @@ Your home **thinks for itself**, senses the rhythm of the sun, and knows exactly
 
 # 🌈 **Pro Tips** 🌟
 
-💡 **Combine lux sensor + sun offset + weekdays** → Total control
-🎨 **Off Scenes** → Smooth, atmospheric light shutdown
-📸 **Snapshots** → Restore the room – automation becomes invisible
-🛌 **Failsafe** → Sleep peacefully without forgotten lights
+- 💡 **Combine lux sensor + sun offset + weekdays** → Total control
+- 🎨 **Off Scenes** → Smooth, atmospheric light shutdown
+- 📸 **Snapshots** → Restore the room – automation becomes invisible
+- 🛌 **Failsafe** → Sleep peacefully without forgotten lights
 
 ---
 
