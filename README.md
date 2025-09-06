@@ -69,6 +69,7 @@ Your home **thinks for itself**, senses the rhythm of the sun, and knows exactly
 | 🔘 Smart Plugs / Switches | Control lights via Home Assistant-compatible devices       |
 | 🌞 Day & Night Scenes     | Set moods with scenes or individual lights                 |
 | 💡 Lux Sensor             | Lights turn on **only when it’s dark**                     |
+| 🌓 Circadian Light        | Adjust color temperature automatically for natural rhythm  |
 | 🌅 Sunrise / Sunset       | Exact timing with offset                                   |
 | ⏱ Two Fixed Off Times     | Weekday/weekend, automatic or manual                       |
 | 📅 Weekday Control        | Adjust lighting per day of the week                        |
@@ -84,6 +85,7 @@ Your home **thinks for itself**, senses the rhythm of the sun, and knows exactly
 - 💡 **Combine lux sensor + sun offset + weekdays** → Total control
 - 🎨 **Off Scenes** → Smooth, atmospheric light shutdown
 - 📸 **Snapshots** → Restore the room – automation becomes invisible
+- 🌓 **Circadian Light** → Automatic adjustment of color temperature for natural rhythm
 - 🛌 **Failsafe** → Sleep peacefully without forgotten lights
 
 ---
