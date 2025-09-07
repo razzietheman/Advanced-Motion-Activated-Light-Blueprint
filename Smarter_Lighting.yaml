@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.1"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.2"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -596,7 +596,16 @@ action:
                   - service: scene.create
                     data:
                       scene_id: snapshot_before_on
-                      snapshot_entities: "{{ lights | join(',') }}"
+                      snapshot_entities: >
+                        {% set lights = [] %}
+                        {% if main_lights_var is string %}
+                          {% set lights = [main_lights_var] %}
+                        {% elif main_lights_var is mapping %}
+                          {% set lights = [main_lights_var.entity_id] %}
+                        {% elif main_lights_var is iterable %}
+                          {% set lights = main_lights_var %}
+                        {% endif %}
+                        {{ lights }}
 
           # --- Day Scene ---
           
