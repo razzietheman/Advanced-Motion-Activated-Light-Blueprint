@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.0"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.1"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -798,11 +798,11 @@ action:
                 {% set lights = [] %}
                 {% if day_lights_var | default('') != '' %}
                   {% if day_lights_var is string %}
-                    {% set _ = lights.append(day_lights_var) %}
+                    {% set lights = lights + [day_lights_var] %}
                   {% elif day_lights_var is mapping %}
-                    {% set _ = lights.append(day_lights_var.entity_id) %}
+                    {% set lights = lights + [day_lights_var.entity_id] %}
                   {% elif day_lights_var is iterable %}
-                    {% set _ = lights.extend(day_lights_var) %}
+                    {% set lights = lights + day_lights_var %}
                   {% endif %}
                 {% endif %}
                 {{ lights | join(',') }}
@@ -834,11 +834,11 @@ action:
                 {% set lights = [] %}
                 {% if night_lights_var | default('') != '' %}
                   {% if night_lights_var is string %}
-                    {% set _ = lights.append(night_lights_var) %}
+                    {% set lights = lights + [night_lights_var] %}
                   {% elif night_lights_var is mapping %}
-                    {% set _ = lights.append(night_lights_var.entity_id) %}
+                    {% set lights = lights + [night_lights_var.entity_id] %}
                   {% elif night_lights_var is iterable %}
-                    {% set _ = lights.extend(night_lights_var) %}
+                    {% set lights = lights + night_lights_var %}
                   {% endif %}
                 {% endif %}
                 {{ lights | join(',') }}
@@ -892,15 +892,15 @@ action:
                 {% for var in [main_lights_var, day_lights_var, night_lights_var] %}
                   {% if var | default('') != '' %}
                     {% if var is string %}
-                      {% set _ = lights.append(var) %}
+                      {% set lights = lights + [var] %}
                     {% elif var is mapping %}
-                      {% set _ = lights.append(var.entity_id) %}
+                      {% set lights = lights + [var.entity_id] %}
                     {% elif var is iterable %}
-                      {% set _ = lights.extend(var) %}
+                      {% set lights = lights + var %}
                     {% endif %}
                   {% endif %}
-                {% endfor %}
-                {{ lights | join(',') }}
+                  {% endfor %}
+                  {{ lights | join(',') }}
 
   - choose:
       - conditions:
