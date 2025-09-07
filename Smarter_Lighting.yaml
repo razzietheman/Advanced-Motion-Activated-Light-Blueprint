@@ -916,11 +916,11 @@ action:
                 {% for var in [main_lights_var, day_lights_var, night_lights_var] %}
                   {% if var | default('') != '' %}
                     {% if var is string %}
-                      {% set _ = lights.append(var) %}
+                      {% set lights = lights + [var] %}
                     {% elif var is mapping %}
-                      {% set _ = lights.append(var.entity_id) %}
+                      {% set lights = lights + [var.entity_id] %}
                     {% elif var is iterable %}
-                      {% set _ = lights.extend(var) %}
+                      {% set lights = lights + var %}
                     {% endif %}
                   {% endif %}
                 {% endfor %}
