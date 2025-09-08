@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.3"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.4"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -621,7 +621,7 @@ action:
                           {% endif %}
                         {% endfor %}
 
-                        {{ lights if lights|count > 0 else '' }}
+                        {{ lights }}
 
           # --- Day Scene ---
           
