@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.2"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.3"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -563,7 +563,7 @@ variables:
 
 action:
 
-  # --- Motion / Switch ON ---
+  # --- Rörelse/Brytare PÅ ---
   
   - choose:
       - conditions:
@@ -584,28 +584,44 @@ action:
                   - condition: template
                     value_template: >
                       {% set lights = [] %}
-                      {% if main_lights_var is string %}
-                        {% set lights = [main_lights_var] %}
-                      {% elif main_lights_var is mapping %}
-                        {% set lights = [main_lights_var.entity_id] %}
-                      {% elif main_lights_var is iterable %}
-                        {% set lights = main_lights_var %}
-                      {% endif %}
-                      {{ lights | count > 0 }}
+
+                      {% for var in [main_lights_var, day_lights_var, night_lights_var, circadian_lights_var] %}
+                        {% if var is string and states(var) is not none %}
+                          {% set lights = lights + [var] %}
+                        {% elif var is mapping and states(var.entity_id) is not none %}
+                          {% set lights = lights + [var.entity_id] %}
+                        {% elif var is iterable %}
+                          {% for l in var %}
+                            {% if states(l) is not none %}
+                              {% set lights = lights + [l] %}
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                      {% endfor %}
+
+                      {{ lights|count > 0 }}
                 sequence:
                   - service: scene.create
                     data:
                       scene_id: snapshot_before_on
                       snapshot_entities: >
                         {% set lights = [] %}
-                        {% if main_lights_var is string %}
-                          {% set lights = [main_lights_var] %}
-                        {% elif main_lights_var is mapping %}
-                          {% set lights = [main_lights_var.entity_id] %}
-                        {% elif main_lights_var is iterable %}
-                          {% set lights = main_lights_var %}
-                        {% endif %}
-                        {{ lights }}
+
+                        {% for var in [main_lights_var, day_lights_var, night_lights_var, circadian_lights_var] %}
+                          {% if var is string and states(var) is not none %}
+                            {% set lights = lights + [var] %}
+                          {% elif var is mapping and states(var.entity_id) is not none %}
+                            {% set lights = lights + [var.entity_id] %}
+                          {% elif var is iterable %}
+                            {% for l in var %}
+                              {% if states(l) is not none %}
+                                {% set lights = lights + [l] %}
+                              {% endif %}
+                            {% endfor %}
+                          {% endif %}
+                        {% endfor %}
+
+                        {{ lights if lights|count > 0 else '' }}
 
           # --- Day Scene ---
           
