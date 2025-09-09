@@ -1022,7 +1022,7 @@ action:
   - choose:
       - conditions:
           - condition: template
-            value_template: "{{ enable_failsafe_var and (day_lights_var | default('') != '' or scene_day_var | default('') != '') }}"
+            value_template: "{{ enable_failsafe_var }}"
           - condition: template
             value_template: >
               {% set lights = [] %}
@@ -1033,56 +1033,45 @@ action:
               {% elif day_lights_var is iterable %}
                 {% set lights = day_lights_var %}
               {% endif %}
-              {{ (lights | select('is_state','on') | list | count > 0) or (scene_day_var | default('') != '') }}
+              {{ lights | select('is_state','on') | list | count > 0 }}
         sequence:
           - delay:
               minutes: "{{ failsafe_timer_day_var | default(0) | float }}"
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: >
-                      {% set lights = [] %}
-                      {% if day_lights_var is string %}
-                        {% set lights = [day_lights_var] %}
-                      {% elif day_lights_var is mapping %}
-                        {% set lights = [day_lights_var.entity_id] %}
-                      {% elif day_lights_var is iterable %}
-                        {% set lights = day_lights_var %}
-                      {% endif %}
-                      {{ lights | select('is_state','on') | list | count > 0 }}
-                sequence:
-                  - service: light.turn_off
-                    target:
-                      entity_id: >
-                        {% if day_lights_var is string %}
-                          {{ day_lights_var }}
-                        {% elif day_lights_var is mapping %}
-                          {{ day_lights_var.entity_id }}
-                        {% elif day_lights_var is iterable %}
-                          {{ day_lights_var | join(',') }}
-                        {% endif %}
-                  - service: logbook.log
-                    data:
-                      name: Motion Control
-                      message: "Failsafe Day: Day lights turned off automatically (only if still on)."
-              - conditions:
-                  - condition: template
-                    value_template: "{{ scene_day_var | default([]) != [] }}"
-                sequence:
-                  - service: scene.turn_on
-                    target:
-                      entity_id: scene.snapshot_before_on
-                  - service: logbook.log
-                    data:
-                      name: Motion Control
-                      message: "Failsafe Day: Day scene restored."
+          - service: light.turn_off
+            target:
+              entity_id: >
+                {% if day_lights_var is string %}
+                  {{ day_lights_var }}
+                {% elif day_lights_var is mapping %}
+                  {{ day_lights_var.entity_id }}
+                {% elif day_lights_var is iterable %}
+                  {{ day_lights_var | join(',') }}
+                {% endif %}
+          - service: logbook.log
+            data:
+              name: Motion Control
+              message: "Failsafe Day: Day lights turned off automatically (only if still on)."
+
+      - conditions:
+          - condition: template
+            value_template: "{{ enable_failsafe_var and scene_day_var | default('') != '' }}"
+        sequence:
+          - delay:
+              minutes: "{{ failsafe_timer_day_var | default(0) | float }}"
+          - service: scene.turn_on
+            target:
+              entity_id: scene.snapshot_before_on
+          - service: logbook.log
+            data:
+              name: Motion Control
+              message: "Failsafe Day: Day scene restored."
 
   # --- Failsafe Night Lights ---
   
   - choose:
       - conditions:
           - condition: template
-            value_template: "{{ enable_failsafe_var and (night_lights_var | default('') != '' or scene_night_var | default('') != '') }}"
+            value_template: "{{ enable_failsafe_var }}"
           - condition: template
             value_template: >
               {% set lights = [] %}
@@ -1093,49 +1082,38 @@ action:
               {% elif night_lights_var is iterable %}
                 {% set lights = night_lights_var %}
               {% endif %}
-              {{ (lights | select('is_state','on') | list | count > 0) or (scene_night_var | default('') != '') }}
+              {{ lights | select('is_state','on') | list | count > 0 }}
         sequence:
           - delay:
               minutes: "{{ failsafe_timer_night_var | default(0) | float }}"
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: >
-                      {% set lights = [] %}
-                      {% if night_lights_var is string %}
-                        {% set lights = [night_lights_var] %}
-                      {% elif night_lights_var is mapping %}
-                        {% set lights = [night_lights_var.entity_id] %}
-                      {% elif night_lights_var is iterable %}
-                        {% set lights = night_lights_var %}
-                      {% endif %}
-                      {{ lights | select('is_state','on') | list | count > 0 }}
-                sequence:
-                  - service: light.turn_off
-                    target:
-                      entity_id: >
-                        {% if night_lights_var is string %}
-                          {{ night_lights_var }}
-                        {% elif night_lights_var is mapping %}
-                          {{ night_lights_var.entity_id }}
-                        {% elif night_lights_var is iterable %}
-                          {{ night_lights_var | join(',') }}
-                        {% endif %}
-                  - service: logbook.log
-                    data:
-                      name: Motion Control
-                      message: "Failsafe Night: Night lights turned off automatically (only if still on)."
-              - conditions:
-                  - condition: template
-                    value_template: "{{ scene_night_var | default([]) != [] }}"
-                sequence:
-                  - service: scene.turn_on
-                    target:
-                      entity_id: scene.snapshot_before_on
-                  - service: logbook.log
-                    data:
-                      name: Motion Control
-                      message: "Failsafe Night: Night scene restored."
+          - service: light.turn_off
+            target:
+              entity_id: >
+                {% if night_lights_var is string %}
+                  {{ night_lights_var }}
+                {% elif night_lights_var is mapping %}
+                  {{ night_lights_var.entity_id }}
+                {% elif night_lights_var is iterable %}
+                  {{ night_lights_var | join(',') }}
+                {% endif %}
+          - service: logbook.log
+            data:
+              name: Motion Control
+              message: "Failsafe Night: Night lights turned off automatically (only if still on)."
+
+      - conditions:
+          - condition: template
+            value_template: "{{ enable_failsafe_var and scene_night_var | default('') != '' }}"
+        sequence:
+          - delay:
+              minutes: "{{ failsafe_timer_night_var | default(0) | float }}"
+          - service: scene.turn_on
+            target:
+              entity_id: scene.snapshot_before_on
+          - service: logbook.log
+            data:
+              name: Motion Control
+              message: "Failsafe Night: Night scene restored."
 
   # --- Circadian Light ---
   
