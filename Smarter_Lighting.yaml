@@ -1187,4 +1187,4 @@ action:
                   - service: logbook.log
                     data:
                       name: Motion Control
-                      message: "Failsafe Circular Lights: Circular lights turned off automatically."
+                      message: "Failsafe Circadian Lights: Circadian lights turned off automatically."
