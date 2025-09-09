@@ -500,11 +500,13 @@ trigger:
     event: sunrise
     offset: !input sunrise_offset
     id: sunrise_trigger
-    
+    enabled: !input use_sun_times
+
   - platform: sun
     event: sunset
     offset: !input sunset_offset
     id: sunset_trigger
+    enabled: !input use_sun_times
     
   - platform: time
     at: !input fixed_off_time_1
