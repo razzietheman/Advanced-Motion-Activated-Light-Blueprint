@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.8"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.9"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -754,7 +754,7 @@ action:
               name: Motion Control
               message: "Day/Night ON activated via motion or switch."
 
-  # --- Auto-off Main Lights ---
+ # --- Auto-off Main Lights ---
   
   - choose:
       - conditions:
@@ -789,7 +789,7 @@ action:
               name: Motion Control
               message: "Auto-off Main: Main-lights turned off."
 
-  # --- Auto-off Daglampor ---
+  # --- Auto-off Day lights with Scene Restore---
   
   - choose:
       - conditions:
@@ -902,7 +902,7 @@ action:
               {{ lights | count > 0 }}
         sequence:
           - delay:
-              minutes: "{{ auto_off_circular_var | default(0) | float }}"
+              minutes: "{{ auto_off_circadian_var | default(0) | float }}"
           - service: light.turn_off
             target:
               entity_id: >
@@ -969,6 +969,60 @@ action:
                   {% endif %}
                 {% endfor %}
                 {{ lights | join(',') }}
+
+  # --- Circadian Light ---
+  
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ circadian_enabled_var and circadian_lights_var | default([]) != [] }}"
+          - condition: trigger
+            id: motion_on
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: >
+                {% if circadian_lights_var is string %}
+                  {{ circadian_lights_var }}
+                {% elif circadian_lights_var is mapping %}
+                  {{ circadian_lights_var.entity_id }}
+                {% elif circadian_lights_var is iterable %}
+                  {{ circadian_lights_var | join(',') }}
+                {% endif %}
+            data:
+              color_temp: "{{ circadian_temp_var }}"
+              brightness: "{{ circadian_brightness_var }}"
+          - service: logbook.log
+            data:
+              name: Motion Control
+              message: "Circadian Light: Adjusted automatically."
+
+  # --- Circadian Light update (via time_pattern) ---
+  
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: circadian_update
+          - condition: template
+            value_template: "{{ circadian_enabled_var and circadian_lights_var | default([]) != [] }}"
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: >
+                {% if circadian_lights_var is string %}
+                  {{ circadian_lights_var }}
+                {% elif circadian_lights_var is mapping %}
+                  {{ circadian_lights_var.entity_id }}
+                {% elif circadian_lights_var is iterable %}
+                  {{ circadian_lights_var | join(',') }}
+                {% endif %}
+            data:
+              color_temp: "{{ circadian_temp_var }}"
+              brightness: "{{ circadian_brightness_var }}"
+          - service: logbook.log
+            data:
+              name: Motion Control
+              message: "Circadian Update: Adjusted automatically via time pattern."
 
   # --- Failsafe Main Lights ---
   
@@ -1117,33 +1171,6 @@ action:
               name: Motion Control
               message: "Failsafe Night: Night scene restored."
 
-  # --- Circadian Light ---
-  
-  - choose:
-      - conditions:
-          - condition: template
-            value_template: "{{ circadian_enabled_var and circadian_lights_var | default([]) != [] }}"
-          - condition: trigger
-            id: motion_on
-        sequence:
-          - service: light.turn_on
-            target:
-              entity_id: >
-                {% if circadian_lights_var is string %}
-                  {{ circadian_lights_var }}
-                {% elif circadian_lights_var is mapping %}
-                  {{ circadian_lights_var.entity_id }}
-                {% elif circadian_lights_var is iterable %}
-                  {{ circadian_lights_var | join(',') }}
-                {% endif %}
-            data:
-              color_temp: "{{ circadian_temp_var }}"
-              brightness: "{{ circadian_brightness_var }}"
-          - service: logbook.log
-            data:
-              name: Motion Control
-              message: "Circadian Light: Adjusted automatically."
-
   # --- Failsafe Circadian Lights ---
   
   - choose:
@@ -1163,7 +1190,7 @@ action:
               {{ lights | select('is_state','on') | list | count > 0 }}
         sequence:
           - delay:
-              minutes: "{{ failsafe_timer_circular_var }}"
+              minutes: "{{ failsafe_timer_circular_var | default(0) | float }}"
           - choose:
               - conditions:
                   - condition: template
