@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.5"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.6"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -563,7 +563,7 @@ variables:
 
 action:
 
-  # --- Rörelse/Brytare PÅ ---
+  # --- Motion / switch On ---
   
   - choose:
       - conditions:
@@ -581,17 +581,17 @@ action:
           
           - choose:
               - conditions:
-                - condition: template
-                  value_template: >
-                    {% set lights = [] %}
-                    {% if main_lights_var is string %}
-                      {% set lights = [main_lights_var] %}
-                    {% elif main_lights_var is mapping %}
-                      {% set lights = [main_lights_var.entity_id] %}
-                    {% elif main_lights_var is iterable %}
-                      {% set lights = main_lights_var %}
-                    {% endif %}
-                    {{ lights | count > 0 }}
+                  - condition: template
+                    value_template: >
+                      {% set lights = [] %}
+                      {% if main_lights_var is string %}
+                        {% set lights = [main_lights_var] %}
+                      {% elif main_lights_var is mapping %}
+                        {% set lights = [main_lights_var.entity_id] %}
+                      {% elif main_lights_var is iterable %}
+                        {% set lights = main_lights_var %}
+                      {% endif %}
+                      {{ lights | count > 0 }}
                 sequence:
                   - service: scene.create
                     data:
@@ -752,69 +752,70 @@ action:
   
   - choose:
       - conditions:
-          - condition: or
-            conditions:
-              - condition: trigger
-                id: motion_off
-              - condition: trigger
-                id: switch_off
           - condition: template
-            value_template: "{{ main_lights_var | default('') != '' }}"
+            value_template: >
+              {% set lights = [] %}
+              {% if main_lights_var is string and main_lights_var != '' %}
+                {% set lights = [main_lights_var] %}
+              {% elif main_lights_var is mapping and main_lights_var.entity_id is string %}
+                {% set lights = [main_lights_var.entity_id] %}
+              {% elif main_lights_var is iterable %}
+                {% set lights = main_lights_var | select('string') | list %}
+              {% endif %}
+              {{ lights | count > 0 }}
         sequence:
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: "{{ auto_off_main_var | int > 0 }}"
-                sequence:
-                  - delay:
-                      minutes: "{{ auto_off_main_var }}"
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: "{{ main_lights_var | default('') != '' }}"
-                sequence:
-                  - service: light.turn_off
-                    target:
-                      entity_id: >
-                        {% if main_lights_var is string %}
-                          {{ main_lights_var }}
-                        {% elif main_lights_var is mapping %}
-                          {{ main_lights_var.entity_id }}
-                        {% elif main_lights_var is iterable %}
-                          {{ main_lights_var | join(',') }}
-                        {% endif %}
+          - delay:
+              minutes: "{{ auto_off_main_var | int(0) }}"
+          - service: light.turn_off
+            target:
+              entity_id: >
+                {% set lights = [] %}
+                {% if main_lights_var is string and main_lights_var != '' %}
+                  {% set lights = [main_lights_var] %}
+                {% elif main_lights_var is mapping and main_lights_var.entity_id is string %}
+                  {% set lights = [main_lights_var.entity_id] %}
+                {% elif main_lights_var is iterable %}
+                  {% set lights = main_lights_var | select('string') | list %}
+                {% endif %}
+                {{ lights | join(',') }}
+          - service: logbook.log
+            data:
+              name: Motion Control
+              message: "Auto-off Main: main lights turned off."
 
   # --- Auto-off Day Lights with Scene Restore ---
   
   - choose:
       - conditions:
           - condition: template
-            value_template: "{{ day_lights_var | default('') != '' or scene_day_var | default('') != '' }}"
+            value_template: >
+              {% set lights = [] %}
+              {% if day_lights_var is string and day_lights_var != '' %}
+                {% set lights = [day_lights_var] %}
+              {% elif day_lights_var is mapping and day_lights_var.entity_id is string %}
+                {% set lights = [day_lights_var.entity_id] %}
+              {% elif day_lights_var is iterable %}
+                {% set lights = day_lights_var | select('string') | list %}
+              {% endif %}
+              {{ lights | count > 0 }}
         sequence:
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: "{{ auto_off_day_var | int > 0 }}"
-                sequence:
-                  - delay:
-                      minutes: "{{ auto_off_day_var }}"
-          - service: scene.turn_on
-            target:
-              entity_id: scene.snapshot_before_on
+          - delay:
+              minutes: "{{ auto_off_day_var | int(0) }}"
           - service: light.turn_off
             target:
               entity_id: >
                 {% set lights = [] %}
-                {% if day_lights_var | default('') != '' %}
-                  {% if day_lights_var is string %}
-                    {% set lights = lights + [day_lights_var] %}
-                  {% elif day_lights_var is mapping %}
-                    {% set lights = lights + [day_lights_var.entity_id] %}
-                  {% elif day_lights_var is iterable %}
-                    {% set lights = lights + day_lights_var %}
-                  {% endif %}
+                {% if day_lights_var is string and day_lights_var != '' %}
+                  {% set lights = [day_lights_var] %}
+                {% elif day_lights_var is mapping and day_lights_var.entity_id is string %}
+                  {% set lights = [day_lights_var.entity_id] %}
+                {% elif day_lights_var is iterable %}
+                  {% set lights = day_lights_var | select('string') | list %}
                 {% endif %}
                 {{ lights | join(',') }}
+          - service: scene.turn_on
+            target:
+              entity_id: scene.snapshot_before_on
           - service: logbook.log
             data:
               name: Motion Control
@@ -825,32 +826,34 @@ action:
   - choose:
       - conditions:
           - condition: template
-            value_template: "{{ night_lights_var | default('') != '' or scene_night_var | default('') != '' }}"
+            value_template: >
+              {% set lights = [] %}
+              {% if night_lights_var is string and night_lights_var != '' %}
+                {% set lights = [night_lights_var] %}
+              {% elif night_lights_var is mapping and night_lights_var.entity_id is string %}
+                {% set lights = [night_lights_var.entity_id] %}
+              {% elif night_lights_var is iterable %}
+                {% set lights = night_lights_var | select('string') | list %}
+              {% endif %}
+              {{ lights | count > 0 }}
         sequence:
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: "{{ auto_off_night_var | int > 0 }}"
-                sequence:
-                  - delay:
-                      minutes: "{{ auto_off_night_var }}"
-          - service: scene.turn_on
-            target:
-              entity_id: scene.snapshot_before_on
+          - delay:
+              minutes: "{{ auto_off_night_var | int(0) }}"
           - service: light.turn_off
             target:
               entity_id: >
                 {% set lights = [] %}
-                {% if night_lights_var | default('') != '' %}
-                  {% if night_lights_var is string %}
-                    {% set lights = lights + [night_lights_var] %}
-                  {% elif night_lights_var is mapping %}
-                    {% set lights = lights + [night_lights_var.entity_id] %}
-                  {% elif night_lights_var is iterable %}
-                    {% set lights = lights + night_lights_var %}
-                  {% endif %}
+                {% if night_lights_var is string and night_lights_var != '' %}
+                  {% set lights = [night_lights_var] %}
+                {% elif night_lights_var is mapping and night_lights_var.entity_id is string %}
+                  {% set lights = [night_lights_var.entity_id] %}
+                {% elif night_lights_var is iterable %}
+                  {% set lights = night_lights_var | select('string') | list %}
                 {% endif %}
                 {{ lights | join(',') }}
+          - service: scene.turn_on
+            target:
+              entity_id: scene.snapshot_before_on
           - service: logbook.log
             data:
               name: Motion Control
@@ -861,25 +864,31 @@ action:
   - choose:
       - conditions:
           - condition: template
-            value_template: "{{ circadian_lights_var | default([]) != [] }}"
+            value_template: >
+              {% set lights = [] %}
+              {% if circadian_lights_var is string and circadian_lights_var != '' %}
+                {% set lights = [circadian_lights_var] %}
+              {% elif circadian_lights_var is mapping and circadian_lights_var.entity_id is string %}
+                {% set lights = [circadian_lights_var.entity_id] %}
+              {% elif circadian_lights_var is iterable %}
+                {% set lights = circadian_lights_var | select('string') | list %}
+              {% endif %}
+              {{ lights | count > 0 }}
         sequence:
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: "{{ failsafe_timer_circular_var | int > 0 }}"
-                sequence:
-                  - delay:
-                      minutes: "{{ failsafe_timer_circular_var }}"
+          - delay:
+              minutes: "{{ failsafe_timer_circular_var | int(0) }}"
           - service: light.turn_off
             target:
               entity_id: >
-                {% if circadian_lights_var is string %}
-                  {{ circadian_lights_var }}
-                {% elif circadian_lights_var is mapping %}
-                  {{ circadian_lights_var.entity_id }}
+                {% set lights = [] %}
+                {% if circadian_lights_var is string and circadian_lights_var != '' %}
+                  {% set lights = [circadian_lights_var] %}
+                {% elif circadian_lights_var is mapping and circadian_lights_var.entity_id is string %}
+                  {% set lights = [circadian_lights_var.entity_id] %}
                 {% elif circadian_lights_var is iterable %}
-                  {{ circadian_lights_var | join(',') }}
+                  {% set lights = circadian_lights_var | select('string') | list %}
                 {% endif %}
+                {{ lights | join(',') }}
           - service: logbook.log
             data:
               name: Motion Control
