@@ -629,7 +629,7 @@ action:
                   - choose:
                       - conditions:
                           - condition: template
-                            value_template: "{{ scene_day_var | default('') != '' }}"
+                            value_template: "{{ scene_day_var | default([]) != [] }}"
                         sequence:
                           - service: scene.turn_on
                             target:
@@ -690,7 +690,7 @@ action:
                   - choose:
                       - conditions:
                           - condition: template
-                            value_template: "{{ scene_night_var | default('') != '' }}"
+                            value_template: "{{ scene_night_var | default([]) != [] }}"
                         sequence:
                           - service: scene.turn_on
                             target:
@@ -1067,7 +1067,7 @@ action:
                       message: "Failsafe Day: Day lights turned off automatically (only if still on)."
               - conditions:
                   - condition: template
-                    value_template: "{{ scene_day_var | default('') != '' }}"
+                    value_template: "{{ scene_day_var | default([]) != [] }}"
                 sequence:
                   - service: scene.turn_on
                     target:
@@ -1127,7 +1127,7 @@ action:
                       message: "Failsafe Night: Night lights turned off automatically (only if still on)."
               - conditions:
                   - condition: template
-                    value_template: "{{ scene_night_var | default('') != '' }}"
+                    value_template: "{{ scene_night_var | default([]) != [] }}"
                 sequence:
                   - service: scene.turn_on
                     target:
