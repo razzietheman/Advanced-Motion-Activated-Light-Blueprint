@@ -803,16 +803,6 @@ action:
     - conditions:
         - condition: template
           value_template: >
-            {% if use_sun_times_var %}
-              {{ is_state('sun.sun', 'above_horizon') }}
-            {% else %}
-              {% set t = now().time() %}
-              {% set start = strptime(day_start_var, '%H:%M:%S').time() %}
-              {% set end = strptime(day_end_var, '%H:%M:%S').time() %}
-              {{ (start <= end and t >= start and t <= end) or (start > end and (t >= start or t <= end)) }}
-            {% endif %}
-        - condition: template
-          value_template: >
             {% set snapshot_entities = state_attr('scene.snapshot_before_on','entities') | default({}) %}
             {{ (off_scene_day_var | default('') != '') or (day_lights_var | default('') != '') or (scene_day_var | default('') != '') or (snapshot_entities | length > 0) }}
       sequence:
@@ -875,23 +865,13 @@ action:
                 - service: logbook.log
                   data:
                     name: Motion Control
-                    message: "Auto-off Day: Entities turned off."
+                    message: "Auto-off Day: Lights turned off."
 
   # --- Auto-off  Night Lights with Scene Restore ---
   
   
   - choose:
     - conditions:
-        - condition: template
-          value_template: >
-            {% if use_sun_times_var %}
-              {{ is_state('sun.sun', 'below_horizon') }}
-            {% else %}
-              {% set t = now().time() %}
-              {% set start = strptime(night_start_var, '%H:%M:%S').time() %}
-              {% set end = strptime(night_end_var, '%H:%M:%S').time() %}
-              {{ (start <= end and t >= start and t <= end) or (start > end and (t >= start or t <= end)) }}
-            {% endif %}
         - condition: template
           value_template: >
             {% set snapshot_entities = state_attr('scene.snapshot_before_on','entities') | default({}) %}
@@ -956,8 +936,7 @@ action:
                 - service: logbook.log
                   data:
                     name: Motion Control
-                    message: "Auto-off Night: Entities turned off."
-
+                    message: "Auto-off Night: Lights turned off."
 
   # --- Auto-off Circadian Lights ---
   
