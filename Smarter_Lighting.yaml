@@ -801,19 +801,7 @@ action:
   
   - choose:
     - conditions:
-        # Check if we use sun times or fixed times
-        - condition: template
-          value_template: >
-            {% if use_sun_times_var %}
-              {{ is_state('sun.sun', 'above_horizon') }}
-            {% else %}
-              {% set t = now().time() %}
-              {% set start = strptime(day_start_var, '%H:%M:%S').time() %}
-              {% set end = strptime(day_end_var, '%H:%M:%S').time() %}
-              {{ (start <= end and t >= start and t <= end) or
-                 (start > end and (t >= start or t <= end)) }}
-            {% endif %}
-        # Check if there is anything to turn off
+        # Check if there are lights to turn off
         - condition: template
           value_template: >
             {% set snapshot_entities = state_attr('scene.snapshot_before_on','entities') | default({}) %}
@@ -822,9 +810,12 @@ action:
                (scene_day_var | default('') != '') or
                (snapshot_entities | length > 0) }}
       sequence:
+        # Wait for delay
         - delay:
             minutes: "{{ auto_off_day_var | default(0) | float }}"
+        # Turn off / restore
         - choose:
+            # Off-scene
             - conditions:
                 - condition: template
                   value_template: "{{ off_scene_day_var | default('') != '' }}"
@@ -836,6 +827,7 @@ action:
                   data:
                     name: Motion Control
                     message: "Auto-off Day: Off-scene activated."
+            # Snapshot
             - conditions:
                 - condition: template
                   value_template: "{{ state_attr('scene.snapshot_before_on','entities') | default({}) | length > 0 }}"
@@ -847,14 +839,13 @@ action:
                   data:
                     name: Motion Control
                     message: "Auto-off Day: Snapshot restored."
+            # Regular lights / scene
             - conditions:
                 - condition: template
                   value_template: >
                     {% set lights = [] %}
                     {% if day_lights_var is string and day_lights_var != '' %}
                       {% set lights = [day_lights_var] %}
-                    {% elif day_lights_var is mapping and day_lights_var.entity_id is string %}
-                      {% set lights = [day_lights_var.entity_id] %}
                     {% elif day_lights_var is iterable %}
                       {% set lights = day_lights_var | select('string') | list %}
                     {% elif scene_day_var | default('') != '' %}
@@ -869,38 +860,23 @@ action:
                       {% set lights = [] %}
                       {% if day_lights_var is string and day_lights_var != '' %}
                         {{ day_lights_var }}
-                      {% elif day_lights_var is mapping and day_lights_var.entity_id is string %}
-                        {{ day_lights_var.entity_id }}
                       {% elif day_lights_var is iterable %}
                         {{ day_lights_var | join(',') }}
                       {% elif scene_day_var | default('') != '' %}
-                        {% set ents = state_attr(scene_day_var, 'entities') | default({}) %}
+                        {% set ents = state_attr(scene_day_var,'entities') | default({}) %}
                         {% for k in ents.keys() %}{% set lights = lights + [k] %}{% endfor %}
                         {{ lights | join(',') }}
                       {% endif %}
                 - service: logbook.log
                   data:
                     name: Motion Control
-                    message: "Auto-off Day: Entities turned off."
+                    message: "Auto-off Day: Lights turned off."
 
   # --- Auto-off  Night Lights with Scene Restore ---
   
   
   - choose:
     - conditions:
-        # Check if we use sun times or fixed times
-        - condition: template
-          value_template: >
-            {% if use_sun_times_var %}
-              {{ is_state('sun.sun', 'below_horizon') }}
-            {% else %}
-              {% set t = now().time() %}
-              {% set start = strptime(night_start_var, '%H:%M:%S').time() %}
-              {% set end = strptime(night_end_var, '%H:%M:%S').time() %}
-              {{ (start <= end and t >= start and t <= end) or
-                 (start > end and (t >= start or t <= end)) }}
-            {% endif %}
-        # Check if there is anything to turn off
         - condition: template
           value_template: >
             {% set snapshot_entities = state_attr('scene.snapshot_before_on','entities') | default({}) %}
@@ -912,6 +888,7 @@ action:
         - delay:
             minutes: "{{ auto_off_night_var | default(0) | float }}"
         - choose:
+            # Off-scene
             - conditions:
                 - condition: template
                   value_template: "{{ off_scene_night_var | default('') != '' }}"
@@ -923,6 +900,7 @@ action:
                   data:
                     name: Motion Control
                     message: "Auto-off Night: Off-scene activated."
+            # Snapshot
             - conditions:
                 - condition: template
                   value_template: "{{ state_attr('scene.snapshot_before_on','entities') | default({}) | length > 0 }}"
@@ -934,14 +912,13 @@ action:
                   data:
                     name: Motion Control
                     message: "Auto-off Night: Snapshot restored."
+            # Regular lights / scene
             - conditions:
                 - condition: template
                   value_template: >
                     {% set lights = [] %}
                     {% if night_lights_var is string and night_lights_var != '' %}
                       {% set lights = [night_lights_var] %}
-                    {% elif night_lights_var is mapping and night_lights_var.entity_id is string %}
-                      {% set lights = [night_lights_var.entity_id] %}
                     {% elif night_lights_var is iterable %}
                       {% set lights = night_lights_var | select('string') | list %}
                     {% elif scene_night_var | default('') != '' %}
@@ -956,19 +933,17 @@ action:
                       {% set lights = [] %}
                       {% if night_lights_var is string and night_lights_var != '' %}
                         {{ night_lights_var }}
-                      {% elif night_lights_var is mapping and night_lights_var.entity_id is string %}
-                        {{ night_lights_var.entity_id }}
                       {% elif night_lights_var is iterable %}
                         {{ night_lights_var | join(',') }}
                       {% elif scene_night_var | default('') != '' %}
-                        {% set ents = state_attr(scene_night_var, 'entities') | default({}) %}
+                        {% set ents = state_attr(scene_night_var,'entities') | default({}) %}
                         {% for k in ents.keys() %}{% set lights = lights + [k] %}{% endfor %}
                         {{ lights | join(',') }}
                       {% endif %}
                 - service: logbook.log
                   data:
                     name: Motion Control
-                    message: "Auto-off Night: Entities turned off."
+                    message: "Auto-off Night: Lights turned off."
 
   # --- Auto-off Circadian Lights ---
   
