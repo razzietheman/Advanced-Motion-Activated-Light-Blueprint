@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.10"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.11"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -619,13 +619,17 @@ action:
               - conditions:
                   - condition: template
                     value_template: >
-                      {% set t = now().time() %}
-                      {% set start = strptime(day_start_var, '%H:%M:%S').time() %}
-                      {% set end = strptime(day_end_var, '%H:%M:%S').time() %}
-                      {% if start <= end %}
-                        {{ t >= start and t <= end }}
+                      {% if use_sun_times_var %}
+                        {{ is_state('sun.sun', 'above_horizon') }}
                       {% else %}
-                        {{ t >= start or t <= end }}
+                        {% set t = now().time() %}
+                        {% set start = strptime(day_start_var, '%H:%M:%S').time() %}
+                        {% set end = strptime(day_end_var, '%H:%M:%S').time() %}
+                        {% if start <= end %}
+                          {{ t >= start and t <= end }}
+                        {% else %}
+                          {{ t >= start or t <= end }}
+                        {% endif %}
                       {% endif %}
                 sequence:
                   - choose:
@@ -680,13 +684,17 @@ action:
               - conditions:
                   - condition: template
                     value_template: >
-                      {% set t = now().time() %}
-                      {% set start = strptime(night_start_var, '%H:%M:%S').time() %}
-                      {% set end = strptime(night_end_var, '%H:%M:%S').time() %}
-                      {% if start <= end %}
-                        {{ t >= start and t <= end }}
+                      {% if use_sun_times_var %}
+                        {{ is_state('sun.sun', 'below_horizon') }}
                       {% else %}
-                        {{ t >= start or t <= end }}
+                        {% set t = now().time() %}
+                        {% set start = strptime(night_start_var, '%H:%M:%S').time() %}
+                        {% set end = strptime(night_end_var, '%H:%M:%S').time() %}
+                        {% if start <= end %}
+                          {{ t >= start and t <= end }}
+                        {% else %}
+                          {{ t >= start or t <= end }}
+                        {% endif %}
                       {% endif %}
                 sequence:
                   - choose:
@@ -1236,6 +1244,7 @@ action:
               message: "Failsafe Night: Night entities turned off automatically."
 
       # Failsafe Night Lights – Scen
+      
       - conditions:
           - condition: template
             value_template: "{{ enable_failsafe_var and scene_night_var | default('') != '' }}"
