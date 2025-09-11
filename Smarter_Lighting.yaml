@@ -214,17 +214,6 @@ blueprint:
           unit_of_measurement: min
           mode: box
     
-    failsafe_timer_circular:
-      name: Failsafe Timer Circadian Lights (minutes)
-      description: "Number of minutes before circadian lights automatically turn off if auto-off has not been triggered."
-      default: []
-      selector:
-        number:
-          min: 1
-          max: 120
-          step: 1
-          unit_of_measurement: min
-    
     # --- Lux & Sun ---
     
     lux_sensor:
@@ -456,6 +445,17 @@ blueprint:
           step: 1
           unit_of_measurement: min
 
+    failsafe_timer_circular:
+      name: Failsafe Timer Circadian Lights (minutes)
+      description: "Number of minutes before circadian lights automatically turn off if auto-off has not been triggered."
+      default: []
+      selector:
+        number:
+          min: 1
+          max: 120
+          step: 1
+          unit_of_measurement: min
+    
     input_text_last_scene:
       name: Input Text - Last Scene
       description: "Input Text entity that stores the name of the last active scene."
