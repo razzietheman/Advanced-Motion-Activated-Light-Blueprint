@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.13"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.14"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -78,17 +78,6 @@ blueprint:
           entity:
             domain: light
 
-    brightness_day:
-      name: Day Brightness
-      description: "Brightness level (0-100%) for day lights. Leave empty to skip."
-      default: []
-      selector:
-        number:
-          min: 1
-          max: 100
-          step: 1
-          unit_of_measurement: "%"
-          
     auto_off_day:
       name: Day Lights Duration (minutes)
       description: "How long the day lights should stay on after the last motion."
@@ -100,7 +89,55 @@ blueprint:
           step: 1
           unit_of_measurement: min
           mode: box
+    
+    brightness_day:
+      name: Day Brightness
+      description: "Brightness level (0-100%) for day lights. Leave empty to skip."
+      default: []
+      selector:
+        number:
+          min: 1
+          max: 100
+          step: 1
+          unit_of_measurement: "%"
+          
+    day_start:
+      name: Day Start
+      description: "Time when the day mode activates."
+      default: "07:00:00"
+      selector:
+        time: {}
 
+    day_end:
+      name: Day End
+      description: "Time when the day mode deactivates. Day End cannot be the same as Night Start. Example: 21:59:59"
+      default: "21:59:59"
+      selector:
+        time: {}
+
+    active_weekdays_day:
+      name: Active Weekdays (Day)
+      description: "Select which days the day mode should be active."
+      default: []
+      selector:
+        select:
+          multiple: true
+          options:
+            - label: Monday
+              value: mon
+            - label: Tuesday
+              value: tue
+            - label: Wednesday
+              value: wed
+            - label: Thursday
+              value: thu
+            - label: Friday
+              value: fri
+            - label: Saturday
+              value: sat
+            - label: Sunday
+              value: sun
+    
     scene_night:
       name: Night Scene
       description: "Scene activated during nighttime (if selected)."
@@ -128,17 +165,6 @@ blueprint:
           entity:
             domain: light
 
-    brightness_night:
-      name: Night Brightness
-      description: "Brightness level (0-100%) for night lights. Leave empty to skip."
-      default: []
-      selector:
-        number:
-          min: 1
-          max: 100
-          step: 1
-          unit_of_measurement: "%"
-
     auto_off_night:
       name: Night Lights Duration (minutes)
       description: "How long the night lights should stay on after the last motion."
@@ -150,7 +176,98 @@ blueprint:
           step: 1
           unit_of_measurement: min
           mode: box
+    
+    brightness_night:
+      name: Night Brightness
+      description: "Brightness level (0-100%) for night lights. Leave empty to skip."
+      default: []
+      selector:
+        number:
+          min: 1
+          max: 100
+          step: 1
+          unit_of_measurement: "%"
 
+    night_start:
+      name: Night Start
+      description: "Time when night mode activates. Night Start cannot be the same as Day End. Example: 22:00:00"
+      default: "22:00:00"
+      selector:
+        time: {}
+
+    night_end:
+      name: Night End
+      description: "Time when night mode deactivates."
+      default: "06:59:59"
+      selector:
+        time: {}
+
+    active_weekdays_night:
+      name: Active Weekdays (Night)
+      description: "Select which days the night mode should be active."
+      default: []
+      selector:
+        select:
+          multiple: true
+          options:
+            - label: Monday
+              value: mon
+            - label: Tuesday
+              value: tue
+            - label: Wednesday
+              value: wed
+            - label: Thursday
+              value: thu
+            - label: Friday
+              value: fri
+            - label: Saturday
+              value: sat
+            - label: Sunday
+              value: sun
+
+    # --- Lux & Sun ---
+    
+    lux_sensor:
+      name: Lux Sensor
+      description: "Sensor that measures brightness (lux)."
+      default: []
+      selector:
+        entity:
+          domain: sensor
+          device_class: illuminance
+
+    lux_threshold:
+      name: Lux Threshold
+      description: "Lights only turn on if the lux value is below this threshold."
+      default: []
+      selector:
+        number:
+          min: 0
+          max: 3000
+          step: 1
+          unit_of_measurement: lx
+
+    use_sun_times:
+      name: Use Sunrise/Sunset
+      description: "Whether the automation should use sun times instead of fixed times."
+      default: false
+      selector:
+        boolean: {}
+
+    sunset_offset:
+      name: Sunset Offset
+      description: "Adjustment for sunset time, earlier or later."
+      default: "00:00:00"
+      selector:
+        time: {}
+
+    sunrise_offset:
+      name: Sunrise Offset
+      description: "Adjustment for sunrise time, earlier or later."
+      default: "00:00:00"
+      selector:
+        time: {}
+    
     # --- Circadian light ---
     
     circadian_enabled:
@@ -213,49 +330,6 @@ blueprint:
           step: 1
           unit_of_measurement: min
           mode: box
-    
-    # --- Lux & Sun ---
-    
-    lux_sensor:
-      name: Lux Sensor
-      description: "Sensor that measures brightness (lux)."
-      default: []
-      selector:
-        entity:
-          domain: sensor
-          device_class: illuminance
-
-    lux_threshold:
-      name: Lux Threshold
-      description: "Lights only turn on if the lux value is below this threshold."
-      default: []
-      selector:
-        number:
-          min: 0
-          max: 3000
-          step: 1
-          unit_of_measurement: lx
-
-    use_sun_times:
-      name: Use Sunrise/Sunset
-      description: "Whether the automation should use sun times instead of fixed times."
-      default: false
-      selector:
-        boolean: {}
-
-    sunset_offset:
-      name: Sunset Offset
-      description: "Adjustment for sunset time, earlier or later."
-      default: "00:00:00"
-      selector:
-        time: {}
-
-    sunrise_offset:
-      name: Sunrise Offset
-      description: "Adjustment for sunrise time, earlier or later."
-      default: "00:00:00"
-      selector:
-        time: {}
 
     # --- Fixed Off Times ---
     
@@ -299,82 +373,6 @@ blueprint:
     fixed_off_weekdays_2:
       name: Active Weekdays (Fixed Time 2)
       description: "Which weekdays fixed off time 2 should apply to."
-      default: []
-      selector:
-        select:
-          multiple: true
-          options:
-            - label: Monday
-              value: mon
-            - label: Tuesday
-              value: tue
-            - label: Wednesday
-              value: wed
-            - label: Thursday
-              value: thu
-            - label: Friday
-              value: fri
-            - label: Saturday
-              value: sat
-            - label: Sunday
-              value: sun
-
-    # --- Time Settings ---
-    
-    day_start:
-      name: Day Start
-      description: "Time when the day mode activates."
-      default: "07:00:00"
-      selector:
-        time: {}
-
-    day_end:
-      name: Day End
-      description: "Time when the day mode deactivates. Day End cannot be the same as Night Start. Example: 21:59:59"
-      default: "21:59:59"
-      selector:
-        time: {}
-
-    active_weekdays_day:
-      name: Active Weekdays (Day)
-      description: "Select which days the day mode should be active."
-      default: []
-      selector:
-        select:
-          multiple: true
-          options:
-            - label: Monday
-              value: mon
-            - label: Tuesday
-              value: tue
-            - label: Wednesday
-              value: wed
-            - label: Thursday
-              value: thu
-            - label: Friday
-              value: fri
-            - label: Saturday
-              value: sat
-            - label: Sunday
-              value: sun
-
-    night_start:
-      name: Night Start
-      description: "Time when night mode activates. Night Start cannot be the same as Day End. Example: 22:00:00"
-      default: "22:00:00"
-      selector:
-        time: {}
-
-    night_end:
-      name: Night End
-      description: "Time when night mode deactivates."
-      default: "06:59:59"
-      selector:
-        time: {}
-
-    active_weekdays_night:
-      name: Active Weekdays (Night)
-      description: "Select which days the night mode should be active."
       default: []
       selector:
         select:
