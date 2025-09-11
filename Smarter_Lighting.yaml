@@ -5,6 +5,7 @@ blueprint:
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
     lights turn off after a set time, day and night scenes are restored, and circadian lighting adapts to the sun's elevation.
     Everything is logged for full traceability. Easy to configure, flexible, and safe for daily operation.
+  
   domain: automation
   input:
 
@@ -752,9 +753,10 @@ action:
                     value_template: "{{ last_scene_entity | default('') != '' }}"
                 sequence:
                   - service: input_text.set_value
+                    target:
+                      entity_id: input_text.last_scene_triggered  # the correct input_text entity
                     data:
-                      entity_id: "{{ last_scene_entity }}"
-                      value: "Day/Night ON"
+                      value: "{{ last_scene_entity }}"  # logs the actual scene that was turned on
 
           # --- Logging ---
           
