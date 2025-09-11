@@ -761,7 +761,7 @@ action:
           
           - service: logbook.log
             data:
-              name: Motion Control
+              name: Lighting Automation
               message: "Day/Night activated via motion or switch."
 
   # --- Auto-off Main Lights ---
@@ -796,7 +796,7 @@ action:
                 {{ lights | join(',') }}
           - service: logbook.log
             data:
-              name: Motion Control
+              name: Lighting Automation
               message: "Auto-off Main: Main lights turned off."
 
   # --- Auto-off Day Lights ---
@@ -827,7 +827,9 @@ action:
         - delay:
             minutes: "{{ auto_off_day_var | default(0) | float }}"
         - choose:
+            
             # If off_scene_day_var is set, run it
+            
             - conditions:
                 - condition: template
                   value_template: "{{ off_scene_day_var is string and off_scene_day_var != '' }}"
@@ -835,7 +837,9 @@ action:
                 - service: scene.turn_on
                   target:
                     entity_id: "{{ off_scene_day_var }}"
+            
             # Otherwise, turn off the lights directly
+            
             - conditions: []
               sequence:
                 - service: light.turn_off
@@ -855,7 +859,7 @@ action:
             entity_id: scene.snapshot_before_on
         - service: logbook.log
           data:
-            name: Motion Control
+            name: Lighting Automation
             message: "Auto-off Day: Day lights turned off and snapshot restored."
 
   # --- Auto-off Night Lights ---
@@ -886,7 +890,9 @@ action:
         - delay:
             minutes: "{{ auto_off_night_var | default(0) | float }}"
         - choose:
+            
             # If off_scene_night_var is set, run it
+            
             - conditions:
                 - condition: template
                   value_template: "{{ off_scene_night_var is string and off_scene_night_var != '' }}"
@@ -894,7 +900,9 @@ action:
                 - service: scene.turn_on
                   target:
                     entity_id: "{{ off_scene_night_var }}"
+            
             # Otherwise, turn off the lights directly
+            
             - conditions: []
               sequence:
                 - service: light.turn_off
@@ -914,7 +922,7 @@ action:
             entity_id: scene.snapshot_before_on
         - service: logbook.log
           data:
-            name: Motion Control
+            name: Lighting Automation
             message: "Auto-off Night: Night lights turned off and snapshot restored."
 
   # --- Auto-off Circadian Lights ---
@@ -949,7 +957,7 @@ action:
                 {{ lights | join(',') }}
           - service: logbook.log
             data:
-              name: Motion Control
+              name: Lighting Automation
               message: "Auto-off Circadian: Circadian lights turned off automatically."
 
   # --- Fixed Off Times with Weekday ---
@@ -1026,7 +1034,7 @@ action:
               brightness: "{{ circadian_brightness_var }}"
           - service: logbook.log
             data:
-              name: Motion Control
+              name: Lighting Automation
               message: "Circadian Light: Adjusted automatically."
 
   # --- Circadian Light update (via time_pattern) ---
@@ -1053,7 +1061,7 @@ action:
               brightness: "{{ circadian_brightness_var }}"
           - service: logbook.log
             data:
-              name: Motion Control
+              name: Lighting Automation
               message: "Circadian Update: Adjusted automatically via time pattern."
 
   # --- Failsafe Main Lights ---
@@ -1102,7 +1110,7 @@ action:
                         {% endif %}
                   - service: logbook.log
                     data:
-                      name: Motion Control
+                      name: Lighting Automation
                       message: "Failsafe Main: Main lights turned off automatically (only if still on)."
 
   # --- Failsafe Day Lights ---
@@ -1137,7 +1145,7 @@ action:
                 {% endif %}
           - service: logbook.log
             data:
-              name: Motion Control
+              name: Lighting Automation
               message: "Failsafe Day: Day lights turned off automatically (only if still on)."
 
       - conditions:
@@ -1151,7 +1159,7 @@ action:
               entity_id: scene.snapshot_before_on
           - service: logbook.log
             data:
-              name: Motion Control
+              name: Lighting Automation
               message: "Failsafe Day: Day scene restored."
 
   # --- Failsafe Night Lights ---
@@ -1186,7 +1194,7 @@ action:
                 {% endif %}
           - service: logbook.log
             data:
-              name: Motion Control
+              name: Lighting Automation
               message: "Failsafe Night: Night lights turned off automatically (only if still on)."
 
       - conditions:
@@ -1200,7 +1208,7 @@ action:
               entity_id: scene.snapshot_before_on
           - service: logbook.log
             data:
-              name: Motion Control
+              name: Lighting Automation
               message: "Failsafe Night: Night scene restored."
 
   # --- Failsafe Circadian Lights ---
