@@ -445,7 +445,7 @@ blueprint:
           step: 1
           unit_of_measurement: min
 
-    failsafe_timer_circular:
+    failsafe_timer_circadian:
       name: Failsafe Timer Circadian Lights (minutes)
       description: "Number of minutes before circadian lights automatically turn off if auto-off has not been triggered."
       default: []
@@ -519,6 +519,7 @@ trigger:
   - platform: time_pattern
     minutes: 15  # Time for update, default 15 min
     id: circadian_update
+    enabled: "{{ circadian_enabled_var }}"
 
 mode: restart
 
@@ -559,7 +560,7 @@ variables:
   circadian_lights_var: !input circadian_lights
   circadian_min_temp_var: !input circadian_min_temp
   circadian_max_temp_var: !input circadian_max_temp
-  failsafe_timer_circular_var: !input failsafe_timer_circular
+  failsafe_timer_circadian_var: !input failsafe_timer_circadian
 
 # --- Actions ---
 
@@ -1230,7 +1231,7 @@ action:
               {{ lights | select('is_state','on') | list | count > 0 }}
         sequence:
           - delay:
-              minutes: "{{ failsafe_timer_circular_var | default(0) | float }}"
+              minutes: "{{ failsafe_timer_circadian_var | default(0) | float }}"
           - choose:
               - conditions:
                   - condition: template
