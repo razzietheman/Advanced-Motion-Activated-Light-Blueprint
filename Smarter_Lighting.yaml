@@ -949,52 +949,52 @@ action:
   # --- Fixed Off Times with Weekday ---
   
   - choose:
-      - conditions:
-          - condition: trigger
-            id: fixed_off_1
-          - condition: template
-            value_template: "{{ now().strftime('%a').lower() in fixed_off_weekdays_1_var }}"
-        sequence:
-          - service: light.turn_off
-            target:
-              entity_id: >
-                {% set lights = [] %}
-                {% for var in [main_lights_var, day_lights_var, night_lights_var] %}
-                  {% if var | default('') != '' %}
-                    {% if var is string %}
-                      {% set lights = lights + [var] %}
-                    {% elif var is mapping %}
-                      {% set lights = lights + [var.entity_id] %}
-                    {% elif var is iterable %}
-                      {% set lights = lights + var %}
-                    {% endif %}
+    - conditions:
+        - condition: trigger
+          id: fixed_off_1
+        - condition: template
+          value_template: "{{ now().strftime('%a').lower() in fixed_off_weekdays_1_var }}"
+      sequence:
+        - service: light.turn_off
+          target:
+            entity_id: >
+              {% set entities = [] %}
+              {% for var in [main_lights_var, day_lights_var, night_lights_var, optional_switches_var] %}
+                {% if var | default('') != '' %}
+                  {% if var is string %}
+                    {% set entities = entities + [var] %}
+                  {% elif var is mapping %}
+                    {% set entities = entities + [var.entity_id] %}
+                  {% elif var is iterable %}
+                    {% set entities = entities + var %}
                   {% endif %}
-                {% endfor %}
-                {{ lights | join(',') }}
+                {% endif %}
+              {% endfor %}
+              {{ entities | join(',') }}
 
   - choose:
-      - conditions:
-          - condition: trigger
-            id: fixed_off_2
-          - condition: template
-            value_template: "{{ now().strftime('%a').lower() in fixed_off_weekdays_2_var }}"
-        sequence:
-          - service: light.turn_off
-            target:
-              entity_id: >
-                {% set lights = [] %}
-                {% for var in [main_lights_var, day_lights_var, night_lights_var] %}
-                  {% if var | default('') != '' %}
-                    {% if var is string %}
-                      {% set lights = lights + [var] %}
-                    {% elif var is mapping %}
-                      {% set lights = lights + [var.entity_id] %}
-                    {% elif var is iterable %}
-                      {% set lights = lights + var %}
-                    {% endif %}
+    - conditions:
+        - condition: trigger
+          id: fixed_off_2
+        - condition: template
+          value_template: "{{ now().strftime('%a').lower() in fixed_off_weekdays_2_var }}"
+      sequence:
+        - service: light.turn_off
+          target:
+            entity_id: >
+              {% set entities = [] %}
+              {% for var in [main_lights_var, day_lights_var, night_lights_var, optional_switches_var] %}
+                {% if var | default('') != '' %}
+                  {% if var is string %}
+                    {% set entities = entities + [var] %}
+                  {% elif var is mapping %}
+                    {% set entities = entities + [var.entity_id] %}
+                  {% elif var is iterable %}
+                    {% set entities = entities + var %}
                   {% endif %}
-                {% endfor %}
-                {{ lights | join(',') }}
+                {% endif %}
+              {% endfor %}
+              {{ entities | join(',') }}
 
   # --- Circadian Light ---
   
