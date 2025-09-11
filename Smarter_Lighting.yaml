@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.9"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.12"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -623,10 +623,11 @@ action:
                       {% set start = strptime(day_start_var, '%H:%M:%S').time() %}
                       {% set end = strptime(day_end_var, '%H:%M:%S').time() %}
                       {% if start <= end %}
-                        {{ t >= start and t <= end }}
+                        {% set by_time = t >= start and t <= end %}
                       {% else %}
-                        {{ t >= start or t <= end }}
+                        {% set by_time = t >= start or t <= end %}
                       {% endif %}
+                      {{ is_state('sun.sun','above_horizon') or by_time }}
                 sequence:
                   - choose:
                       - conditions:
@@ -639,7 +640,9 @@ action:
                       - conditions:
                           - condition: template
                             value_template: >
-                              {{ day_lights_var | default('') != '' and (lux_sensor_var | default('') == '' or states(lux_sensor_var) | float < lux_threshold_var | float) }}
+                              {{ day_lights_var | default('') != '' and 
+                                 (lux_sensor_var | default('') == '' or 
+                                 states(lux_sensor_var) | float < lux_threshold_var | float) }}
                         sequence:
                           - service: light.turn_on
                             target:
@@ -661,7 +664,9 @@ action:
                       - conditions:
                           - condition: template
                             value_template: >
-                              {{ main_lights_var | default('') != '' and (lux_sensor_var | default('') == '' or states(lux_sensor_var) | float < lux_threshold_var | float) }}
+                              {{ main_lights_var | default('') != '' and 
+                                 (lux_sensor_var | default('') == '' or 
+                                 states(lux_sensor_var) | float < lux_threshold_var | float) }}
                         sequence:
                           - service: light.turn_on
                             target:
@@ -684,10 +689,11 @@ action:
                       {% set start = strptime(night_start_var, '%H:%M:%S').time() %}
                       {% set end = strptime(night_end_var, '%H:%M:%S').time() %}
                       {% if start <= end %}
-                        {{ t >= start and t <= end }}
+                        {% set by_time = t >= start and t <= end %}
                       {% else %}
-                        {{ t >= start or t <= end }}
+                        {% set by_time = t >= start or t <= end %}
                       {% endif %}
+                      {{ is_state('sun.sun','below_horizon') or by_time }}
                 sequence:
                   - choose:
                       - conditions:
@@ -700,7 +706,9 @@ action:
                       - conditions:
                           - condition: template
                             value_template: >
-                              {{ night_lights_var | default('') != '' and (lux_sensor_var | default('') == '' or states(lux_sensor_var) | float < lux_threshold_var | float) }}
+                              {{ night_lights_var | default('') != '' and 
+                                 (lux_sensor_var | default('') == '' or 
+                                 states(lux_sensor_var) | float < lux_threshold_var | float) }}
                         sequence:
                           - service: light.turn_on
                             target:
@@ -722,7 +730,9 @@ action:
                       - conditions:
                           - condition: template
                             value_template: >
-                              {{ main_lights_var | default('') != '' and (lux_sensor_var | default('') == '' or states(lux_sensor_var) | float < lux_threshold_var | float) }}
+                              {{ main_lights_var | default('') != '' and 
+                                 (lux_sensor_var | default('') == '' or 
+                                 states(lux_sensor_var) | float < lux_threshold_var | float) }}
                         sequence:
                           - service: light.turn_on
                             target:
@@ -747,14 +757,14 @@ action:
                       entity_id: "{{ last_scene_entity }}"
                       value: "Day/Night ON"
 
-          # --- Loggning ---
+          # --- Logging ---
           
           - service: logbook.log
             data:
               name: Motion Control
-              message: "Day/Night ON activated via motion or switch."
+              message: "Day/Night activated via motion or switch."
 
- # --- Auto-off Main Lights ---
+  # --- Auto-off Main Lights ---
   
   - choose:
       - conditions:
@@ -787,14 +797,21 @@ action:
           - service: logbook.log
             data:
               name: Motion Control
-              message: "Auto-off Main: Main-lights turned off."
+              message: "Auto-off Main: Main lights turned off."
 
-  # --- Auto-off Day lights with Scene Restore---
+  # --- Auto-off Day Lights ---
   
   - choose:
-      - conditions:
-          - condition: template
-            value_template: >
+    - conditions:
+        - condition: template
+          value_template: >
+            {% if use_sun_times_var %}
+              {% if is_state('sun.sun','above_horizon') %}
+                true
+              {% else %}
+                false
+              {% endif %}
+            {% else %}
               {% set t = now().time() %}
               {% set start = strptime(day_start_var, '%H:%M:%S').time() %}
               {% set end = strptime(day_end_var, '%H:%M:%S').time() %}
@@ -803,8 +820,24 @@ action:
               {% else %}
                 {{ t >= start or t <= end }}
               {% endif %}
-          - condition: template
-            value_template: >
+            {% endif %}
+        - condition: template
+          value_template: >
+            {% set lights = [] %}
+            {% if day_lights_var is string and day_lights_var != '' %}
+              {% set lights = [day_lights_var] %}
+            {% elif day_lights_var is mapping and day_lights_var.entity_id is string %}
+              {% set lights = [day_lights_var.entity_id] %}
+            {% elif day_lights_var is iterable %}
+              {% set lights = day_lights_var | select('string') | list %}
+            {% endif %}
+            {{ lights | count > 0 }}
+      sequence:
+        - delay:
+            minutes: "{{ auto_off_day_var | default(0) | float }}"
+        - service: light.turn_off
+          target:
+            entity_id: >
               {% set lights = [] %}
               {% if day_lights_var is string and day_lights_var != '' %}
                 {% set lights = [day_lights_var] %}
@@ -813,36 +846,28 @@ action:
               {% elif day_lights_var is iterable %}
                 {% set lights = day_lights_var | select('string') | list %}
               {% endif %}
-              {{ lights | count > 0 }}
-        sequence:
-          - delay:
-              minutes: "{{ auto_off_day_var | default(0) | float }}"
-          - service: light.turn_off
-            target:
-              entity_id: >
-                {% set lights = [] %}
-                {% if day_lights_var is string and day_lights_var != '' %}
-                  {% set lights = [day_lights_var] %}
-                {% elif day_lights_var is mapping and day_lights_var.entity_id is string %}
-                  {% set lights = [day_lights_var.entity_id] %}
-                {% elif day_lights_var is iterable %}
-                  {% set lights = day_lights_var | select('string') | list %}
-                {% endif %}
-                {{ lights | join(',') }}
-          - service: scene.turn_on
-            target:
-              entity_id: scene.snapshot_before_on
-          - service: logbook.log
-            data:
-              name: Motion Control
-              message: "Auto-off Day: Day lights turned off and scene restored."
+              {{ lights | join(',') }}
+        - service: scene.turn_on
+          target:
+            entity_id: scene.snapshot_before_on
+        - service: logbook.log
+          data:
+            name: Motion Control
+            message: "Auto-off Day: Day lights turned off and scene restored."
 
-  # --- Auto-off Night Lights with Scene Restore ---
+  # --- Auto-off Night Lights ---
   
   - choose:
-      - conditions:
-          - condition: template
-            value_template: >
+    - conditions:
+        - condition: template
+          value_template: >
+            {% if use_sun_times_var %}
+              {% if is_state('sun.sun','below_horizon') %}
+                true
+              {% else %}
+                false
+              {% endif %}
+            {% else %}
               {% set t = now().time() %}
               {% set start = strptime(night_start_var, '%H:%M:%S').time() %}
               {% set end = strptime(night_end_var, '%H:%M:%S').time() %}
@@ -851,8 +876,24 @@ action:
               {% else %}
                 {{ t >= start or t <= end }}
               {% endif %}
-          - condition: template
-            value_template: >
+            {% endif %}
+        - condition: template
+          value_template: >
+            {% set lights = [] %}
+            {% if night_lights_var is string and night_lights_var != '' %}
+              {% set lights = [night_lights_var] %}
+            {% elif night_lights_var is mapping and night_lights_var.entity_id is string %}
+              {% set lights = [night_lights_var.entity_id] %}
+            {% elif night_lights_var is iterable %}
+              {% set lights = night_lights_var | select('string') | list %}
+            {% endif %}
+            {{ lights | count > 0 }}
+      sequence:
+        - delay:
+            minutes: "{{ auto_off_night_var | default(0) | float }}"
+        - service: light.turn_off
+          target:
+            entity_id: >
               {% set lights = [] %}
               {% if night_lights_var is string and night_lights_var != '' %}
                 {% set lights = [night_lights_var] %}
@@ -861,29 +902,14 @@ action:
               {% elif night_lights_var is iterable %}
                 {% set lights = night_lights_var | select('string') | list %}
               {% endif %}
-              {{ lights | count > 0 }}
-        sequence:
-          - delay:
-              minutes: "{{ auto_off_night_var | default(0) | float }}"
-          - service: light.turn_off
-            target:
-              entity_id: >
-                {% set lights = [] %}
-                {% if night_lights_var is string and night_lights_var != '' %}
-                  {% set lights = [night_lights_var] %}
-                {% elif night_lights_var is mapping and night_lights_var.entity_id is string %}
-                  {% set lights = [night_lights_var.entity_id] %}
-                {% elif night_lights_var is iterable %}
-                  {% set lights = night_lights_var | select('string') | list %}
-                {% endif %}
-                {{ lights | join(',') }}
-          - service: scene.turn_on
-            target:
-              entity_id: scene.snapshot_before_on
-          - service: logbook.log
-            data:
-              name: Motion Control
-              message: "Auto-off Night: Night lights turned off and scene restored."
+              {{ lights | join(',') }}
+        - service: scene.turn_on
+          target:
+            entity_id: scene.snapshot_before_on
+        - service: logbook.log
+          data:
+            name: Motion Control
+            message: "Auto-off Night: Night lights turned off and scene restored."
 
   # --- Auto-off Circadian Lights ---
   
