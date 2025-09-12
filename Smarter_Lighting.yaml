@@ -849,128 +849,130 @@ action:
   # --- Auto-off Day Lights ---
   
   - choose:
-    - conditions:
-        - condition: template
-          value_template: >
-            {% if use_sun_times_var %}
-              {{ is_state('sun.sun','above_horizon') }}
-            {% else %}
-              {% set t = now().time() %}
-              {% set start = strptime(day_start_var, '%H:%M:%S').time() %}
-              {% set end = strptime(day_end_var, '%H:%M:%S').time() %}
-              {% if start <= end %}
-                {{ t >= start and t <= end }}
+      - conditions:
+          - condition: template
+            value_template: >
+              {% if use_sun_times_var %}
+                {{ is_state('sun.sun','above_horizon') }}
               {% else %}
-                {{ t >= start or t <= end }}
+                {% set t = now().time() %}
+                {% set start = strptime(day_start_var, '%H:%M:%S').time() %}
+                {% set end = strptime(day_end_var, '%H:%M:%S').time() %}
+                {% if start <= end %}
+                  {{ t >= start and t <= end }}
+                {% else %}
+                  {{ t >= start or t <= end }}
+                {% endif %}
               {% endif %}
-            {% endif %}
-        - condition: template
-          value_template: >
-            {{ (day_lights_var is string and day_lights_var != '') 
-                or (day_lights_var is mapping and day_lights_var.entity_id is string) 
-                or (day_lights_var is iterable and (day_lights_var | select('string') | list | count > 0))
-                or (off_scene_day_var is string and off_scene_day_var != '') }}
-      sequence:
-        - delay:
-            minutes: "{{ auto_off_day_var | default(0) | float }}"
-        - choose:
-            
-            # If off_scene_day_var is set, run it
-            
-            - conditions:
-                - condition: template
-                  value_template: "{{ off_scene_day_var is string and off_scene_day_var != '' }}"
-              sequence:
-                - service: scene.turn_on
-                  target:
-                    entity_id: "{{ off_scene_day_var }}"
-            
-            # Otherwise, turn off the lights directly
-            
-            - conditions: []
-              sequence:
-                - service: light.turn_off
-                  target:
-                    entity_id: >
-                      {% set lights = [] %}
-                      {% if day_lights_var is string and day_lights_var != '' %}
-                        {% set lights = [day_lights_var] %}
-                      {% elif day_lights_var is mapping and day_lights_var.entity_id is string %}
-                        {% set lights = [day_lights_var.entity_id] %}
-                      {% elif day_lights_var is iterable %}
-                        {% set lights = day_lights_var | select('string') | list %}
-                      {% endif %}
-                      {{ lights | join(',') }}
-        - service: scene.turn_on
-          target:
-            entity_id: scene.snapshot_before_on
-        - service: logbook.log
-          data:
-            name: Lighting Automation
-            message: "Auto-off Day: Day lights turned off and snapshot restored."
+          - condition: template
+            value_template: >
+              {{ (day_lights_var is string and day_lights_var != '') 
+                  or (day_lights_var is mapping and day_lights_var.entity_id is string) 
+                  or (day_lights_var is iterable and (day_lights_var | select('string') | list | count > 0))
+                  or (off_scene_day_var is string and off_scene_day_var != '') }}
+    sequence:
+      - delay:
+          minutes: "{{ auto_off_day_var | default(0) | float }}"
+      - choose:
+          
+          # If off_scene_day_var is set, run it
+          
+          - conditions:
+              - condition: template
+                value_template: "{{ off_scene_day_var is string and off_scene_day_var != '' }}"
+            sequence:
+              - service: scene.turn_on
+                target:
+                  entity_id: "{{ off_scene_day_var }}"
+              - service: logbook.log
+                data:
+                  name: Lighting Automation
+                  message: "Auto-off Day: Day lights turned off and snapshot restored."
+          
+          # Annars, stäng av lamporna direkt utan snapshot
+          
+          - conditions: []
+            sequence:
+              - service: light.turn_off
+                target:
+                  entity_id: >
+                    {% set lights = [] %}
+                    {% if day_lights_var is string and day_lights_var != '' %}
+                      {% set lights = [day_lights_var] %}
+                    {% elif day_lights_var is mapping and day_lights_var.entity_id is string %}
+                      {% set lights = [day_lights_var.entity_id] %}
+                    {% elif day_lights_var is iterable %}
+                      {% set lights = day_lights_var | select('string') | list %}
+                    {% endif %}
+                    {{ lights | join(',') }}
+              - service: logbook.log
+                data:
+                  name: Lighting Automation
+                  message: "Auto-off Day: Day lights turned off."
 
   # --- Auto-off Night Lights ---
   
   - choose:
-    - conditions:
-        - condition: template
-          value_template: >
-            {% if use_sun_times_var %}
-              {{ is_state('sun.sun','below_horizon') }}
-            {% else %}
-              {% set t = now().time() %}
-              {% set start = strptime(night_start_var, '%H:%M:%S').time() %}
-              {% set end = strptime(night_end_var, '%H:%M:%S').time() %}
-              {% if start <= end %}
-                {{ t >= start and t <= end }}
+      - conditions:
+          - condition: template
+            value_template: >
+              {% if use_sun_times_var %}
+                {{ is_state('sun.sun','below_horizon') }}
               {% else %}
-                {{ t >= start or t <= end }}
+                {% set t = now().time() %}
+                {% set start = strptime(night_start_var, '%H:%M:%S').time() %}
+                {% set end = strptime(night_end_var, '%H:%M:%S').time() %}
+                {% if start <= end %}
+                  {{ t >= start and t <= end }}
+                {% else %}
+                  {{ t >= start or t <= end }}
+                {% endif %}
               {% endif %}
-            {% endif %}
-        - condition: template
-          value_template: >
-            {{ (night_lights_var is string and night_lights_var != '') 
-                or (night_lights_var is mapping and night_lights_var.entity_id is string) 
-                or (night_lights_var is iterable and (night_lights_var | select('string') | list | count > 0))
-                or (off_scene_night_var is string and off_scene_night_var != '') }}
-      sequence:
-        - delay:
-            minutes: "{{ auto_off_night_var | default(0) | float }}"
-        - choose:
-            
-            # If off_scene_night_var is set, run it
-            
-            - conditions:
-                - condition: template
-                  value_template: "{{ off_scene_night_var is string and off_scene_night_var != '' }}"
-              sequence:
-                - service: scene.turn_on
-                  target:
-                    entity_id: "{{ off_scene_night_var }}"
-            
-            # Otherwise, turn off the lights directly
-            
-            - conditions: []
-              sequence:
-                - service: light.turn_off
-                  target:
-                    entity_id: >
-                      {% set lights = [] %}
-                      {% if night_lights_var is string and night_lights_var != '' %}
-                        {% set lights = [night_lights_var] %}
-                      {% elif night_lights_var is mapping and night_lights_var.entity_id is string %}
-                        {% set lights = [night_lights_var.entity_id] %}
-                      {% elif night_lights_var is iterable %}
-                        {% set lights = night_lights_var | select('string') | list %}
-                      {% endif %}
-                      {{ lights | join(',') }}
-        - service: scene.turn_on
-          target:
-            entity_id: scene.snapshot_before_on
-        - service: logbook.log
-          data:
-            name: Lighting Automation
-            message: "Auto-off Night: Night lights turned off and snapshot restored."
+          - condition: template
+            value_template: >
+              {{ (night_lights_var is string and night_lights_var != '') 
+                  or (night_lights_var is mapping and night_lights_var.entity_id is string) 
+                  or (night_lights_var is iterable and (night_lights_var | select('string') | list | count > 0))
+                  or (off_scene_night_var is string and off_scene_night_var != '') }}
+    sequence:
+      - delay:
+          minutes: "{{ auto_off_night_var | default(0) | float }}"
+      - choose:
+          
+          # If off_scene_night_var is set, run it
+          
+          - conditions:
+              - condition: template
+                value_template: "{{ off_scene_night_var is string and off_scene_night_var != '' }}"
+            sequence:
+              - service: scene.turn_on
+                target:
+                  entity_id: "{{ off_scene_night_var }}"
+              - service: logbook.log
+                data:
+                  name: Lighting Automation
+                  message: "Auto-off Night: Night lights turned off and snapshot restored."
+          
+          # Annars, stäng av lamporna direkt utan snapshot
+          
+          - conditions: []
+            sequence:
+              - service: light.turn_off
+                target:
+                  entity_id: >
+                    {% set lights = [] %}
+                    {% if night_lights_var is string and night_lights_var != '' %}
+                      {% set lights = [night_lights_var] %}
+                    {% elif night_lights_var is mapping and night_lights_var.entity_id is string %}
+                      {% set lights = [night_lights_var.entity_id] %}
+                    {% elif night_lights_var is iterable %}
+                      {% set lights = night_lights_var | select('string') | list %}
+                    {% endif %}
+                    {{ lights | join(',') }}
+              - service: logbook.log
+                data:
+                  name: Lighting Automation
+                  message: "Auto-off Night: Night lights turned off."
 
   # --- Auto-off Circadian Lights ---
   
