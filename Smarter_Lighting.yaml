@@ -482,8 +482,6 @@ trigger:
     from: "on"
     to: "off"
     id: motion_off
-    for:
-      minutes: 3
     
   # --- Optional switches fix ---
   
