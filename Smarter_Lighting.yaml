@@ -636,13 +636,22 @@ action:
                       {% endif %}
                 sequence:
                   - choose:
+                      
+                      # Scen with LUX
+                      
                       - conditions:
                           - condition: template
-                            value_template: "{{ scene_day_var | default([]) != [] }}"
+                            value_template: >
+                              {{ scene_day_var | default([]) != [] and
+                                 (lux_sensor_var | default('') == '' or
+                                 states(lux_sensor_var) | float < lux_threshold_var | float) }}
                         sequence:
                           - service: scene.turn_on
                             target:
                               entity_id: "{{ scene_day_var }}"
+                      
+                      # Lights with LUX
+                      
                       - conditions:
                           - condition: template
                             value_template: >
@@ -667,6 +676,9 @@ action:
                                 {% else %}
                                   255
                                 {% endif %}
+                      
+                      # Main-lights with LUX
+                      
                       - conditions:
                           - condition: template
                             value_template: >
@@ -706,13 +718,22 @@ action:
                       {% endif %}
                 sequence:
                   - choose:
+                      
+                      # Scen with LUX
+                      
                       - conditions:
                           - condition: template
-                            value_template: "{{ scene_night_var | default([]) != [] }}"
+                            value_template: >
+                              {{ scene_night_var | default([]) != [] and
+                                 (lux_sensor_var | default('') == '' or
+                                 states(lux_sensor_var) | float < lux_threshold_var | float) }}
                         sequence:
                           - service: scene.turn_on
                             target:
                               entity_id: "{{ scene_night_var }}"
+                      
+                      # Lights with LUX
+                      
                       - conditions:
                           - condition: template
                             value_template: >
@@ -737,6 +758,9 @@ action:
                                 {% else %}
                                   255
                                 {% endif %}
+                      
+                      # Main-lights with LUX
+                      
                       - conditions:
                           - condition: template
                             value_template: >
@@ -779,7 +803,7 @@ action:
                       entity_id: input_text.last_scene_triggered  # the correct input_text entity
                     data:
                       value: "{{ scene_night_var }}"  # logs the actual scene that was turned on
-
+                      
           # --- Logging ---
           
           - service: logbook.log
@@ -1158,7 +1182,9 @@ action:
               {% set current_time = now().time() %}
               {% set day_start_time = strptime(day_start, '%H:%M:%S').time() %}
               {{ current_time >= day_start_time }}
+          
           # ✅ Extra safeguard: run only if no motion is active
+          
           - condition: template
             value_template: >
               {{ expand(motion_sensors) | selectattr('state','eq','on') | list | count == 0 }}
@@ -1233,7 +1259,9 @@ action:
               {% set current_time = now().time() %}
               {% set night_start_time = strptime(night_start, '%H:%M:%S').time() %}
               {{ current_time >= night_start_time }}
+          
           # ✅ Extra safeguard: run only if no motion is active
+          
           - condition: template
             value_template: >
               {{ expand(motion_sensors) | selectattr('state','eq','on') | list | count == 0 }}
@@ -1332,5 +1360,5 @@ action:
                       {% endif %}
                 - service: logbook.log
                   data:
-                    name: Motion Control
+                    name: Lighting Automation
                     message: "Failsafe Circadian Lights: Circadian lights turned off automatically."
