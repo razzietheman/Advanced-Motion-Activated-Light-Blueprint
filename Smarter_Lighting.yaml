@@ -522,8 +522,7 @@ trigger:
     id: circadian_update
     enabled: "{{ circadian_enabled_var }}"
 
-mode: parallel
-max: 100
+mode: restart
 
 # --- Variables ---
 
