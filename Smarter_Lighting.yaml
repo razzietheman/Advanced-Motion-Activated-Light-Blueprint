@@ -753,7 +753,8 @@ action:
           - choose:
               - conditions:
                   - condition: template
-                    value_template: "{{ scene_day_var | default('') != '' }}"
+                    value_template: >
+                      {{ day_lights_var | default([]) | select('is_state','on') | list | count > 0 }}
                 sequence:
                   - service: input_text.set_value
                     target:
@@ -763,7 +764,8 @@ action:
               
               - conditions:
                   - condition: template
-                    value_template: "{{ scene_night_var | default('') != '' }}"
+                    value_template: >
+                      {{ night_lights_var | default([]) | select('is_state','on') | list | count > 0 }}
                 sequence:
                   - service: input_text.set_value
                     target:
