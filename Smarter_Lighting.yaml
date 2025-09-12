@@ -630,46 +630,46 @@ action:
                         {% set by_time = t >= start or t <= end %}
                       {% endif %}
                       {% if states('sun.sun') in ['above_horizon','below_horizon'] %}
-                        {{ is_state('sun.sun','above_horizon') and by_time }}
+                        {{ by_time and is_state('sun.sun','above_horizon') }}
                       {% else %}
                         {{ by_time }}
                       {% endif %}
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: >
+                      {{ scene_day_var | default([]) != [] and
+                         (lux_sensor_var | default('') == '' or
+                          states(lux_sensor_var) | float < lux_threshold_var | float) }}
                 sequence:
-                  - choose:
-                      - conditions:
-                          - condition: template
-                            value_template: >
-                              {{ scene_day_var | default([]) != [] and
-                                 (lux_sensor_var | default('') == '' or
-                                  states(lux_sensor_var) | float < lux_threshold_var | float) }}
-                        sequence:
-                          - service: scene.turn_on
-                            target:
-                              entity_id: "{{ scene_day_var }}"
-                      - conditions:
-                          - condition: template
-                            value_template: >
-                              {{ day_lights_var | default('') != '' and 
-                                 (lux_sensor_var | default('') == '' or 
-                                  states(lux_sensor_var) | float < lux_threshold_var | float) }}
-                        sequence:
-                          - service: light.turn_on
-                            target:
-                              entity_id: >
-                                {% if day_lights_var is string %}
-                                  {{ day_lights_var }}
-                                {% elif day_lights_var is mapping %}
-                                  {{ day_lights_var.entity_id }}
-                                {% elif day_lights_var is iterable %}
-                                  {{ day_lights_var | join(',') }}
-                                {% endif %}
-                            data:
-                              brightness: >
-                                {% if brightness_day_var != '' %}
-                                  {{ (brightness_day_var | int * 255 / 100) | int }}
-                                {% else %}
-                                  255
-                                {% endif %}
+                  - service: scene.turn_on
+                    target:
+                      entity_id: "{{ scene_day_var }}"
+              - conditions:
+                  - condition: template
+                    value_template: >
+                      {{ day_lights_var | default('') != '' and 
+                         (lux_sensor_var | default('') == '' or 
+                          states(lux_sensor_var) | float < lux_threshold_var | float) }}
+                sequence:
+                  - service: light.turn_on
+                    target:
+                      entity_id: >
+                        {% if day_lights_var is string %}
+                          {{ day_lights_var }}
+                        {% elif day_lights_var is mapping %}
+                          {{ day_lights_var.entity_id }}
+                        {% elif day_lights_var is iterable %}
+                          {{ day_lights_var | join(',') }}
+                        {% endif %}
+                    data:
+                      brightness: >
+                        {% if brightness_day_var != '' %}
+                          {{ (brightness_day_var | int * 255 / 100) | int }}
+                        {% else %}
+                          255
+                        {% endif %}
 
           # --- Night Scene ---
           
@@ -686,46 +686,46 @@ action:
                         {% set by_time = t >= start or t <= end %}
                       {% endif %}
                       {% if states('sun.sun') in ['above_horizon','below_horizon'] %}
-                        {{ is_state('sun.sun','below_horizon') and by_time }}
+                        {{ by_time and is_state('sun.sun','below_horizon') }}
                       {% else %}
                         {{ by_time }}
                       {% endif %}
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: >
+                      {{ scene_night_var | default([]) != [] and
+                         (lux_sensor_var | default('') == '' or
+                          states(lux_sensor_var) | float < lux_threshold_var | float) }}
                 sequence:
-                  - choose:
-                      - conditions:
-                          - condition: template
-                            value_template: >
-                              {{ scene_night_var | default([]) != [] and
-                                 (lux_sensor_var | default('') == '' or
-                                  states(lux_sensor_var) | float < lux_threshold_var | float) }}
-                        sequence:
-                          - service: scene.turn_on
-                            target:
-                              entity_id: "{{ scene_night_var }}"
-                      - conditions:
-                          - condition: template
-                            value_template: >
-                              {{ night_lights_var | default('') != '' and 
-                                 (lux_sensor_var | default('') == '' or 
-                                  states(lux_sensor_var) | float < lux_threshold_var | float) }}
-                        sequence:
-                          - service: light.turn_on
-                            target:
-                              entity_id: >
-                                {% if night_lights_var is string %}
-                                  {{ night_lights_var }}
-                                {% elif night_lights_var is mapping %}
-                                  {{ night_lights_var.entity_id }}
-                                {% elif night_lights_var is iterable %}
-                                  {{ night_lights_var | join(',') }}
-                                {% endif %}
-                            data:
-                              brightness: >
-                                {% if brightness_night_var != '' %}
-                                  {{ (brightness_night_var | int * 255 / 100) | int }}
-                                {% else %}
-                                  255
-                                {% endif %}
+                  - service: scene.turn_on
+                    target:
+                      entity_id: "{{ scene_night_var }}"
+              - conditions:
+                  - condition: template
+                    value_template: >
+                      {{ night_lights_var | default('') != '' and 
+                         (lux_sensor_var | default('') == '' or 
+                          states(lux_sensor_var) | float < lux_threshold_var | float) }}
+                sequence:
+                  - service: light.turn_on
+                    target:
+                      entity_id: >
+                        {% if night_lights_var is string %}
+                          {{ night_lights_var }}
+                        {% elif night_lights_var is mapping %}
+                          {{ night_lights_var.entity_id }}
+                        {% elif night_lights_var is iterable %}
+                          {{ night_lights_var | join(',') }}
+                        {% endif %}
+                    data:
+                      brightness: >
+                        {% if brightness_night_var != '' %}
+                          {{ (brightness_night_var | int * 255 / 100) | int }}
+                        {% else %}
+                          255
+                        {% endif %}
 
           # --- Save last scene ---
           
