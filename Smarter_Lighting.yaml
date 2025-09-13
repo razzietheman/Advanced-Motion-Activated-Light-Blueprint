@@ -739,12 +739,45 @@ action:
                     data:
                       value: "{{ scene_night_var }}"
 
-          # --- Logging ---
+          # --- Loggning ---
           
           - service: logbook.log
             data:
-              name: Lighting Automation
-              message: "Day/Night activated via motion or switch."
+              name: Belysningsautomation
+              message: >
+                {% set t = now().time() %}
+                {% set day_start = strptime(day_start_var, '%H:%M:%S').time() %}
+                {% set day_end = strptime(day_end_var, '%H:%M:%S').time() %}
+                {% set night_start = strptime(night_start_var, '%H:%M:%S').time() %}
+                {% set night_end = strptime(night_end_var, '%H:%M:%S').time() %}
+                {% if states('sun.sun') in ['above_horizon','below_horizon'] %}
+                  {% if is_state('sun.sun','above_horizon') %}
+                    {% set mode = 'Dagläge' %}
+                  {% elif is_state('sun.sun','below_horizon') %}
+                    {% set mode = 'Nattläge' %}
+                  {% else %}
+                    {% set mode = 'Okänt läge' %}
+                  {% endif %}
+                {% else %}
+                  {% if day_start <= day_end %}
+                    {% set is_daytime = (t >= day_start and t <= day_end) %}
+                  {% else %}
+                    {% set is_daytime = (t >= day_start or t <= day_end) %}
+                  {% endif %}
+                  {% if night_start <= night_end %}
+                    {% set is_nighttime = (t >= night_start and t <= night_end) %}
+                  {% else %}
+                    {% set is_nighttime = (t >= night_start or t <= night_end) %}
+                  {% endif %}
+                  {% if is_daytime %}
+                    {% set mode = 'Dagläge' %}
+                  {% elif is_nighttime %}
+                    {% set mode = 'Nattläge' %}
+                  {% else %}
+                    {% set mode = 'Okänt läge' %}
+                  {% endif %}
+                {% endif %}
+                Lighting turned on via {{ 'motion' if trigger.id == 'motion_on' else 'switch' }} ({{ mode }}).
 
   # --- Auto-off Main Lights ---
   
