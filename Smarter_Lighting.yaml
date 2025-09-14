@@ -855,7 +855,6 @@ action:
                         {% set lights = day_lights_var | select('string') | list %}
                       {% endif %}
                       {{ (lights | select('is_state','on') | list | count > 0)
-                         and (expand(motion_sensors) | selectattr('state','eq','on') | list | count == 0) }}
                 sequence:
                   - choose:
                       - conditions:
