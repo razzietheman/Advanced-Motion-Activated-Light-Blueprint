@@ -50,13 +50,13 @@ blueprint:
               domain: switch
               multiple: true
 
-    # --- Day Lighting ---
+    # --- Main lights ---
     
-    day_lighting:
-      name: Day Lighting
-      description: Settings for day lights and day scenes
+    head_lighting:
+      name: Main lights
+      description: Settings for main lights
       collapsed: true
-      icon: mdi:weather-sunny
+      icon: mdi:lightbulb-on-outline
       input:
         main_lights:
           name: Main Lights
@@ -79,6 +79,14 @@ blueprint:
               unit_of_measurement: min
               mode: box
 
+    # --- Day Lighting ---
+    
+    day_lighting:
+      name: Day Lighting
+      description: Settings for day lights and day scenes
+      collapsed: true
+      icon: mdi:weather-sunny
+      input:    
         scene_day:
           name: Day Scene
           description: "Scene activated during daytime (if selected)."
