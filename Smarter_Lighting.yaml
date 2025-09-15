@@ -296,7 +296,7 @@ blueprint:
           selector:
             time: {}
 
-    # --- Circadian ---
+    # --- Circadian Lights---
     
     circadian:
       name: Circadian Lights
