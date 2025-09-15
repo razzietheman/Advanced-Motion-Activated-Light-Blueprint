@@ -533,7 +533,7 @@ trigger:
   - platform: time_pattern
     minutes: 15  # Time for update, default 15 min
     id: circadian_update
-    enabled: "{{ circadian_enabled_var }}"
+    enabled: !input circadian_enabled
 
 mode: parallel
 max: 100
