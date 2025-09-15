@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.17"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -9,469 +9,475 @@ blueprint:
   domain: automation
   input:
 
-    # --- Loggning ---
+    # --- Logging ---
     
-    use_persistent_notifications:
-      name: Send logs as notifications
-      description: When enabled, logs are sent as notifications instead of appearing in the logbook.
-      default: false
-      selector:
-        boolean: {}
-    
+    logging:
+      name: Logging
+      description: Logging and notification settings
+      input:
+        use_persistent_notifications:
+          name: Use notifications instead of logbook
+          description: "If enabled, logs are sent as notifications instead of appearing in the logbook."
+          default: false
+          selector:
+            boolean: {}
+
     # --- Sensors & Switches ---
-  
-    motion_sensors:
-      name: Motion Sensor(s)
-      description: "One or more motion sensors that will control the lighting."
-      default: []
-      selector:
-        entity:
-          domain: binary_sensor
-          multiple: true
-
-    optional_switches:
-      name: Smart Plugs or Switches
-      description: "Optional smart plugs or switches that can control the lights/devices."
-      default: []
-      selector:
-        entity:
-          domain: switch
-          multiple: true
-
-    # --- Lights & Scenes ---
     
-    main_lights:
-      name: Main Lights
-      description: "Lights that should always turn on when motion is detected (regardless of day/night)."
-      default: []
-      selector:
-        target:
-          entity:
-            domain: light
+    sensors_switches:
+      name: Sensors & Switches
+      description: Choose motion sensors and optional smart plugs/switches
+      input:
+        motion_sensors:
+          name: Motion Sensor(s)
+          description: "One or more motion sensors to control the lighting."
+          default: []
+          selector:
+            entity:
+              domain: binary_sensor
+              multiple: true
 
-    auto_off_main:
-      name: Main Lights Duration (minutes)
-      description: "How long the main lights should stay on after the last motion."
-      default: []
-      selector:
-        number:
-          min: 0
-          max: 1200
-          step: 1
-          unit_of_measurement: min
-          mode: box
+        optional_switches:
+          name: Smart Plugs or Switches
+          description: "Optional smart plugs or switches that can control the lights/devices."
+          default: []
+          selector:
+            entity:
+              domain: switch
+              multiple: true
 
-    scene_day:
-      name: Day Scene
-      description: "Scene activated during daytime (if selected)."
-      default: []
-      selector:
-        entity:
-          domain: scene
-          multiple: false
-
-    off_scene_day:
-      name: Off Scene Day
-      description: "Scene to activate when Day lights should turn off."
-      default: []
-      selector:
-        entity:
-          domain: scene
-          multiple: false
+    # --- Day Lighting ---
     
-    day_lights:
-      name: Daytime Lights
-      description: "Lights that should only turn on during the day."
-      default: []
-      selector:
-        target:
-          entity:
-            domain: light
+    day_lighting:
+      name: Day Lighting
+      description: Settings for day lights and day scenes
+      input:
+        main_lights:
+          name: Main Lights
+          description: "Lights that always turn on when motion is detected (regardless of day/night)."
+          default: []
+          selector:
+            target:
+              entity:
+                domain: light
 
-    auto_off_day:
-      name: Day Lights Duration (minutes)
-      description: "How long the day lights should stay on after the last motion."
-      default: []
-      selector:
-        number:
-          min: 0
-          max: 1200
-          step: 1
-          unit_of_measurement: min
-          mode: box
+        auto_off_main:
+          name: Main Lights Duration (minutes)
+          description: "How long main lights stay on after the last motion."
+          default: []
+          selector:
+            number:
+              min: 0
+              max: 1200
+              step: 1
+              unit_of_measurement: min
+              mode: box
+
+        scene_day:
+          name: Day Scene
+          description: "Scene activated during daytime (if selected)."
+          default: []
+          selector:
+            entity:
+              domain: scene
+              multiple: false
+
+        off_scene_day:
+          name: Off Scene Day
+          description: "Scene to activate when day lights should turn off."
+          default: []
+          selector:
+            entity:
+              domain: scene
+              multiple: false
+
+        day_lights:
+          name: Day Lights
+          description: "Lights that only turn on during the day."
+          default: []
+          selector:
+            target:
+              entity:
+                domain: light
+
+        auto_off_day:
+          name: Day Lights Duration (minutes)
+          default: []
+          selector:
+            number:
+              min: 0
+              max: 1200
+              step: 1
+              unit_of_measurement: min
+              mode: box
+
+        brightness_day:
+          name: Day Brightness
+          description: "Optional brightness level for day lights (0–100%)."
+          default: []
+          selector:
+            number:
+              min: 0
+              max: 100
+              step: 1
+              unit_of_measurement: "%"
+
+        day_start:
+          name: Day Start
+          description: "Time when day mode activates."
+          default: "07:00:00"
+          selector:
+            time: {}
+
+        day_end:
+          name: Day End
+          description: "Time when day mode deactivates. Day End cannot be the same as Night Start."
+          default: "21:59:59"
+          selector:
+            time: {}
+
+        active_weekdays_day:
+          name: Active Weekdays (Day)
+          description: "Select which days day mode should be active."
+          default: []
+          selector:
+            select:
+              multiple: true
+              options:
+                - label: Monday
+                  value: mon
+                - label: Tuesday
+                  value: tue
+                - label: Wednesday
+                  value: wed
+                - label: Thursday
+                  value: thu
+                - label: Friday
+                  value: fri
+                - label: Saturday
+                  value: sat
+                - label: Sunday
+                  value: sun
+
+    # --- Night Lighting ---
     
-    brightness_day:
-      name: Day Brightness
-      description: "Brightness level (0-100%) for day lights. Leave empty to skip."
-      default: []
-      selector:
-        number:
-          min: 1
-          max: 100
-          step: 1
-          unit_of_measurement: "%"
-          
-    day_start:
-      name: Day Start
-      description: "Time when the day mode activates."
-      default: "07:00:00"
-      selector:
-        time: {}
+    night_lighting:
+      name: Night Lighting
+      description: Settings for night lights and night scenes
+      input:
+        scene_night:
+          name: Night Scene
+          description: "Scene activated during nighttime (if selected)."
+          default: []
+          selector:
+            entity:
+              domain: scene
+              multiple: false
 
-    day_end:
-      name: Day End
-      description: "Time when the day mode deactivates. Day End cannot be the same as Night Start. Example: 21:59:59"
-      default: "21:59:59"
-      selector:
-        time: {}
+        off_scene_night:
+          name: Off Scene Night
+          description: "Scene to activate when night lights should turn off."
+          default: []
+          selector:
+            entity:
+              domain: scene
+              multiple: false
 
-    active_weekdays_day:
-      name: Active Weekdays (Day)
-      description: "Select which days the day mode should be active."
-      default: []
-      selector:
-        select:
-          multiple: true
-          options:
-            - label: Monday
-              value: mon
-            - label: Tuesday
-              value: tue
-            - label: Wednesday
-              value: wed
-            - label: Thursday
-              value: thu
-            - label: Friday
-              value: fri
-            - label: Saturday
-              value: sat
-            - label: Sunday
-              value: sun
-    
-    scene_night:
-      name: Night Scene
-      description: "Scene activated during nighttime (if selected)."
-      default: []
-      selector:
-        entity:
-          domain: scene
-          multiple: false
+        night_lights:
+          name: Night Lights
+          description: "Lights that only turn on during the night."
+          default: []
+          selector:
+            target:
+              entity:
+                domain: light
 
-    off_scene_night:
-      name: Off Scene Night
-      description: "Scene to activate when Night lights should turn off."
-      default: []
-      selector:
-        entity:
-          domain: scene
-          multiple: false
-    
-    night_lights:
-      name: Night Lights
-      description: "Lights that should only turn on during the night."
-      default: []
-      selector:
-        target:
-          entity:
-            domain: light
+        auto_off_night:
+          name: Night Lights Duration (minutes)
+          default: []
+          selector:
+            number:
+              min: 0
+              max: 1200
+              step: 1
+              unit_of_measurement: min
+              mode: box
 
-    auto_off_night:
-      name: Night Lights Duration (minutes)
-      description: "How long the night lights should stay on after the last motion."
-      default: []
-      selector:
-        number:
-          min: 0
-          max: 1200
-          step: 1
-          unit_of_measurement: min
-          mode: box
-    
-    brightness_night:
-      name: Night Brightness
-      description: "Brightness level (0-100%) for night lights. Leave empty to skip."
-      default: []
-      selector:
-        number:
-          min: 1
-          max: 100
-          step: 1
-          unit_of_measurement: "%"
+        brightness_night:
+          name: Night Brightness
+          default: []
+          selector:
+            number:
+              min: 0
+              max: 100
+              step: 1
+              unit_of_measurement: "%"
 
-    night_start:
-      name: Night Start
-      description: "Time when night mode activates. Night Start cannot be the same as Day End. Example: 22:00:00"
-      default: "22:00:00"
-      selector:
-        time: {}
+        night_start:
+          name: Night Start
+          default: "22:00:00"
+          selector:
+            time: {}
 
-    night_end:
-      name: Night End
-      description: "Time when night mode deactivates."
-      default: "06:59:59"
-      selector:
-        time: {}
+        night_end:
+          name: Night End
+          default: "06:59:59"
+          selector:
+            time: {}
 
-    active_weekdays_night:
-      name: Active Weekdays (Night)
-      description: "Select which days the night mode should be active."
-      default: []
-      selector:
-        select:
-          multiple: true
-          options:
-            - label: Monday
-              value: mon
-            - label: Tuesday
-              value: tue
-            - label: Wednesday
-              value: wed
-            - label: Thursday
-              value: thu
-            - label: Friday
-              value: fri
-            - label: Saturday
-              value: sat
-            - label: Sunday
-              value: sun
+        active_weekdays_night:
+          name: Active Weekdays (Night)
+          default: []
+          selector:
+            select:
+              multiple: true
+              options:
+                - label: Monday
+                  value: mon
+                - label: Tuesday
+                  value: tue
+                - label: Wednesday
+                  value: wed
+                - label: Thursday
+                  value: thu
+                - label: Friday
+                  value: fri
+                - label: Saturday
+                  value: sat
+                - label: Sunday
+                  value: sun
 
-    input_text_last_scene:
-      name: Input Text - Last Scene
-      description: "Input Text entity that stores the name of the last active scene."
-      default: []
-      selector:
-        entity:
-          domain: input_text
-    
+        input_text_last_scene:
+          name: Input Text - Last Scene
+          default: []
+          selector:
+            entity:
+              domain: input_text
+
     # --- Lux & Sun ---
     
-    lux_sensor:
-      name: Lux Sensor
-      description: "Sensor that measures brightness (lux)."
-      default: []
-      selector:
-        entity:
-          domain: sensor
-          device_class: illuminance
+    lux_sun:
+      name: Lux & Sun
+      description: Lux sensor and sun time settings
+      input:
+        lux_sensor:
+          name: Lux Sensor
+          default: []
+          selector:
+            entity:
+              domain: sensor
+              device_class: illuminance
 
-    lux_threshold:
-      name: Lux Threshold
-      description: "Lights only turn on if the lux value is below this threshold."
-      default: []
-      selector:
-        number:
-          min: 0
-          max: 3000
-          step: 1
-          unit_of_measurement: lx
+        lux_threshold:
+          name: Lux Threshold
+          default: []
+          selector:
+            number:
+              min: 0
+              max: 3000
+              step: 1
+              unit_of_measurement: lx
 
-    use_sun_times:
-      name: Use Sunrise/Sunset
-      description: "Whether the automation should use sun times instead of fixed times."
-      default: false
-      selector:
-        boolean: {}
+        use_sun_times:
+          name: Use Sunrise/Sunset
+          default: false
+          selector:
+            boolean: {}
 
-    sunset_offset:
-      name: Sunset Offset
-      description: "Adjustment for sunset time, earlier or later."
-      default: "00:00:00"
-      selector:
-        time: {}
+        sunset_offset:
+          name: Sunset Offset
+          default: "00:00:00"
+          selector:
+            time: {}
 
-    sunrise_offset:
-      name: Sunrise Offset
-      description: "Adjustment for sunrise time, earlier or later."
-      default: "00:00:00"
-      selector:
-        time: {}
+        sunrise_offset:
+          name: Sunrise Offset
+          default: "00:00:00"
+          selector:
+            time: {}
+
+    # --- Circadian ---
     
-    # --- Circadian light ---
-    
-    circadian_enabled:
-      name: Enable Circadian
-      description: "Whether the lights should follow a circadian light profile."
-      default: false
-      selector:
-        boolean: {}
-
-    circadian_lights:
+    circadian:
       name: Circadian Lights
-      description: "Lights that should follow the circadian light profile."
-      default: []
-      selector:
-        target:
-          entity:
-            domain: light
+      description: Circadian light settings
+      input:
+        circadian_enabled:
+          name: Enable Circadian
+          default: false
+          selector:
+            boolean: {}
 
-    update_interval:
-      name: Circadian Update Interval (min)
-      description: "How often circadian lights are updated."
-      default: 15
-      selector:
-        number:
-          min: 1
-          max: 60
-          step: 1
-          unit_of_measurement: min
-    
-    circadian_min_temp:
-      name: Minimum Color Temperature (K)
-      description: "Color temperature in the morning/night (warm light)."
-      default: 2700
-      selector:
-        number:
-          min: 1500
-          max: 6500
-          step: 100
-          unit_of_measurement: K
+        circadian_lights:
+          name: Circadian Lights
+          default: []
+          selector:
+            target:
+              entity:
+                domain: light
 
-    circadian_max_temp:
-      name: Maximum Color Temperature (K)
-      description: "Color temperature in the middle of the day (cold light)."
-      default: 5000
-      selector:
-        number:
-          min: 1500
-          max: 6500
-          step: 100
-          unit_of_measurement: K
-    
-    auto_off_circadian:
-      name: Circadian Lights Duration (minutes)
-      description: "How long the circadian lights should stay on after the last motion or trigger."
-      default: []
-      selector:
-        number:
-          min: 0
-          max: 1200
-          step: 1
-          unit_of_measurement: min
-          mode: box
+        update_interval:
+          name: Circadian Update Interval (min)
+          default: 15
+          selector:
+            number:
+              min: 1
+              max: 60
+              step: 1
+              unit_of_measurement: min
+
+        circadian_min_temp:
+          name: Minimum Color Temperature (K)
+          default: 2700
+          selector:
+            number:
+              min: 1500
+              max: 6500
+              step: 100
+              unit_of_measurement: K
+
+        circadian_max_temp:
+          name: Maximum Color Temperature (K)
+          default: 5000
+          selector:
+            number:
+              min: 1500
+              max: 6500
+              step: 100
+              unit_of_measurement: K
+
+        auto_off_circadian:
+          name: Circadian Lights Duration (minutes)
+          default: []
+          selector:
+            number:
+              min: 0
+              max: 1200
+              step: 1
+              unit_of_measurement: min
+              mode: box
 
     # --- Fixed Off Times ---
     
-    fixed_off_time_1:
-      name: Fixed Off Time 1 (optional)
-      description: "Time when lights or smart plugs automatically turn off."
-      default: []
-      selector:
-        time: {}
+    fixed_times:
+      name: Fixed Off Times
+      description: Automatic off for lights or smart plugs
+      input:
+        fixed_off_time_1:
+          name: Fixed Off Time 1
+          default: []
+          selector:
+            time: {}
 
-    fixed_off_weekdays_1:
-      name: Active Weekdays (Fixed Time 1)
-      description: "Which weekdays fixed off time 1 should apply to."
-      default: []
-      selector:
-        select:
-          multiple: true
-          options:
-            - label: Monday
-              value: mon
-            - label: Tuesday
-              value: tue
-            - label: Wednesday
-              value: wed
-            - label: Thursday
-              value: thu
-            - label: Friday
-              value: fri
-            - label: Saturday
-              value: sat
-            - label: Sunday
-              value: sun
+        fixed_off_weekdays_1:
+          name: Active Weekdays (Fixed Time 1)
+          default: []
+          selector:
+            select:
+              multiple: true
+              options:
+                - label: Monday
+                  value: mon
+                - label: Tuesday
+                  value: tue
+                - label: Wednesday
+                  value: wed
+                - label: Thursday
+                  value: thu
+                - label: Friday
+                  value: fri
+                - label: Saturday
+                  value: sat
+                - label: Sunday
+                  value: sun
 
-    fixed_off_time_2:
-      name: Fixed Off Time 2 (optional)
-      description: "Time when lights or smart plugs automatically turn off."
-      default: []
-      selector:
-        time: {}
+        fixed_off_time_2:
+          name: Fixed Off Time 2
+          default: []
+          selector:
+            time: {}
 
-    fixed_off_weekdays_2:
-      name: Active Weekdays (Fixed Time 2)
-      description: "Which weekdays fixed off time 2 should apply to."
-      default: []
-      selector:
-        select:
-          multiple: true
-          options:
-            - label: Monday
-              value: mon
-            - label: Tuesday
-              value: tue
-            - label: Wednesday
-              value: wed
-            - label: Thursday
-              value: thu
-            - label: Friday
-              value: fri
-            - label: Saturday
-              value: sat
-            - label: Sunday
-              value: sun
+        fixed_off_weekdays_2:
+          name: Active Weekdays (Fixed Time 2)
+          default: []
+          selector:
+            select:
+              multiple: true
+              options:
+                - label: Monday
+                  value: mon
+                - label: Tuesday
+                  value: tue
+                - label: Wednesday
+                  value: wed
+                - label: Thursday
+                  value: thu
+                - label: Friday
+                  value: fri
+                - label: Saturday
+                  value: sat
+                - label: Sunday
+                  value: sun
 
     # --- Workday & Failsafe ---
     
-    workday_sensor:
-      name: Workday Sensor
-      description: "Sensor that indicates workdays."
-      default: []
-      selector:
-        entity:
-          domain: binary_sensor
+    failsafe:
+      name: Workday & Failsafe
+      description: Workday sensor and failsafe timers
+      input:
+        workday_sensor:
+          name: Workday Sensor
+          default: []
+          selector:
+            entity:
+              domain: binary_sensor
 
-    enable_failsafe:
-      name: Enable Failsafe
-      description: "Activates the failsafe feature that automatically turns off lights if auto-off did not trigger correctly."
-      default: true
-      selector:
-        boolean: {}
+        enable_failsafe:
+          name: Enable Failsafe
+          default: true
+          selector:
+            boolean: {}
 
-    failsafe_timer_main:
-      name: Failsafe Timer Main Lights (minutes)
-      description: "Number of minutes before main lights automatically turn off if auto-off did not trigger as expected."
-      default: []
-      selector:
-        number:
-          min: 1
-          max: 240
-          step: 1
-          unit_of_measurement: min
+        failsafe_timer_main:
+          name: Failsafe Timer Main Lights (minutes)
+          default: []
+          selector:
+            number:
+              min: 1
+              max: 240
+              step: 1
+              unit_of_measurement: min
 
-    failsafe_timer_day:
-      name: Failsafe Timer Day Lights (minutes)
-      description: "Number of minutes before day lights automatically turn off if auto-off did not trigger as expected."
-      default: []
-      selector:
-        number:
-          min: 1
-          max: 120
-          step: 1
-          unit_of_measurement: min
+        failsafe_timer_day:
+          name: Failsafe Timer Day Lights (minutes)
+          default: []
+          selector:
+            number:
+              min: 1
+              max: 120
+              step: 1
+              unit_of_measurement: min
 
-    failsafe_timer_night:
-      name: Failsafe Timer Night Lights (minutes)
-      description: "Number of minutes before night lights automatically turn off if auto-off did not trigger as expected."
-      default: []
-      selector:
-        number:
-          min: 1
-          max: 120
-          step: 1
-          unit_of_measurement: min
+        failsafe_timer_night:
+          name: Failsafe Timer Night Lights (minutes)
+          default: []
+          selector:
+            number:
+              min: 1
+              max: 120
+              step: 1
+              unit_of_measurement: min
 
-    failsafe_timer_circadian:
-      name: Failsafe Timer Circadian Lights (minutes)
-      description: "Number of minutes before circadian lights automatically turn off if auto-off has not been triggered."
-      default: []
-      selector:
-        number:
-          min: 1
-          max: 120
-          step: 1
-          unit_of_measurement: min
-
+        failsafe_timer_circadian:
+          name: Failsafe Timer Circadian Lights (minutes)
+          default: []
+          selector:
+            number:
+              min: 1
+              max: 120
+              step: 1
+              unit_of_measurement: min
+              
 # --- Triggers ---
 
 trigger:
