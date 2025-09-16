@@ -560,7 +560,6 @@ trigger:
     enabled: !input circadian_enabled
 
 mode: restart
-max: silent
 
 # --- Variables ---
 
