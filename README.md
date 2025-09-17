@@ -1,28 +1,50 @@
-# ✨🌟 Motion-Controlled Lighting 6.0 🌟✨
+# ✨🌟 Advanced Lighting Automation 6.18.3 🌟✨
+# 💡 Where smart home meets real magic
 
-# 💡 *Your home, smarter than ever*
+Welcome to Advanced Lighting Automation 6.18.3 – the most complete, flexible, and robust solution for motion-controlled lighting in Home Assistant.
+Here, intelligence, safety, and style come together.
 
-![Release Badge](https://img.shields.io/badge/release-6.0-brightgreen?style=flat-square) ![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square) ![HA Compatible](https://img.shields.io/badge/Home_Assistant-Compatible-orange?style=flat-square)
-
-Welcome to **Motion-Controlled Lighting 6.0** – where **automation meets magic**.
-Your home **thinks for itself**, senses the rhythm of the sun, and knows exactly when the lights should shine or rest.
-
-✅ **Super robust** | ✅ **Extremely flexible** | ✅ **Energy- and scene-smart**
+✅ Super safe | ✅ Maximally flexible | ✅ Scene- and light-smart
 
 ---
 
-# 🚀 What's New in 6.0
+# 🚀 What's New in 6.18.3
 
-- ✨ **Off Scenes 2.0** – Turn off lights in style with smooth fades
-- 💡 **Auto-off + Scene Restore** – Automatically restore your favorite lighting setups
-- 🛡️ **Failsafe per category** – Lights turn off **only when truly needed**
-- 🌙 **Dynamic dimming** – Brightness follows the rhythm of the day
-- 🌓 **Circadian Light** – Color temperature adjusts automatically to the natural rhythm of the day
-- 📅 **Weekday logic** – Different schedules for weekdays and weekends
-- 📸 **Snapshot management** – Save & restore exactly the lighting you want
-- 📝 **Smart logging** – Full control over all events
+- 🎨 New GUI design – easier than ever
 
-✨ Small tweaks that make your home **alive, personal, and wow**
+- ✨ Off Scenes Next-Gen – Activate ending scenes only when you choose them.
+
+- 💡 Auto-off by category – Separate timers for day, night, and main lights.
+
+- 🛡️ Failsafe 2.0 – Restores or turns off lights depending on what’s actually set.
+
+- 📸 Snapshot system – Save and restore the last scene or light setting whenever you want.
+
+- 📅 Weekday + time control – Full control over when day/night is active.
+
+- 🌞 Lux control – Lights turn on only when it’s truly dark.
+
+- 📝 Smart logging – Full overview of what triggered and why.
+
+✨ Small tweaks throughout make the automation feel **alive, logical, personal, seamless and wow**
+
+---
+
+# 🎨 New GUI Design – Simpler Than Ever
+
+The blueprint menus have received a fresh update.
+All settings are now collapsed by default,
+giving a much cleaner and easier-to-navigate overview.
+
+This means:
+
+- 🔽 You see the settings at a glance
+
+- ➕ All options can be expanded as needed
+
+- 🧭 Easier navigation even with a feature-packed blueprint
+
+Result: a sleeker, more intuitive GUI that makes configuring the automation fun
 
 ---
 
@@ -63,20 +85,19 @@ Your home **thinks for itself**, senses the rhythm of the sun, and knows exactly
 
 # 🔧 **Features in Detail**
 
-| Feature                   | Description                                                |
-| ------------------------- | ---------------------------------------------------------- |
-| 🚶‍♂️ Motion Sensor       | Turn on/off with motion – leave blank for schedule control |
-| 🔘 Smart Plugs / Switches | Control lights via Home Assistant-compatible devices       |
-| 🌞 Day & Night Scenes     | Set moods with scenes or individual lights                 |
-| 💡 Lux Sensor             | Lights turn on **only when it’s dark**                     |
-| 🌓 Circadian Light        | Adjust color temperature automatically for natural rhythm  |
-| 🌅 Sunrise / Sunset       | Exact timing with offset                                   |
-| ⏱ Two Fixed Off Times     | Weekday/weekend, automatic or manual                       |
-| 📅 Weekday Control        | Adjust lighting per day of the week                        |
-| ⏳ Auto-off per Category   | Separate timers for main, day & night                      |
-| 📸 Snapshots              | Restore favorite lighting **instantly**                    |
-| 🛡️ Failsafe              | Ensures lights are never left on                           |
-| 📝 Logging                | Track every activation & change in detail                  |
+| Feature                    | Description                                            |
+| -------------------------- | ------------------------------------------------------ |
+| 🚶‍♂️ Motion Sensor        | Controls lights & scenes based on activity             |
+| 🔘 Scene & Light Selection | Run scenes or direct lights – or both                  |
+| 🌞 Day & Night Logic       | Separate times, scenes & off-scenes                    |
+| 💡 Lux Sensor              | Prevents unnecessary lighting when it’s already bright |
+| 📅 Weekday Control         | Choose different schedules for weekdays & weekends     |
+| ⏱ Auto-off by Category     | Separate timers for day/night/main lights              |
+| 📸 Snapshot Restore        | Save & restore previous light scene or setting         |
+| 🛡️ Failsafe               | Safety system that never forgets to turn off           |
+| 📝 Logging                 | Persistent notifications or logbook entries            |
+| 🌅 Sunrise/Sunset          | Exact timing with offset                               |
+| ⏱ Two Fixed Off Times      | Weekday/weekend, automatic or manual                   |
 
 ---
 
@@ -103,4 +124,4 @@ Your home **thinks for itself**, senses the rhythm of the sun, and knows exactly
 
 Built with ❤️ by **Rasmus Sjöberg** [razzietheman](https://github.com/razzietheman/) – 2025
 
-✨ **Motion-Controlled Lighting 6.0** – maximum automation when you want it, **full control when you need it**.
+✨ **Motion-Controlled Lighting 6.18.3** – maximum automation when you want it, **full control when you need it**.
