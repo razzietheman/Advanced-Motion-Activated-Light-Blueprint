@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.4"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.5"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -922,13 +922,15 @@ action:
                 - service: persistent_notification.create
                   data:
                     title: "Lighting Automation"
-                    message: "Auto-off Main: Main lights turned off."
+                    message: >
+                      Auto-off Main: {{ expand(main_lights_var) | map(attribute='name') | join(', ') }} turned off.
             - conditions: []
               sequence:
                 - service: logbook.log
                   data:
                     name: Lighting Automation
-                    message: "Auto-off Main: Main lights turned off."
+                    message: >
+                      Auto-off Main: {{ expand(main_lights_var) | map(attribute='name') | join(', ') }} turned off.
 
     # --- Auto-off Day Lights ---
   
@@ -995,13 +997,15 @@ action:
                         - service: persistent_notification.create
                           data:
                             title: "Lighting Automation"
-                            message: "Auto-off Day: Day lights turned off."
+                            message: >
+                              Auto-off Day: {{ expand(day_lights_var) | map(attribute='name') | join(', ') }} turned off.
                     - conditions: []
                       sequence:
                         - service: logbook.log
                           data:
                             name: Lighting Automation
-                            message: "Auto-off Day: Day lights turned off."
+                            message: >
+                              Auto-off Day: {{ expand(day_lights_var) | map(attribute='name') | join(', ') }} turned off.
 
             # CASE 2: Off-scene activates (only if setup and no motion)
             
@@ -1122,13 +1126,15 @@ action:
                         - service: persistent_notification.create
                           data:
                             title: "Lighting Automation"
-                            message: "Auto-off Night: Night lights turned off."
+                            message: >
+                              Auto-off Night: {{ expand(night_lights_var) | map(attribute='name') | join(', ') }} turned off.
                     - conditions: []
                       sequence:
                         - service: logbook.log
                           data:
                             name: Lighting Automation
-                            message: "Auto-off Night: Night lights turned off."
+                            message: >
+                              Auto-off Night: {{ expand(night_lights_var) | map(attribute='name') | join(', ') }} turned off.
 
             # CASE 2: Off-scene activates (only if setup and no motion)
             
@@ -1423,13 +1429,15 @@ action:
                           - service: persistent_notification.create
                             data:
                               title: "Lighting Automation"
-                              message: "Failsafe Main: Main lights turned off automatically (only if still on)."
+                              message: >
+                                Failsafe Main: {{ expand(main_lights_var) | map(attribute='name') | join(', ') }} turned off automatically.
                       - conditions: []
                         sequence:
                           - service: logbook.log
                             data:
                               name: Lighting Automation
-                              message: "Failsafe Main: Main lights turned off automatically (only if still on)."
+                              message: >
+                                Failsafe Main: {{ expand(main_lights_var) | map(attribute='name') | join(', ') }} turned off automatically.
 
   # --- Failsafe Day lights ---
   
@@ -1481,13 +1489,15 @@ action:
                 - service: persistent_notification.create
                   data:
                     title: "Lighting Automation"
-                    message: "Failsafe Day: Day lights turned off automatically."
+                    message: >
+                      Failsafe Day: {{ expand(day_lights_var) | map(attribute='name') | join(', ') }} turned off automatically.
             - conditions: []
               sequence:
                 - service: logbook.log
                   data:
                     name: Lighting Automation
-                    message: "Failsafe Day: Day lights turned off automatically."
+                    message: >
+                      Failsafe Day: {{ expand(day_lights_var) | map(attribute='name') | join(', ') }} turned off automatically.
 
     # CASE 2: Off-scene activates (only if setup and no motion)
     
@@ -1601,13 +1611,15 @@ action:
                 - service: persistent_notification.create
                   data:
                     title: "Lighting Automation"
-                    message: "Failsafe Night: Night lights turned off automatically (no motion)."
+                    message: >
+                      Failsafe Night: {{ expand(night_lights_var) | map(attribute='name') | join(', ') }} turned off automatically.
             - conditions: []
               sequence:
                 - service: logbook.log
                   data:
                     name: Lighting Automation
-                    message: "Failsafe Night: Night lights turned off automatically (no motion)."
+                    message: >
+                      Failsafe Night: {{ expand(night_lights_var) | map(attribute='name') | join(', ') }} turned off automatically.
 
     # CASE 2: Aktivate off-scene
     
