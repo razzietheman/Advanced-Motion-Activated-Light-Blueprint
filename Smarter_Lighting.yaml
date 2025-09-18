@@ -923,14 +923,30 @@ action:
                   data:
                     title: "Lighting Automation"
                     message: >
-                      Auto-off Main: {{ expand(main_lights_var) | map(attribute='name') | join(', ') }} turned off.
+                      {% set lights = [] %}
+                      {% if main_lights_var is string and main_lights_var != '' %}
+                        {% set lights = [main_lights_var] %}
+                      {% elif main_lights_var is mapping and main_lights_var.entity_id is string %}
+                        {% set lights = [main_lights_var.entity_id] %}
+                      {% elif main_lights_var is iterable %}
+                        {% set lights = main_lights_var | select('string') | list %}
+                      {% endif %}
+                      Auto-off Mainlights: {{ expand(lights) | map(attribute='name') | join(', ') | default('No lights') }} turned off.
             - conditions: []
               sequence:
                 - service: logbook.log
                   data:
                     name: Lighting Automation
                     message: >
-                      Auto-off Main: {{ expand(main_lights_var) | map(attribute='name') | join(', ') }} turned off.
+                      {% set lights = [] %}
+                      {% if main_lights_var is string and main_lights_var != '' %}
+                        {% set lights = [main_lights_var] %}
+                      {% elif main_lights_var is mapping and main_lights_var.entity_id is string %}
+                        {% set lights = [main_lights_var.entity_id] %}
+                      {% elif main_lights_var is iterable %}
+                        {% set lights = main_lights_var | select('string') | list %}
+                      {% endif %}
+                      Auto-off Mainlights: {{ expand(lights) | map(attribute='name') | join(', ') | default('No lights') }} turned off.
 
     # --- Auto-off Day Lights ---
   
@@ -998,14 +1014,30 @@ action:
                           data:
                             title: "Lighting Automation"
                             message: >
-                              Auto-off Day: {{ expand(day_lights_var) | map(attribute='name') | join(', ') }} turned off.
+                              {% set lights = [] %}
+                              {% if day_lights_var is string and day_lights_var != '' %}
+                                {% set lights = [day_lights_var] %}
+                              {% elif day_lights_var is mapping and day_lights_var.entity_id is string %}
+                                {% set lights = [day_lights_var.entity_id] %}
+                              {% elif day_lights_var is iterable %}
+                                {% set lights = day_lights_var | select('string') | list %}
+                              {% endif %}
+                              Auto-off Day: {{ expand(lights) | map(attribute='name') | join(', ') | default('No lights') }} turned off.
                     - conditions: []
                       sequence:
                         - service: logbook.log
                           data:
                             name: Lighting Automation
                             message: >
-                              Auto-off Day: {{ expand(day_lights_var) | map(attribute='name') | join(', ') }} turned off.
+                              {% set lights = [] %}
+                              {% if day_lights_var is string and day_lights_var != '' %}
+                                {% set lights = [day_lights_var] %}
+                              {% elif day_lights_var is mapping and day_lights_var.entity_id is string %}
+                                {% set lights = [day_lights_var.entity_id] %}
+                              {% elif day_lights_var is iterable %}
+                                {% set lights = day_lights_var | select('string') | list %}
+                              {% endif %}
+                              Auto-off Day: {{ expand(lights) | map(attribute='name') | join(', ') | default('No lights') }} turned off.
 
             # CASE 2: Off-scene activates (only if setup and no motion)
             
@@ -1127,14 +1159,30 @@ action:
                           data:
                             title: "Lighting Automation"
                             message: >
-                              Auto-off Night: {{ expand(night_lights_var) | map(attribute='name') | join(', ') }} turned off.
+                              {% set lights = [] %}
+                              {% if night_lights_var is string and night_lights_var != '' %}
+                                {% set lights = [night_lights_var] %}
+                              {% elif night_lights_var is mapping and night_lights_var.entity_id is string %}
+                                {% set lights = [night_lights_var.entity_id] %}
+                              {% elif night_lights_var is iterable %}
+                                {% set lights = night_lights_var | select('string') | list %}
+                              {% endif %}
+                              Auto-off Night: {{ expand(lights) | map(attribute='name') | join(', ') | default('No lights') }} turned off.
                     - conditions: []
                       sequence:
                         - service: logbook.log
                           data:
                             name: Lighting Automation
                             message: >
-                              Auto-off Night: {{ expand(night_lights_var) | map(attribute='name') | join(', ') }} turned off.
+                              {% set lights = [] %}
+                              {% if night_lights_var is string and night_lights_var != '' %}
+                                {% set lights = [night_lights_var] %}
+                              {% elif night_lights_var is mapping and night_lights_var.entity_id is string %}
+                                {% set lights = [night_lights_var.entity_id] %}
+                              {% elif night_lights_var is iterable %}
+                                {% set lights = night_lights_var | select('string') | list %}
+                              {% endif %}
+                              Auto-off Night: {{ expand(lights) | map(attribute='name') | join(', ') | default('No lights') }} turned off.
 
             # CASE 2: Off-scene activates (only if setup and no motion)
             
@@ -1430,14 +1478,30 @@ action:
                             data:
                               title: "Lighting Automation"
                               message: >
-                                Failsafe Main: {{ expand(main_lights_var) | map(attribute='name') | join(', ') }} turned off automatically.
+                                {% set lights = [] %}
+                                {% if main_lights_var is string and main_lights_var != '' %}
+                                  {% set lights = [main_lights_var] %}
+                                {% elif main_lights_var is mapping and main_lights_var.entity_id is string %}
+                                  {% set lights = [main_lights_var.entity_id] %}
+                                {% elif main_lights_var is iterable %}
+                                  {% set lights = main_lights_var | select('string') | list %}
+                                {% endif %}
+                                Failsafe Mainlights: {{ expand(lights) | map(attribute='name') | join(', ') | default('No lights') }} turned off automatically.
                       - conditions: []
                         sequence:
                           - service: logbook.log
                             data:
                               name: Lighting Automation
                               message: >
-                                Failsafe Main: {{ expand(main_lights_var) | map(attribute='name') | join(', ') }} turned off automatically.
+                                {% set lights = [] %}
+                                {% if main_lights_var is string and main_lights_var != '' %}
+                                  {% set lights = [main_lights_var] %}
+                                {% elif main_lights_var is mapping and main_lights_var.entity_id is string %}
+                                  {% set lights = [main_lights_var.entity_id] %}
+                                {% elif main_lights_var is iterable %}
+                                  {% set lights = main_lights_var | select('string') | list %}
+                                {% endif %}
+                                Failsafe Mainlights: {{ expand(lights) | map(attribute='name') | join(', ') | default('No lights') }} turned off automatically.
 
   # --- Failsafe Day lights ---
   
@@ -1490,14 +1554,30 @@ action:
                   data:
                     title: "Lighting Automation"
                     message: >
-                      Failsafe Day: {{ expand(day_lights_var) | map(attribute='name') | join(', ') }} turned off automatically.
+                      {% set lights = [] %}
+                      {% if day_lights_var is string and day_lights_var != '' %}
+                        {% set lights = [day_lights_var] %}
+                      {% elif day_lights_var is mapping and day_lights_var.entity_id is string %}
+                        {% set lights = [day_lights_var.entity_id] %}
+                      {% elif day_lights_var is iterable %}
+                        {% set lights = day_lights_var | select('string') | list %}
+                      {% endif %}
+                      Failsafe Day: {{ expand(lights) | map(attribute='name') | join(', ') | default('No lights') }} turned off automatically.
             - conditions: []
               sequence:
                 - service: logbook.log
                   data:
                     name: Lighting Automation
                     message: >
-                      Failsafe Day: {{ expand(day_lights_var) | map(attribute='name') | join(', ') }} turned off automatically.
+                      {% set lights = [] %}
+                      {% if day_lights_var is string and day_lights_var != '' %}
+                        {% set lights = [day_lights_var] %}
+                      {% elif day_lights_var is mapping and day_lights_var.entity_id is string %}
+                        {% set lights = [day_lights_var.entity_id] %}
+                      {% elif day_lights_var is iterable %}
+                        {% set lights = day_lights_var | select('string') | list %}
+                      {% endif %}
+                      Failsafe Day: {{ expand(lights) | map(attribute='name') | join(', ') | default('No lights') }} turned off automatically.
 
     # CASE 2: Off-scene activates (only if setup and no motion)
     
@@ -1612,14 +1692,30 @@ action:
                   data:
                     title: "Lighting Automation"
                     message: >
-                      Failsafe Night: {{ expand(night_lights_var) | map(attribute='name') | join(', ') }} turned off automatically.
+                      {% set lights = [] %}
+                      {% if night_lights_var is string and night_lights_var != '' %}
+                        {% set lights = [night_lights_var] %}
+                      {% elif night_lights_var is mapping and night_lights_var.entity_id is string %}
+                        {% set lights = [night_lights_var.entity_id] %}
+                      {% elif night_lights_var is iterable %}
+                        {% set lights = night_lights_var | select('string') | list %}
+                      {% endif %}
+                      Failsafe Night: {{ expand(lights) | map(attribute='name') | join(', ') | default('No lights') }} turned off automatically.
             - conditions: []
               sequence:
                 - service: logbook.log
                   data:
                     name: Lighting Automation
                     message: >
-                      Failsafe Night: {{ expand(night_lights_var) | map(attribute='name') | join(', ') }} turned off automatically.
+                      {% set lights = [] %}
+                      {% if night_lights_var is string and night_lights_var != '' %}
+                        {% set lights = [night_lights_var] %}
+                      {% elif night_lights_var is mapping and night_lights_var.entity_id is string %}
+                        {% set lights = [night_lights_var.entity_id] %}
+                      {% elif night_lights_var is iterable %}
+                        {% set lights = night_lights_var | select('string') | list %}
+                      {% endif %}
+                      Failsafe Night: {{ expand(lights) | map(attribute='name') | join(', ') | default('No lights') }} turned off automatically.
 
     # CASE 2: Aktivate off-scene
     
