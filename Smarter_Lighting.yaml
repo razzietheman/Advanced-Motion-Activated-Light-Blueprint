@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.6"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.7"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -779,7 +779,7 @@ action:
                         {% endfor %}
                         {{ lights | tojson }}
 
-          # --- Dayscen ---
+          # --- Day scene ---
           
           - choose:
               - conditions:
@@ -830,7 +830,7 @@ action:
                                   255
                                 {% endif %}
                                 
-          # --- Turn on switches day ---
+          # --- Turn on the switches daytime ---
           
           - choose:
             - conditions:
@@ -907,7 +907,7 @@ action:
                                   255
                                 {% endif %}
 
-          # --- Turn on switches night ---
+          # --- Turn on the switches night time ---
           
           - choose:
               - conditions:
@@ -915,6 +915,62 @@ action:
                     value_template: "{{ optional_switches | default([]) != [] }}"
                 sequence:
                   - service: switch.turn_on
+                    target:
+                      entity_id: >
+                        {% set switches = [] %}
+                        {% if optional_switches is string %}
+                          {% set switches = [optional_switches] %}
+                        {% elif optional_switches is mapping and optional_switches.entity_id is string %}
+                          {% set switches = [optional_switches.entity_id] %}
+                        {% elif optional_switches is iterable %}
+                          {% for s in optional_switches %}
+                            {% if s is string %}
+                              {% set switches = switches + [s] %}
+                            {% elif s.entity_id is string %}
+                              {% set switches = switches + [s.entity_id] %}
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                        {{ switches | join(',') }}
+                    
+          # --- Turn on switches at sunset ---
+          
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: "{{ optional_switches | default([]) != [] and use_sun_times_var }}"
+                  - condition: trigger
+                    id: sunset_trigger
+                sequence:
+                  - service: switch.turn_on
+                    target:
+                      entity_id: >
+                        {% set switches = [] %}
+                        {% if optional_switches is string %}
+                          {% set switches = [optional_switches] %}
+                        {% elif optional_switches is mapping and optional_switches.entity_id is string %}
+                          {% set switches = [optional_switches.entity_id] %}
+                        {% elif optional_switches is iterable %}
+                          {% for s in optional_switches %}
+                            {% if s is string %}
+                              {% set switches = switches + [s] %}
+                            {% elif s.entity_id is string %}
+                              {% set switches = switches + [s.entity_id] %}
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                        {{ switches | join(',') }}
+          
+          # --- Turn off switches at sunrise ---
+          
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: "{{ optional_switches | default([]) != [] and use_sun_times_var }}"
+                  - condition: trigger
+                    id: sunrise_trigger
+                sequence:
+                  - service: switch.turn_off
                     target:
                       entity_id: >
                         {% set switches = [] %}
