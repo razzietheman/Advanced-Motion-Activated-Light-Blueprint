@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.7"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.8"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -794,67 +794,67 @@ action:
                         false
                       {% endif %}
                 sequence:
-                  - choose:
-                      - conditions:
-                          - condition: template
-                            value_template: >
-                              {{ scene_day_var | default([]) != [] and
-                                 (lux_sensor_var | default('') == '' or
-                                  states(lux_sensor_var) | float < lux_threshold_var | float) }}
-                        sequence:
-                          - service: scene.turn_on
-                            target:
-                              entity_id: "{{ scene_day_var }}"
-                      - conditions:
-                          - condition: template
-                            value_template: >
-                              {{ day_lights_var | default('') != '' and 
-                                 (lux_sensor_var | default('') == '' or 
-                                  states(lux_sensor_var) | float < lux_threshold_var | float) }}
-                        sequence:
-                          - service: light.turn_on
-                            target:
-                              entity_id: >
-                                {% if day_lights_var is string %}
-                                  {{ day_lights_var }}
-                                {% elif day_lights_var is mapping %}
-                                  {{ day_lights_var.entity_id }}
-                                {% elif day_lights_var is iterable %}
-                                  {{ day_lights_var | join(',') }}
-                                {% endif %}
-                            data:
-                              brightness: >
-                                {% if brightness_day_var != '' %}
-                                  {{ (brightness_day_var | int * 255 / 100) | int }}
-                                {% else %}
-                                  255
-                                {% endif %}
-                                
-          # --- Turn on the switches daytime ---
+                    - choose:
+                        - conditions:
+                            - condition: template
+                              value_template: >
+                                {{ scene_day_var | default([]) != [] and
+                                   (lux_sensor_var | default('') == '' or
+                                    states(lux_sensor_var) | float < lux_threshold_var | float) }}
+                          sequence:
+                              - service: scene.turn_on
+                                target:
+                                  entity_id: "{{ scene_day_var }}"
+                        - conditions:
+                            - condition: template
+                              value_template: >
+                                {{ day_lights_var | default('') != '' and 
+                                   (lux_sensor_var | default('') == '' or 
+                                    states(lux_sensor_var) | float < lux_threshold_var | float) }}
+                          sequence:
+                              - service: light.turn_on
+                                target:
+                                  entity_id: >
+                                    {% if day_lights_var is string %}
+                                      {{ day_lights_var }}
+                                    {% elif day_lights_var is mapping %}
+                                      {{ day_lights_var.entity_id }}
+                                    {% elif day_lights_var is iterable %}
+                                      {{ day_lights_var | join(',') }}
+                                    {% endif %}
+                                data:
+                                  brightness: >
+                                    {% if brightness_day_var != '' %}
+                                      {{ (brightness_day_var | int * 255 / 100) | int }}
+                                    {% else %}
+                                      255
+                                    {% endif %}
+
+          # --- Turn on switches daytime ---
           
           - choose:
-            - conditions:
-                - condition: template
-                  value_template: "{{ optional_switches | default([]) != [] }}"
-              sequence:
-                - service: switch.turn_on
-                  target:
-                    entity_id: >
-                      {% set switches = [] %}
-                      {% if optional_switches is string %}
-                        {% set switches = [optional_switches] %}
-                      {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-                        {% set switches = [optional_switches.entity_id] %}
-                      {% elif optional_switches is iterable %}
-                        {% for s in optional_switches %}
-                          {% if s is string %}
-                            {% set switches = switches + [s] %}
-                          {% elif s.entity_id is string %}
-                            {% set switches = switches + [s.entity_id] %}
+              - conditions:
+                  - condition: template
+                    value_template: "{{ optional_switches | default([]) != [] }}"
+                sequence:
+                    - service: switch.turn_on
+                      target:
+                        entity_id: >
+                          {% set switches = [] %}
+                          {% if optional_switches is string %}
+                            {% set switches = [optional_switches] %}
+                          {% elif optional_switches is mapping and optional_switches.entity_id is string %}
+                            {% set switches = [optional_switches.entity_id] %}
+                          {% elif optional_switches is iterable %}
+                            {% for s in optional_switches %}
+                              {% if s is string %}
+                                {% set switches = switches + [s] %}
+                              {% elif s.entity_id is string %}
+                                {% set switches = switches + [s.entity_id] %}
+                              {% endif %}
+                            {% endfor %}
                           {% endif %}
-                        {% endfor %}
-                      {% endif %}
-                      {{ switches | join(',') }}
+                          {{ switches | join(',') }}
 
           # --- Night scene ---
           
@@ -871,123 +871,174 @@ action:
                         false
                       {% endif %}
                 sequence:
-                  - choose:
-                      - conditions:
-                          - condition: template
-                            value_template: >
-                              {{ scene_night_var | default([]) != [] and
-                                 (lux_sensor_var | default('') == '' or
-                                  states(lux_sensor_var) | float < lux_threshold_var | float) }}
-                        sequence:
-                          - service: scene.turn_on
-                            target:
-                              entity_id: "{{ scene_night_var }}"
-                      - conditions:
-                          - condition: template
-                            value_template: >
-                              {{ night_lights_var | default('') != '' and 
-                                 (lux_sensor_var | default('') == '' or 
-                                  states(lux_sensor_var) | float < lux_threshold_var | float) }}
-                        sequence:
-                          - service: light.turn_on
-                            target:
-                              entity_id: >
-                                {% if night_lights_var is string %}
-                                  {{ night_lights_var }}
-                                {% elif night_lights_var is mapping %}
-                                  {{ night_lights_var.entity_id }}
-                                {% elif night_lights_var is iterable %}
-                                  {{ night_lights_var | join(',') }}
-                                {% endif %}
-                            data:
-                              brightness: >
-                                {% if brightness_night_var != '' %}
-                                  {{ (brightness_night_var | int * 255 / 100) | int }}
-                                {% else %}
-                                  255
-                                {% endif %}
+                    - choose:
+                        - conditions:
+                            - condition: template
+                              value_template: >
+                                {{ scene_night_var | default([]) != [] and
+                                   (lux_sensor_var | default('') == '' or
+                                    states(lux_sensor_var) | float < lux_threshold_var | float) }}
+                          sequence:
+                              - service: scene.turn_on
+                                target:
+                                  entity_id: "{{ scene_night_var }}"
+                        - conditions:
+                            - condition: template
+                              value_template: >
+                                {{ night_lights_var | default('') != '' and 
+                                   (lux_sensor_var | default('') == '' or 
+                                    states(lux_sensor_var) | float < lux_threshold_var | float) }}
+                          sequence:
+                              - service: light.turn_on
+                                target:
+                                  entity_id: >
+                                    {% if night_lights_var is string %}
+                                      {{ night_lights_var }}
+                                    {% elif night_lights_var is mapping %}
+                                      {{ night_lights_var.entity_id }}
+                                    {% elif night_lights_var is iterable %}
+                                      {{ night_lights_var | join(',') }}
+                                    {% endif %}
+                                data:
+                                  brightness: >
+                                    {% if brightness_night_var != '' %}
+                                      {{ (brightness_night_var | int * 255 / 100) | int }}
+                                    {% else %}
+                                      255
+                                    {% endif %}
 
-          # --- Turn on the switches night time ---
+          # --- Turn on switches night time ---
           
           - choose:
               - conditions:
                   - condition: template
                     value_template: "{{ optional_switches | default([]) != [] }}"
                 sequence:
-                  - service: switch.turn_on
-                    target:
-                      entity_id: >
-                        {% set switches = [] %}
-                        {% if optional_switches is string %}
-                          {% set switches = [optional_switches] %}
-                        {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-                          {% set switches = [optional_switches.entity_id] %}
-                        {% elif optional_switches is iterable %}
-                          {% for s in optional_switches %}
-                            {% if s is string %}
-                              {% set switches = switches + [s] %}
-                            {% elif s.entity_id is string %}
-                              {% set switches = switches + [s.entity_id] %}
-                            {% endif %}
-                          {% endfor %}
-                        {% endif %}
-                        {{ switches | join(',') }}
-                    
+                    - service: switch.turn_on
+                      target:
+                        entity_id: >
+                          {% set switches = [] %}
+                          {% if optional_switches is string %}
+                            {% set switches = [optional_switches] %}
+                          {% elif optional_switches is mapping and optional_switches.entity_id is string %}
+                            {% set switches = [optional_switches.entity_id] %}
+                          {% elif optional_switches is iterable %}
+                            {% for s in optional_switches %}
+                              {% if s is string %}
+                                {% set switches = switches + [s] %}
+                              {% elif s.entity_id is string %}
+                                {% set switches = switches + [s.entity_id] %}
+                              {% endif %}
+                            {% endfor %}
+                          {% endif %}
+                          {{ switches | join(',') }}
+
           # --- Turn on switches at sunset ---
           
           - choose:
               - conditions:
                   - condition: template
-                    value_template: "{{ optional_switches | default([]) != [] and use_sun_times_var }}"
+                    value_template: "{{ use_sun_times_var and (optional_switches | default([]) != [] or day_lights_var | default([]) != []) }}"
                   - condition: trigger
                     id: sunset_trigger
                 sequence:
-                  - service: switch.turn_on
-                    target:
-                      entity_id: >
-                        {% set switches = [] %}
-                        {% if optional_switches is string %}
-                          {% set switches = [optional_switches] %}
-                        {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-                          {% set switches = [optional_switches.entity_id] %}
-                        {% elif optional_switches is iterable %}
-                          {% for s in optional_switches %}
-                            {% if s is string %}
-                              {% set switches = switches + [s] %}
-                            {% elif s.entity_id is string %}
-                              {% set switches = switches + [s.entity_id] %}
-                            {% endif %}
-                          {% endfor %}
-                        {% endif %}
-                        {{ switches | join(',') }}
-          
+                    - service: switch.turn_on
+                      target:
+                        entity_id: >
+                          {% set switches = [] %}
+                          {% if optional_switches is string %}
+                            {% set switches = [optional_switches] %}
+                          {% elif optional_switches is mapping and optional_switches.entity_id is string %}
+                            {% set switches = [optional_switches.entity_id] %}
+                          {% elif optional_switches is iterable %}
+                            {% for s in optional_switches %}
+                              {% if s is string %}
+                                {% set switches = switches + [s] %}
+                              {% elif s.entity_id is string %}
+                                {% set switches = switches + [s.entity_id] %}
+                              {% endif %}
+                            {% endfor %}
+                          {% endif %}
+                          {{ switches | join(',') }}
+                    - service: light.turn_on
+                      target:
+                        entity_id: >
+                          {% set lights = [] %}
+                          {% if day_lights_var is string %}
+                            {% set lights = [day_lights_var] %}
+                          {% elif day_lights_var is mapping %}
+                            {% set lights = [day_lights_var.entity_id] %}
+                          {% elif day_lights_var is iterable %}
+                            {% for l in day_lights_var %}
+                              {% if l is string %}
+                                {% set lights = lights + [l] %}
+                              {% elif l.entity_id is string %}
+                                {% set lights = lights + [l.entity_id] %}
+                              {% endif %}
+                            {% endfor %}
+                          {% endif %}
+                          {{ lights | join(',') }}
+                      data:
+                        brightness: >
+                          {% if brightness_day_var != '' %}
+                            {{ (brightness_day_var | int * 255 / 100) | int }}
+                          {% else %}
+                            255
+                          {% endif %}
+
           # --- Turn off switches at sunrise ---
           
           - choose:
               - conditions:
                   - condition: template
-                    value_template: "{{ optional_switches | default([]) != [] and use_sun_times_var }}"
+                    value_template: "{{ use_sun_times_var and (optional_switches | default([]) != [] or night_lights_var | default([]) != []) }}"
                   - condition: trigger
                     id: sunrise_trigger
                 sequence:
-                  - service: switch.turn_off
-                    target:
-                      entity_id: >
-                        {% set switches = [] %}
-                        {% if optional_switches is string %}
-                          {% set switches = [optional_switches] %}
-                        {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-                          {% set switches = [optional_switches.entity_id] %}
-                        {% elif optional_switches is iterable %}
-                          {% for s in optional_switches %}
-                            {% if s is string %}
-                              {% set switches = switches + [s] %}
-                            {% elif s.entity_id is string %}
-                              {% set switches = switches + [s.entity_id] %}
-                            {% endif %}
-                          {% endfor %}
-                        {% endif %}
-                        {{ switches | join(',') }}
+                    - service: switch.turn_off
+                      target:
+                        entity_id: >
+                          {% set switches = [] %}
+                          {% if optional_switches is string %}
+                            {% set switches = [optional_switches] %}
+                          {% elif optional_switches is mapping and optional_switches.entity_id is string %}
+                            {% set switches = [optional_switches.entity_id] %}
+                          {% elif optional_switches is iterable %}
+                            {% for s in optional_switches %}
+                              {% if s is string %}
+                                {% set switches = switches + [s] %}
+                              {% elif s.entity_id is string %}
+                                {% set switches = switches + [s.entity_id] %}
+                              {% endif %}
+                            {% endfor %}
+                          {% endif %}
+                          {{ switches | join(',') }}
+                    - service: light.turn_off
+                      target:
+                        entity_id: >
+                          {% set lights = [] %}
+                          {% if night_lights_var is string %}
+                            {% set lights = [night_lights_var] %}
+                          {% elif night_lights_var is mapping %}
+                            {% set lights = [night_lights_var.entity_id] %}
+                          {% elif night_lights_var is iterable %}
+                            {% for l in night_lights_var %}
+                              {% if l is string %}
+                                {% set lights = lights + [l] %}
+                              {% elif l.entity_id is string %}
+                                {% set lights = lights + [l.entity_id] %}
+                              {% endif %}
+                            {% endfor %}
+                          {% endif %}
+                          {{ lights | join(',') }}
+                      data:
+                        brightness: >
+                          {% if brightness_night_var != '' %}
+                            {{ (brightness_night_var | int * 255 / 100) | int }}
+                          {% else %}
+                            255
+                          {% endif %}
+
 
           # --- Save last scene ---
           
