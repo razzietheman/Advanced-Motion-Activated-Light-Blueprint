@@ -665,48 +665,64 @@ mode: restart
 # --- Variables ---
 
 variables:
-  use_persistent_notifications_var: !input use_persistent_notifications
-  motion_sensors_var: !input motion_sensors
-  main_lights_var: !input main_lights
-  day_lights_var: !input day_lights
-  brightness_day_var: !input brightness_day
-  night_lights_var: !input night_lights
-  brightness_night_var: !input brightness_night
-  scene_day_var: !input scene_day
-  off_scene_day_var: !input off_scene_day
-  scene_night_var: !input scene_night
-  off_scene_night_var: !input off_scene_night
-  last_scene_entity: !input input_text_last_scene
-  restore_last_scene_var: !input enable_snapshot_restore
-  lux_sensor_var: !input lux_sensor
-  lux_threshold_var: !input lux_threshold
-  use_sun_times_var: !input use_sun_times
-  workday_sensor_var: !input workday_sensor
-  auto_off_main_var: !input auto_off_main
+
+  # --- Auto-off & Times ---
+  
+  auto_off_circadian_var: !input auto_off_circadian
   auto_off_day_var: !input auto_off_day
+  auto_off_main_var: !input auto_off_main
   auto_off_night_var: !input auto_off_night
   auto_off_switch_day_var: !input auto_off_switch_day
   auto_off_switch_night_var: !input auto_off_switch_night
-  auto_off_circadian_var: !input auto_off_circadian
-  fixed_on_time_1_var: !input fixed_on_time_1
-  fixed_on_time_2_var: !input fixed_on_time_2
-  fixed_off_weekdays_1_var: !input fixed_off_weekdays_1
-  fixed_off_weekdays_2_var: !input fixed_off_weekdays_2
-  day_start_var: !input day_start
-  day_end_var: !input day_end
-  night_start_var: !input night_start
-  night_end_var: !input night_end
-  active_weekdays_day_var: !input active_weekdays_day
-  active_weekdays_night_var: !input active_weekdays_night
-  enable_failsafe_var: !input enable_failsafe
-  failsafe_timer_main_var: !input failsafe_timer_main
-  failsafe_timer_day_var: !input failsafe_timer_day
-  failsafe_timer_night_var: !input failsafe_timer_night
   circadian_enabled_var: !input circadian_enabled
   circadian_lights_var: !input circadian_lights
-  circadian_min_temp_var: !input circadian_min_temp
   circadian_max_temp_var: !input circadian_max_temp
+  circadian_min_temp_var: !input circadian_min_temp
+  day_end_var: !input day_end
+  day_start_var: !input day_start
+  fixed_off_weekdays_1_var: !input fixed_off_weekdays_1
+  fixed_off_weekdays_2_var: !input fixed_off_weekdays_2
+  fixed_on_time_1_var: !input fixed_on_time_1
+  fixed_on_time_2_var: !input fixed_on_time_2
+  night_end_var: !input night_end
+  night_start_var: !input night_start
+  workday_sensor_var: !input workday_sensor
+  active_weekdays_day_var: !input active_weekdays_day
+  active_weekdays_night_var: !input active_weekdays_night
+
+  # --- Lights & Brightness ---
+  
+  brightness_day_var: !input brightness_day
+  brightness_night_var: !input brightness_night
+  day_lights_var: !input day_lights
+  main_lights_var: !input main_lights
+  night_lights_var: !input night_lights
+  lux_sensor_var: !input lux_sensor
+  lux_threshold_var: !input lux_threshold
+
+  # --- Scenes ---
+  
+  off_scene_day_var: !input off_scene_day
+  off_scene_night_var: !input off_scene_night
+  last_scene_entity: !input input_text_last_scene
+  restore_last_scene_var: !input enable_snapshot_restore
+  scene_day_var: !input scene_day
+  scene_night_var: !input scene_night
+
+  # --- Sensors & Triggers ---
+  
+  motion_sensors_var: !input motion_sensors
+  use_sun_times_var: !input use_sun_times
+
+  # --- Failsafe & Misc ---
+  
+  enable_failsafe_var: !input enable_failsafe
   failsafe_timer_circadian_var: !input failsafe_timer_circadian
+  failsafe_timer_day_var: !input failsafe_timer_day
+  failsafe_timer_main_var: !input failsafe_timer_main
+  failsafe_timer_night_var: !input failsafe_timer_night
+  use_persistent_notifications_var: !input use_persistent_notifications
+
 
 # --- Actions ---
 
