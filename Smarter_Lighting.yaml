@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.6"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.5"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -50,30 +50,6 @@ blueprint:
               domain: switch
               multiple: true
 
-    # --- Auto-off times for Switches ---
-    
-        auto_off_switch_day:
-          name: Auto-off Switches Day
-          description: "How long after the last movement the switches should be on (daytime)."
-          default: 0
-          selector:
-            number:
-              min: 0
-              max: 180
-              unit_of_measurement: minuter
-              mode: box
-
-        auto_off_switch_night:
-          name: Auto-off Switches Night
-          description: "How long after the last movement the switches should be on (at night)"
-          default: 0
-          selector:
-            number:
-              min: 0
-              max: 180
-              unit_of_measurement: minuter
-              mode: box
-    
     # --- Main lights ---
     
     head_lighting:
@@ -420,72 +396,14 @@ blueprint:
               unit_of_measurement: min
               mode: box
 
-    # --- Fixed On Times ---
+    # --- Fixed Off Times ---
     
     fixed_times:
-      name: Fixed Times
-      description: Automatic on and off for lights or smart outlets
+      name: Fixed Off Times
+      description: Automatic off for lights or smart plugs
       collapsed: true
       icon: mdi:clock-outline
       input:
-        fixed_on_time_1:
-          name: Fixed on time 1
-          default: []
-          selector:
-            time: {}
-            
-        fixed_on_weekdays_1:
-          name: Active Weekdays (Fixed On Time 1)
-          default: []
-          selector:
-            select:
-              multiple: true
-              options:
-                - label: Monday
-                  value: mon
-                - label: Tuesday
-                  value: tue
-                - label: Wednesday
-                  value: wed
-                - label: Thursday
-                  value: thu
-                - label: Friday
-                  value: fri
-                - label: Saturday
-                  value: sat
-                - label: Sunday
-                  value: sun
-        
-        fixed_on_time_2:
-          name: Fixed on time 2
-          default: []
-          selector:
-            time: {}
-          
-        fixed_on_weekdays_2:
-          name: Active Weekdays (Fixed On Time 2)
-          default: []
-          selector:
-            select:
-              multiple: true
-              options:
-                - label: Monday
-                  value: mon
-                - label: Tuesday
-                  value: tue
-                - label: Wednesday
-                  value: wed
-                - label: Thursday
-                  value: thu
-                - label: Friday
-                  value: fri
-                - label: Saturday
-                  value: sat
-                - label: Sunday
-                  value: sun
-    
-    # --- Fixed Off Times ---
-    
         fixed_off_time_1:
           name: Fixed Off Time 1
           default: []
@@ -493,7 +411,7 @@ blueprint:
             time: {}
 
         fixed_off_weekdays_1:
-          name: Active Off Weekdays (Fixed Time 1)
+          name: Active Weekdays (Fixed Time 1)
           default: []
           selector:
             select:
@@ -665,64 +583,44 @@ mode: restart
 # --- Variables ---
 
 variables:
-
-  # --- Auto-off & Times ---
-  
-  auto_off_circadian_var: !input auto_off_circadian
-  auto_off_day_var: !input auto_off_day
-  auto_off_main_var: !input auto_off_main
-  auto_off_night_var: !input auto_off_night
-  auto_off_switch_day_var: !input auto_off_switch_day
-  auto_off_switch_night_var: !input auto_off_switch_night
-  circadian_enabled_var: !input circadian_enabled
-  circadian_lights_var: !input circadian_lights
-  circadian_max_temp_var: !input circadian_max_temp
-  circadian_min_temp_var: !input circadian_min_temp
-  day_end_var: !input day_end
-  day_start_var: !input day_start
-  fixed_off_weekdays_1_var: !input fixed_off_weekdays_1
-  fixed_off_weekdays_2_var: !input fixed_off_weekdays_2
-  fixed_on_time_1_var: !input fixed_on_time_1
-  fixed_on_time_2_var: !input fixed_on_time_2
-  night_end_var: !input night_end
-  night_start_var: !input night_start
-  workday_sensor_var: !input workday_sensor
-  active_weekdays_day_var: !input active_weekdays_day
-  active_weekdays_night_var: !input active_weekdays_night
-
-  # --- Lights & Brightness ---
-  
-  brightness_day_var: !input brightness_day
-  brightness_night_var: !input brightness_night
-  day_lights_var: !input day_lights
+  use_persistent_notifications_var: !input use_persistent_notifications
+  motion_sensors_var: !input motion_sensors
   main_lights_var: !input main_lights
+  day_lights_var: !input day_lights
+  brightness_day_var: !input brightness_day
   night_lights_var: !input night_lights
-  lux_sensor_var: !input lux_sensor
-  lux_threshold_var: !input lux_threshold
-
-  # --- Scenes ---
-  
+  brightness_night_var: !input brightness_night
+  scene_day_var: !input scene_day
   off_scene_day_var: !input off_scene_day
+  scene_night_var: !input scene_night
   off_scene_night_var: !input off_scene_night
   last_scene_entity: !input input_text_last_scene
   restore_last_scene_var: !input enable_snapshot_restore
-  scene_day_var: !input scene_day
-  scene_night_var: !input scene_night
-
-  # --- Sensors & Triggers ---
-  
-  motion_sensors_var: !input motion_sensors
+  lux_sensor_var: !input lux_sensor
+  lux_threshold_var: !input lux_threshold
   use_sun_times_var: !input use_sun_times
-
-  # --- Failsafe & Misc ---
-  
+  workday_sensor_var: !input workday_sensor
+  auto_off_main_var: !input auto_off_main
+  auto_off_day_var: !input auto_off_day
+  auto_off_night_var: !input auto_off_night
+  auto_off_circadian_var: !input auto_off_circadian
+  fixed_off_weekdays_1_var: !input fixed_off_weekdays_1
+  fixed_off_weekdays_2_var: !input fixed_off_weekdays_2
+  day_start_var: !input day_start
+  day_end_var: !input day_end
+  night_start_var: !input night_start
+  night_end_var: !input night_end
+  active_weekdays_day_var: !input active_weekdays_day
+  active_weekdays_night_var: !input active_weekdays_night
   enable_failsafe_var: !input enable_failsafe
-  failsafe_timer_circadian_var: !input failsafe_timer_circadian
-  failsafe_timer_day_var: !input failsafe_timer_day
   failsafe_timer_main_var: !input failsafe_timer_main
+  failsafe_timer_day_var: !input failsafe_timer_day
   failsafe_timer_night_var: !input failsafe_timer_night
-  use_persistent_notifications_var: !input use_persistent_notifications
-
+  circadian_enabled_var: !input circadian_enabled
+  circadian_lights_var: !input circadian_lights
+  circadian_min_temp_var: !input circadian_min_temp
+  circadian_max_temp_var: !input circadian_max_temp
+  failsafe_timer_circadian_var: !input failsafe_timer_circadian
 
 # --- Actions ---
 
@@ -742,43 +640,6 @@ action:
             value_template: "{{ (optional_switches | default([])) != [] or trigger.id == 'motion_on' }}"
         sequence:
 
-          # --- turn on light ---
-
-          - service: light.turn_on
-            target:
-              entity_id: >
-                {% set lights = [] %}
-                {% for var in [day_lights_var, night_lights_var] %}
-                  {% if var | default('') != '' %}
-                    {% if var is string %}
-                      {% set lights = lights + [var] %}
-                    {% elif var is mapping and var.entity_id is string %}
-                      {% set lights = lights + [var.entity_id] %}
-                    {% elif var is iterable %}
-                      {% set lights = lights + var %}
-                    {% endif %}
-                  {% endif %}
-                {% endfor %}
-                {{ lights | join(',') }}
-
-          # --- turn on switch ---
-          
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: "{{ optional_switches | default([]) != [] }}"
-                sequence:
-                  - service: switch.turn_on
-                    target:
-                      entity_id: >
-                        {% set switches = [] %}
-                        {% if optional_switches is iterable %}
-                          {% set switches = optional_switches | select('string') | list %}
-                        {% else %}
-                          {% set switches = [optional_switches] %}
-                        {% endif %}
-                        {{ switches | join(',') }}
-
           # --- Snapshot ---
           
           - choose:
@@ -787,14 +648,12 @@ action:
                     value_template: >
                       {% set lights = [] %}
                       {% for var in [main_lights_var, day_lights_var, night_lights_var] %}
-                        {% if var | default('') != '' %}
-                          {% if var is string %}
-                            {% set lights = lights + [var] %}
-                          {% elif var is mapping and var.entity_id is string %}
-                            {% set lights = lights + [var.entity_id] %}
-                          {% elif var is iterable %}
-                            {% set lights = lights + var %}
-                          {% endif %}
+                        {% if var is string and var != '' %}
+                          {% set lights = lights + [var] %}
+                        {% elif var is mapping and var.entity_id is string %}
+                          {% set lights = lights + [var.entity_id] %}
+                        {% elif var is iterable %}
+                          {% set lights = lights + var %}
                         {% endif %}
                       {% endfor %}
                       {{ lights | count > 0 }}
@@ -805,14 +664,12 @@ action:
                       snapshot_entities: >
                         {% set lights = [] %}
                         {% for var in [main_lights_var, day_lights_var, night_lights_var] %}
-                          {% if var | default('') != '' %}
-                            {% if var is string %}
-                              {% set lights = lights + [var] %}
-                            {% elif var is mapping and var.entity_id is string %}
-                              {% set lights = lights + [var.entity_id] %}
-                            {% elif var is iterable %}
-                              {% set lights = lights + var %}
-                            {% endif %}
+                          {% if var is string and var != '' %}
+                            {% set lights = lights + [var] %}
+                          {% elif var is mapping and var.entity_id is string %}
+                            {% set lights = lights + [var.entity_id] %}
+                          {% elif var is iterable %}
+                            {% set lights = lights + var %}
                           {% endif %}
                         {% endfor %}
                         {{ lights | tojson }}
@@ -1027,75 +884,6 @@ action:
                         {% endif %}
                         Lighting turned on via {{ 'motion' if trigger.id == 'motion_on' else 'switch' }} ({{ mode }}).
 
-  # --- Auto-off switches ---
-
-  - choose:
-    - conditions:
-        - condition: template
-          value_template: >
-            {% set switches = [] %}
-            {% if optional_switches is string and optional_switches != '' %}
-              {% set switches = [optional_switches] %}
-            {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-              {% set switches = [optional_switches.entity_id] %}
-            {% elif optional_switches is iterable %}
-              {% set switches = optional_switches | select('string') | list %}
-            {% endif %}
-            {{ switches | count > 0 }}
-      sequence:
-        - delay:
-            minutes: >
-              {% if is_state('sun.sun','above_horizon') %}
-                {{ auto_off_switch_day_var | default(0) | float }}
-              {% else %}
-                {{ auto_off_switch_night_var | default(0) | float }}
-              {% endif %}
-        - service: switch.turn_off
-          target:
-            entity_id: >
-              {% set switches = [] %}
-              {% if optional_switches is string and optional_switches != '' %}
-                {% set switches = [optional_switches] %}
-              {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-                {% set switches = [optional_switches.entity_id] %}
-              {% elif optional_switches is iterable %}
-                {% set switches = optional_switches | select('string') | list %}
-              {% endif %}
-              {{ switches | join(',') }}
-        - choose:
-            - conditions:
-                - condition: template
-                  value_template: "{{ use_persistent_notifications_var }}"
-              sequence:
-                - service: persistent_notification.create
-                  data:
-                    title: "Lighting Automation"
-                    message: >
-                      {% set switches = [] %}
-                      {% if optional_switches is string and optional_switches != '' %}
-                        {% set switches = [optional_switches] %}
-                      {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-                        {% set switches = [optional_switches.entity_id] %}
-                      {% elif optional_switches is iterable %}
-                        {% set switches = optional_switches | select('string') | list %}
-                      {% endif %}
-                      Auto-off switches: {{ expand(switches) | map(attribute='name') | join(', ') | default('Ingen switchar') }} turned off.
-            - conditions: []
-              sequence:
-                - service: logbook.log
-                  data:
-                    name: Lighting Automation
-                    message: >
-                      {% set switches = [] %}
-                      {% if optional_switches is string and optional_switches != '' %}
-                        {% set switches = [optional_switches] %}
-                      {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-                        {% set switches = [optional_switches.entity_id] %}
-                      {% elif optional_switches is iterable %}
-                        {% set switches = optional_switches | select('string') | list %}
-                      {% endif %}
-                      Auto-off switches: {{ expand(switches) | map(attribute='name') | join(', ') | default('Ingen switchar') }} turned off.       
-                
   # --- Auto-off Main Lights ---
   
   - choose:
@@ -1509,26 +1297,17 @@ action:
           target:
             entity_id: >
               {% set entities = [] %}
-              {% for var in [main_lights_var, day_lights_var, night_lights_var] %}
+              {% for var in [main_lights_var, day_lights_var, night_lights_var, optional_switches_var] %}
                 {% if var | default('') != '' %}
                   {% if var is string %}
                     {% set entities = entities + [var] %}
                   {% elif var is mapping %}
                     {% set entities = entities + [var.entity_id] %}
                   {% elif var is iterable %}
-                    {% set entities = entities + (var | select('string') | list) %}
+                    {% set entities = entities + var %}
                   {% endif %}
                 {% endif %}
               {% endfor %}
-              {% if optional_switches_var | default([]) != [] %}
-                {% if optional_switches_var is string %}
-                  {% set entities = entities + [optional_switches_var] %}
-                {% elif optional_switches_var is mapping %}
-                  {% set entities = entities + [optional_switches_var.entity_id] %}
-                {% elif optional_switches_var is iterable %}
-                  {% set entities = entities + (optional_switches_var | select('string') | list) %}
-                {% endif %}
-              {% endif %}
               {{ entities | join(',') }}
 
   - choose:
@@ -1542,26 +1321,17 @@ action:
           target:
             entity_id: >
               {% set entities = [] %}
-              {% for var in [main_lights_var, day_lights_var, night_lights_var] %}
+              {% for var in [main_lights_var, day_lights_var, night_lights_var, optional_switches_var] %}
                 {% if var | default('') != '' %}
                   {% if var is string %}
                     {% set entities = entities + [var] %}
                   {% elif var is mapping %}
                     {% set entities = entities + [var.entity_id] %}
                   {% elif var is iterable %}
-                    {% set entities = entities + (var | select('string') | list) %}
+                    {% set entities = entities + var %}
                   {% endif %}
                 {% endif %}
               {% endfor %}
-              {% if optional_switches_var | default([]) != [] %}
-                {% if optional_switches_var is string %}
-                  {% set entities = entities + [optional_switches_var] %}
-                {% elif optional_switches_var is mapping %}
-                  {% set entities = entities + [optional_switches_var.entity_id] %}
-                {% elif optional_switches_var is iterable %}
-                  {% set entities = entities + (optional_switches_var | select('string') | list) %}
-                {% endif %}
-              {% endif %}
               {{ entities | join(',') }}
   
   # --- Circadian Light ---
