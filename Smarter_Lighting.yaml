@@ -105,7 +105,7 @@ blueprint:
 
         fade_out_duration_main:
           name: Fade out mainlights (seconds)
-          description: How long it takes for the main lights to turn off (0 = immediately).
+          description: How long it takes for main lights to turn off (0 = immediately).
           default: 0
           selector:
             number:
@@ -210,7 +210,7 @@ blueprint:
 
         fade_out_duration_day_var:
           name: Fade out day lights (seconds)
-          description: How long it takes for day lights running lights to turn off (0 = immediately).
+          description: How long it takes for day lights to turn off (0 = immediately).
           default: 0
           selector:
             number:
