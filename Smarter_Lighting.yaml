@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.9"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.10"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -646,12 +646,6 @@ trigger:
 
   - platform: state
     entity_id: !input motion_sensors
-    from: "off"
-    to: "on"
-    id: motion_on
-    
-  - platform: state
-    entity_id: !input motion_sensors
     from: "on"
     to: "off"
     id: motion_off
@@ -679,6 +673,14 @@ trigger:
     offset: !input sunset_offset
     id: sunset_trigger
     enabled: !input use_sun_times
+
+  - platform: time
+    at: !input fixed_on_time_1
+    id: fixed_on_1
+  
+  - platform: time
+    at: !input fixed_on_time_2
+    id: fixed_on_2
     
   - platform: time
     at: !input fixed_off_time_1
@@ -689,9 +691,17 @@ trigger:
     id: fixed_off_2
 
   - platform: time_pattern
-    minutes: 15  # Time for update, default 15 min
+    minutes: 15  # Intervall för uppdatering, default 15 min
     id: circadian_update
     enabled: !input circadian_enabled
+    
+  - platform: time
+    at: !input day_start
+    id: day_start_trigger
+
+  - platform: time
+    at: !input night_start
+    id: night_start_trigger
 
 mode: restart
 
@@ -717,6 +727,8 @@ variables:
   fixed_off_weekdays_2_var: !input fixed_off_weekdays_2
   fixed_on_time_1_var: !input fixed_on_time_1
   fixed_on_time_2_var: !input fixed_on_time_2
+  fixed_on_weekdays_1_var: !input fixed_on_weekdays_1
+  fixed_on_weekdays_2_var: !input fixed_off_weekdays_2
   night_end_var: !input night_end
   night_start_var: !input night_start
   workday_sensor_var: !input workday_sensor
@@ -735,6 +747,7 @@ variables:
   fade_out_duration_main_var: !input fade_out_duration_main
   fade_out_duration_day_var: !input fade_out_duration_day_var
   fade_out_duration_night_var: !input fade_out_duration_night_var
+  optional_switches_var: !input optional_switches
 
   # --- Scenes ---
   
@@ -774,7 +787,7 @@ action:
               - condition: trigger
                 id: switch_on
           - condition: template
-            value_template: "{{ (optional_switches | default([])) != [] or trigger.id == 'motion_on' }}"
+            value_template: "{{ (optional_switches_var | default([])) != [] or trigger.id == 'motion_on' }}"
         sequence:
 
           # --- Snapshot ---
@@ -871,18 +884,18 @@ action:
           - choose:
               - conditions:
                   - condition: template
-                    value_template: "{{ optional_switches | default([]) != [] }}"
+                    value_template: "{{ optional_switches_var | default([]) != [] }}"
                 sequence:
                     - service: switch.turn_on
                       target:
                         entity_id: >
                           {% set switches = [] %}
-                          {% if optional_switches is string %}
-                            {% set switches = [optional_switches] %}
-                          {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-                            {% set switches = [optional_switches.entity_id] %}
-                          {% elif optional_switches is iterable %}
-                            {% for s in optional_switches %}
+                          {% if optional_switches_var is string %}
+                            {% set switches = [optional_switches_var] %}
+                          {% elif optional_switches_var is mapping and optional_switches_var.entity_id is string %}
+                            {% set switches = [optional_switches_var.entity_id] %}
+                          {% elif optional_switches_var is iterable %}
+                            {% for s in optional_switches_var %}
                               {% if s is string %}
                                 {% set switches = switches + [s] %}
                               {% elif s.entity_id is string %}
@@ -948,18 +961,18 @@ action:
           - choose:
               - conditions:
                   - condition: template
-                    value_template: "{{ optional_switches | default([]) != [] }}"
+                    value_template: "{{ optional_switches_var | default([]) != [] }}"
                 sequence:
                     - service: switch.turn_on
                       target:
                         entity_id: >
                           {% set switches = [] %}
-                          {% if optional_switches is string %}
-                            {% set switches = [optional_switches] %}
-                          {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-                            {% set switches = [optional_switches.entity_id] %}
-                          {% elif optional_switches is iterable %}
-                            {% for s in optional_switches %}
+                          {% if optional_switches_var is string %}
+                            {% set switches = [optional_switches_var] %}
+                          {% elif optional_switches_var is mapping and optional_switches_var.entity_id is string %}
+                            {% set switches = [optional_switches_var.entity_id] %}
+                          {% elif optional_switches_var is iterable %}
+                            {% for s in optional_switches_var %}
                               {% if s is string %}
                                 {% set switches = switches + [s] %}
                               {% elif s.entity_id is string %}
@@ -974,7 +987,7 @@ action:
           - choose:
               - conditions:
                   - condition: template
-                    value_template: "{{ use_sun_times_var and (optional_switches | default([]) != [] or day_lights_var | default([]) != []) }}"
+                    value_template: "{{ use_sun_times_var and (optional_switches_var | default([]) != [] or day_lights_var | default([]) != []) }}"
                   - condition: trigger
                     id: sunset_trigger
                 sequence:
@@ -982,12 +995,12 @@ action:
                       target:
                         entity_id: >
                           {% set switches = [] %}
-                          {% if optional_switches is string %}
-                            {% set switches = [optional_switches] %}
-                          {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-                            {% set switches = [optional_switches.entity_id] %}
-                          {% elif optional_switches is iterable %}
-                            {% for s in optional_switches %}
+                          {% if optional_switches_var is string %}
+                            {% set switches = [optional_switches_var] %}
+                          {% elif optional_switches_var is mapping and optional_switches_var.entity_id is string %}
+                            {% set switches = [optional_switches_var.entity_id] %}
+                          {% elif optional_switches_var is iterable %}
+                            {% for s in optional_switches_var %}
                               {% if s is string %}
                                 {% set switches = switches + [s] %}
                               {% elif s.entity_id is string %}
@@ -1027,7 +1040,7 @@ action:
           - choose:
               - conditions:
                   - condition: template
-                    value_template: "{{ use_sun_times_var and (optional_switches | default([]) != [] or night_lights_var | default([]) != []) }}"
+                    value_template: "{{ use_sun_times_var and (optional_switches_var | default([]) != [] or night_lights_var | default([]) != []) }}"
                   - condition: trigger
                     id: sunrise_trigger
                 sequence:
@@ -1035,12 +1048,12 @@ action:
                       target:
                         entity_id: >
                           {% set switches = [] %}
-                          {% if optional_switches is string %}
-                            {% set switches = [optional_switches] %}
-                          {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-                            {% set switches = [optional_switches.entity_id] %}
-                          {% elif optional_switches is iterable %}
-                            {% for s in optional_switches %}
+                          {% if optional_switches_var is string %}
+                            {% set switches = [optional_switches_var] %}
+                          {% elif optional_switches_var is mapping and optional_switches_var.entity_id is string %}
+                            {% set switches = [optional_switches_var.entity_id] %}
+                          {% elif optional_switches_var is iterable %}
+                            {% for s in optional_switches_var %}
                               {% if s is string %}
                                 {% set switches = switches + [s] %}
                               {% elif s.entity_id is string %}
@@ -1074,7 +1087,6 @@ action:
                           {% else %}
                             255
                           {% endif %}
-
 
           # --- Save last scene ---
           
@@ -1189,16 +1201,7 @@ action:
   - choose:
     - conditions:
         - condition: template
-          value_template: >
-            {% set switches = [] %}
-            {% if optional_switches is string and optional_switches != '' %}
-              {% set switches = [optional_switches] %}
-            {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-              {% set switches = [optional_switches.entity_id] %}
-            {% elif optional_switches is iterable %}
-              {% set switches = optional_switches | select('string') | list %}
-            {% endif %}
-            {{ switches | count > 0 }}
+          value_template: "{{ optional_switches_var | count > 0 }}"
       sequence:
         - delay:
             minutes: >
@@ -1209,16 +1212,7 @@ action:
               {% endif %}
         - service: switch.turn_off
           target:
-            entity_id: >
-              {% set switches = [] %}
-              {% if optional_switches is string and optional_switches != '' %}
-                {% set switches = [optional_switches] %}
-              {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-                {% set switches = [optional_switches.entity_id] %}
-              {% elif optional_switches is iterable %}
-                {% set switches = optional_switches | select('string') | list %}
-              {% endif %}
-              {{ switches | join(',') }}
+            entity_id: "{{ optional_switches_var | join(',') }}"
         - choose:
             - conditions:
                 - condition: template
@@ -1228,30 +1222,14 @@ action:
                   data:
                     title: "Lighting Automation"
                     message: >
-                      {% set switches = [] %}
-                      {% if optional_switches is string and optional_switches != '' %}
-                        {% set switches = [optional_switches] %}
-                      {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-                        {% set switches = [optional_switches.entity_id] %}
-                      {% elif optional_switches is iterable %}
-                        {% set switches = optional_switches | select('string') | list %}
-                      {% endif %}
-                      Auto-off switches: {{ expand(switches) | map(attribute='name') | join(', ') | default('No switches') }} turned off.
+                      Auto-off switches: {{ expand(optional_switches_var) | map(attribute='name') | join(', ') | default('No switches') }} turned off.
             - conditions: []
               sequence:
                 - service: logbook.log
                   data:
                     name: Lighting Automation
                     message: >
-                      {% set switches = [] %}
-                      {% if optional_switches is string and optional_switches != '' %}
-                        {% set switches = [optional_switches] %}
-                      {% elif optional_switches is mapping and optional_switches.entity_id is string %}
-                        {% set switches = [optional_switches.entity_id] %}
-                      {% elif optional_switches is iterable %}
-                        {% set switches = optional_switches | select('string') | list %}
-                      {% endif %}
-                      Auto-off switches: {{ expand(switches) | map(attribute='name') | join(', ') | default('No switches') }} turned off.      
+                      Auto-off switches: {{ expand(optional_switches_var) | map(attribute='name') | join(', ') | default('No switches') }} turned off.      
                 
   # --- Auto-off Main Lights ---
   
@@ -1662,6 +1640,74 @@ action:
                     name: Lighting Automation
                     message: "Auto-off Circadian: Circadian lights turned off automatically."
 
+  # --- Fixed On Times with Weekday ---
+  
+  - choose:
+    - conditions:
+        - condition: trigger
+          id: fixed_on_1
+        - condition: template
+          value_template: "{{ now().strftime('%a').lower() in fixed_on_weekdays_1_var }}"
+      sequence:
+        - service: switch.turn_on
+          target:
+            entity_id: >
+              {% set entities = [] %}
+              {% for var in [main_lights_var, day_lights_var, night_lights_var] %}
+                {% if var | default('') != '' %}
+                  {% if var is string %}
+                    {% set entities = entities + [var] %}
+                  {% elif var is mapping %}
+                    {% set entities = entities + [var.entity_id] %}
+                  {% elif var is iterable %}
+                    {% set entities = entities + (var | select('string') | list) %}
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+              {% if optional_switches_var | default([]) != [] %}
+                {% if optional_switches_var is string %}
+                  {% set entities = entities + [optional_switches_var] %}
+                {% elif optional_switches_var is mapping %}
+                  {% set entities = entities + [optional_switches_var.entity_id] %}
+                {% elif optional_switches_var is iterable %}
+                  {% set entities = entities + (optional_switches_var | select('string') | list) %}
+                {% endif %}
+              {% endif %}
+              {{ entities | join(',') }}
+
+  - choose:
+    - conditions:
+        - condition: trigger
+          id: fixed_on_2
+        - condition: template
+          value_template: "{{ now().strftime('%a').lower() in fixed_on_weekdays_2_var }}"
+      sequence:
+        - service: switch.turn_on
+          target:
+            entity_id: >
+              {% set entities = [] %}
+              {% for var in [main_lights_var, day_lights_var, night_lights_var] %}
+                {% if var | default('') != '' %}
+                  {% if var is string %}
+                    {% set entities = entities + [var] %}
+                  {% elif var is mapping %}
+                    {% set entities = entities + [var.entity_id] %}
+                  {% elif var is iterable %}
+                    {% set entities = entities + (var | select('string') | list) %}
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+              {% if optional_switches_var | default([]) != [] %}
+                {% if optional_switches_var is string %}
+                  {% set entities = entities + [optional_switches_var] %}
+                {% elif optional_switches_var is mapping %}
+                  {% set entities = entities + [optional_switches_var.entity_id] %}
+                {% elif optional_switches_var is iterable %}
+                  {% set entities = entities + (optional_switches_var | select('string') | list) %}
+                {% endif %}
+              {% endif %}
+              {{ entities | join(',') }}
+  
   # --- Fixed Off Times with Weekday ---
   
   - choose:
