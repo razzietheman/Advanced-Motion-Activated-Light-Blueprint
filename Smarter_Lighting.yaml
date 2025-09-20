@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.8"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.9"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -103,6 +103,17 @@ blueprint:
               unit_of_measurement: min
               mode: box
 
+        fade_out_duration_main:
+          name: Fade out mainlamps (seconds)
+          description: How long it takes for the main lights to turn off (0 = immediately).
+          default: 0
+          selector:
+            number:
+              min: 0
+              max: 300
+              unit_of_measurement: sek
+              mode: box
+    
     # --- Day Lighting ---
     
     day_lighting:
@@ -197,6 +208,17 @@ blueprint:
                 - label: Sunday
                   value: sun
 
+        fade_out_duration_day_var:
+          name: Fade out duration Day (seconds)
+          description: How long it takes for daytime running lights to turn off (0 = immediately).
+          default: 0
+          selector:
+            number:
+              min: 0
+              max: 300
+              unit_of_measurement: s
+              mode: box
+    
     # --- Night Lighting ---
     
     night_lighting:
@@ -287,6 +309,17 @@ blueprint:
                 - label: Sunday
                   value: sun
 
+        fade_out_duration_night_var:
+          name: Fade out duration Night (seconds)
+          description: How long it takes for night lights to turn off (0 = immediately).
+          default: 0
+          selector:
+            number:
+              min: 0
+              max: 300
+              unit_of_measurement: s
+              mode: box
+    
     # --- Scene restore ---
     
     snapshot_restore:
@@ -699,6 +732,9 @@ variables:
   night_lights_var: !input night_lights
   lux_sensor_var: !input lux_sensor
   lux_threshold_var: !input lux_threshold
+  fade_out_duration_main_var: !input fade_out_duration_main
+  fade_out_duration_day_var: !input fade_out_duration_day_var
+  fade_out_duration_night_var: !input fade_out_duration_night_var
 
   # --- Scenes ---
   
@@ -1247,6 +1283,9 @@ action:
                 {% set lights = main_lights_var | select('string') | list %}
               {% endif %}
               {{ lights | join(',') }}
+          data:
+            transition: >
+              {{ [0, fade_out_duration_main_var | default(0) | int] | max }}
         - choose:
             - conditions:
                 - condition: template
@@ -1338,6 +1377,9 @@ action:
                         {% set lights_on = day_lights_var | select('string') | list %}
                       {% endif %}
                       {{ lights_on | join(',') }}
+                  data:
+                    transition: >
+                      {{ [0, fade_out_duration_day_var | default(0) | int] | max }}
                 - choose:
                     - conditions:
                         - condition: template
@@ -1483,6 +1525,9 @@ action:
                         {% set lights_on = night_lights_var | select('string') | list %}
                       {% endif %}
                       {{ lights_on | join(',') }}
+                  data:
+                    transition: >
+                      {{ [0, fade_out_duration_night_var | default(0) | int] | max }}
                 - choose:
                     - conditions:
                         - condition: template
