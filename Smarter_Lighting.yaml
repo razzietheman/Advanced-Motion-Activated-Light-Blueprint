@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.10"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.11"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -1396,9 +1396,7 @@ action:
             
             - conditions:
                 - condition: template
-                  value_template: >
-                    {{ off_scene_day_var is string and off_scene_day_var != '' and
-                       expand(motion_sensors | default([])) | selectattr('state','eq','on') | list | count == 0 }}
+                  value_template: "{{ off_scene_day_var is string and off_scene_day_var != '' }}"
               sequence:
                 - service: scene.turn_on
                   target:
@@ -1419,7 +1417,7 @@ action:
                             name: Lighting Automation
                             message: "Auto-off Day: Day lights turned off and off scene day activated."
 
-            # CASE 3: Snapshot-återställning (om aktiverad och ingen off-scene)
+            # CASE 3: Snapshot-restore
             
             - conditions:
                 - condition: template
@@ -1544,9 +1542,7 @@ action:
             
             - conditions:
                 - condition: template
-                  value_template: >
-                    {{ off_scene_night_var is string and off_scene_night_var != '' and
-                       expand(motion_sensors | default([])) | selectattr('state','eq','on') | list | count == 0 }}
+                  value_template: "{{ off_scene_night_var is string and off_scene_night_var != '' }}"
               sequence:
                 - service: scene.turn_on
                   target:
