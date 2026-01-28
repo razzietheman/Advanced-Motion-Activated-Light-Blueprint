@@ -1471,7 +1471,7 @@ action:
               sequence:
                 - service: scene.turn_on
                   target:
-                    entity_id: "{{ off_scene_day_var }}"
+                    entity_id: "{{ off_scene_day_id }}"
                 - choose:
                     - conditions:
                         - condition: template
@@ -1617,7 +1617,7 @@ action:
               sequence:
                 - service: scene.turn_on
                   target:
-                    entity_id: "{{ off_scene_night_var }}"
+                    entity_id: "{{ off_scene_night_id }}"
                 - choose:
                     - conditions:
                         - condition: template
@@ -2101,7 +2101,7 @@ action:
             minutes: "{{ failsafe_timer_day_var | default(0) | float }}"
         - service: scene.turn_on
           target:
-            entity_id: "{{ off_scene_day_var }}"
+            entity_id: "{{ off_scene_day_id }}"
         - choose:
             - conditions:
                 - condition: template
@@ -2239,7 +2239,7 @@ action:
             minutes: "{{ failsafe_timer_night_var | default(0) | float }}"
         - service: scene.turn_on
           target:
-            entity_id: "{{ off_scene_night_var }}"
+            entity_id: "{{ off_scene_night_id }}"
         - choose:
             - conditions:
                 - condition: template
