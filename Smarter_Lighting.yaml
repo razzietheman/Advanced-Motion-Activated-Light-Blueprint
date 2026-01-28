@@ -2358,7 +2358,7 @@ action:
       sequence:
         - service: scene.turn_on
           target:
-            entity_id: "{{ states(last_scene_entity) }}"
+            entity_id: "{{ states(last_scene_id) }}"
         - choose:
             - conditions:
                 - condition: template
