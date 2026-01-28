@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.11"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.12"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -705,8 +705,6 @@ trigger:
 
 mode: restart
 
-# --- Variables ---
-
 variables:
 
   # --- Auto-off & Timers ---
@@ -758,6 +756,78 @@ variables:
   scene_day_var: !input scene_day
   scene_night_var: !input scene_night
 
+  # --- Scene Normalization (NEW) ---
+
+  scene_day_id: >
+    {% macro norm(x) %}
+      {%- if x is string -%}
+        {{ x }}
+      {%- elif x is mapping and x.entity_id is string -%}
+        {{ x.entity_id }}
+      {%- elif x is iterable and x|count > 0 -%}
+        {{ x[0] }}
+      {%- else -%}
+        ""
+      {%- endif %}
+    {% endmacro %}
+    {{ norm(scene_day_var) }}
+
+  scene_night_id: >
+    {% macro norm(x) %}
+      {%- if x is string -%}
+        {{ x }}
+      {%- elif x is mapping and x.entity_id is string -%}
+        {{ x.entity_id }}
+      {%- elif x is iterable and x|count > 0 -%}
+        {{ x[0] }}
+      {%- else -%}
+        ""
+      {%- endif %}
+    {% endmacro %}
+    {{ norm(scene_night_var) }}
+
+  off_scene_day_id: >
+    {% macro norm(x) %}
+      {%- if x is string -%}
+        {{ x }}
+      {%- elif x is mapping and x.entity_id is string -%}
+        {{ x.entity_id }}
+      {%- elif x is iterable and x|count > 0 -%}
+        {{ x[0] }}
+      {%- else -%}
+        ""
+      {%- endif %}
+    {% endmacro %}
+    {{ norm(off_scene_day_var) }}
+
+  off_scene_night_id: >
+    {% macro norm(x) %}
+      {%- if x is string -%}
+        {{ x }}
+      {%- elif x is mapping and x.entity_id is string -%}
+        {{ x.entity_id }}
+      {%- elif x is iterable and x|count > 0 -%}
+        {{ x[0] }}
+      {%- else -%}
+        ""
+      {%- endif %}
+    {% endmacro %}
+    {{ norm(off_scene_night_var) }}
+
+  last_scene_id: >
+    {% macro norm(x) %}
+      {%- if x is string -%}
+        {{ x }}
+      {%- elif x is mapping and x.entity_id is string -%}
+        {{ x.entity_id }}
+      {%- elif x is iterable and x|count > 0 -%}
+        {{ x[0] }}
+      {%- else -%}
+        ""
+      {%- endif %}
+    {% endmacro %}
+    {{ norm(states(last_scene_entity)) }}
+
   # --- Sensors & Triggers ---
   
   motion_sensors_var: !input motion_sensors
@@ -771,6 +841,7 @@ variables:
   failsafe_timer_main_var: !input failsafe_timer_main
   failsafe_timer_night_var: !input failsafe_timer_night
   use_persistent_notifications_var: !input use_persistent_notifications
+
 
 # --- Actions ---
 
@@ -853,7 +924,7 @@ action:
                           sequence:
                               - service: scene.turn_on
                                 target:
-                                  entity_id: "{{ scene_day_var }}"
+                                  entity_id: "{{ scene_day_id }}"
                         - conditions:
                             - condition: template
                               value_template: >
@@ -930,7 +1001,7 @@ action:
                           sequence:
                               - service: scene.turn_on
                                 target:
-                                  entity_id: "{{ scene_night_var }}"
+                                  entity_id: "{{ scene_night_id }}"
                         - conditions:
                             - condition: template
                               value_template: >
