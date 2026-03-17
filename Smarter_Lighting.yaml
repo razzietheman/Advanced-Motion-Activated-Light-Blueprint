@@ -1,5 +1,5 @@
 blueprint: 
-  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 6.18.12"
+  name: "Motion-Controlled Lighting with Circadian Light – Failsafe Pro 7.0"
   description: >
     A complete automation for your smart home that combines motion control with advanced failsafe functions
     and dynamic circadian lighting. Main lights, day and night lights, as well as circadian lights are managed automatically –
@@ -50,8 +50,8 @@ blueprint:
               domain: switch
               multiple: true
 
-    # --- Auto-off times for Switches ---
-    
+        # --- Auto-off times for Switches ---
+
         auto_off_switch_day:
           name: Auto-off Switches Day
           description: "How long after the last movement the switches should be on (daytime)."
@@ -60,7 +60,7 @@ blueprint:
             number:
               min: 0
               max: 180
-              unit_of_measurement: minuter
+              unit_of_measurement: minutes
               mode: box
 
         auto_off_switch_night:
@@ -71,7 +71,7 @@ blueprint:
             number:
               min: 0
               max: 180
-              unit_of_measurement: minuter
+              unit_of_measurement: minutes
               mode: box
     
     # --- Main lights ---
@@ -151,6 +151,7 @@ blueprint:
 
         auto_off_day:
           name: Day Lights Duration (minutes)
+          description: "How long day lights stay on after the last motion."
           default: []
           selector:
             number:
@@ -256,6 +257,7 @@ blueprint:
 
         auto_off_night:
           name: Night Lights Duration (minutes)
+          description: "How long night lights stay on after the last motion."
           default: []
           selector:
             number:
@@ -267,6 +269,7 @@ blueprint:
 
         brightness_night:
           name: Night Brightness
+          description: "Optional brightness level for night lights (0–100%)."
           default: []
           selector:
             number:
@@ -277,12 +280,14 @@ blueprint:
 
         night_start:
           name: Night Start
+          description: "Time when night mode activates. Night Start cannot be the same as Day End."
           default: "22:00:00"
           selector:
             time: {}
 
         night_end:
           name: Night End
+          description: "Time when night mode deactivates."
           default: "06:59:59"
           selector:
             time: {}
@@ -691,7 +696,7 @@ trigger:
     id: fixed_off_2
 
   - platform: time_pattern
-    minutes: 15  # Intervall för uppdatering, default 15 min
+    minutes: "/15"  # Note: time_pattern does not support dynamic values. Change manually if you update the update_interval input.
     id: circadian_update
     enabled: !input circadian_enabled
     
@@ -704,6 +709,8 @@ trigger:
     id: night_start_trigger
 
 mode: restart
+
+# --- Variables ---
 
 variables:
 
@@ -726,7 +733,7 @@ variables:
   fixed_on_time_1_var: !input fixed_on_time_1
   fixed_on_time_2_var: !input fixed_on_time_2
   fixed_on_weekdays_1_var: !input fixed_on_weekdays_1
-  fixed_on_weekdays_2_var: !input fixed_off_weekdays_2
+  fixed_on_weekdays_2_var: !input fixed_on_weekdays_2
   night_end_var: !input night_end
   night_start_var: !input night_start
   workday_sensor_var: !input workday_sensor
@@ -756,78 +763,6 @@ variables:
   scene_day_var: !input scene_day
   scene_night_var: !input scene_night
 
-  # --- Scene Normalization (NEW) ---
-
-  scene_day_id: >
-    {% macro norm(x) %}
-      {%- if x is string -%}
-        {{ x }}
-      {%- elif x is mapping and x.entity_id is string -%}
-        {{ x.entity_id }}
-      {%- elif x is iterable and x|count > 0 -%}
-        {{ x[0] }}
-      {%- else -%}
-        ""
-      {%- endif %}
-    {% endmacro %}
-    {{ norm(scene_day_var) }}
-
-  scene_night_id: >
-    {% macro norm(x) %}
-      {%- if x is string -%}
-        {{ x }}
-      {%- elif x is mapping and x.entity_id is string -%}
-        {{ x.entity_id }}
-      {%- elif x is iterable and x|count > 0 -%}
-        {{ x[0] }}
-      {%- else -%}
-        ""
-      {%- endif %}
-    {% endmacro %}
-    {{ norm(scene_night_var) }}
-
-  off_scene_day_id: >
-    {% macro norm(x) %}
-      {%- if x is string -%}
-        {{ x }}
-      {%- elif x is mapping and x.entity_id is string -%}
-        {{ x.entity_id }}
-      {%- elif x is iterable and x|count > 0 -%}
-        {{ x[0] }}
-      {%- else -%}
-        ""
-      {%- endif %}
-    {% endmacro %}
-    {{ norm(off_scene_day_var) }}
-
-  off_scene_night_id: >
-    {% macro norm(x) %}
-      {%- if x is string -%}
-        {{ x }}
-      {%- elif x is mapping and x.entity_id is string -%}
-        {{ x.entity_id }}
-      {%- elif x is iterable and x|count > 0 -%}
-        {{ x[0] }}
-      {%- else -%}
-        ""
-      {%- endif %}
-    {% endmacro %}
-    {{ norm(off_scene_night_var) }}
-
-  last_scene_id: >
-    {% macro norm(x) %}
-      {%- if x is string -%}
-        {{ x }}
-      {%- elif x is mapping and x.entity_id is string -%}
-        {{ x.entity_id }}
-      {%- elif x is iterable and x|count > 0 -%}
-        {{ x[0] }}
-      {%- else -%}
-        ""
-      {%- endif %}
-    {% endmacro %}
-    {{ norm(states(last_scene_entity)) }}
-
   # --- Sensors & Triggers ---
   
   motion_sensors_var: !input motion_sensors
@@ -836,12 +771,25 @@ variables:
   # --- Failsafe & Misc ---
   
   enable_failsafe_var: !input enable_failsafe
+  enable_snapshot_restore_var: !input enable_snapshot_restore
   failsafe_timer_circadian_var: !input failsafe_timer_circadian
+
+  # --- Circadian calculated values ---
+
+  circadian_temp_var: >
+    {% set min_temp = circadian_min_temp_var | default(2700) | int %}
+    {% set max_temp = circadian_max_temp_var | default(5000) | int %}
+    {% set elevation = state_attr('sun.sun', 'elevation') | default(0) | float %}
+    {% set factor = [0, [(elevation / 45.0), 1] | min] | max %}
+    {{ (min_temp + (max_temp - min_temp) * factor) | int }}
+  circadian_brightness_var: >
+    {% set elevation = state_attr('sun.sun', 'elevation') | default(0) | float %}
+    {% set factor = [0, [(elevation / 45.0), 1] | min] | max %}
+    {{ (128 + 127 * factor) | int }}
   failsafe_timer_day_var: !input failsafe_timer_day
   failsafe_timer_main_var: !input failsafe_timer_main
   failsafe_timer_night_var: !input failsafe_timer_night
   use_persistent_notifications_var: !input use_persistent_notifications
-
 
 # --- Actions ---
 
@@ -924,7 +872,7 @@ action:
                           sequence:
                               - service: scene.turn_on
                                 target:
-                                  entity_id: "{{ scene_day_id }}"
+                                  entity_id: "{{ scene_day_var }}"
                         - conditions:
                             - condition: template
                               value_template: >
@@ -1001,7 +949,7 @@ action:
                           sequence:
                               - service: scene.turn_on
                                 target:
-                                  entity_id: "{{ scene_night_id }}"
+                                  entity_id: "{{ scene_night_var }}"
                         - conditions:
                             - condition: template
                               value_template: >
@@ -1169,7 +1117,7 @@ action:
                 sequence:
                   - service: input_text.set_value
                     target:
-                      entity_id: input_text.last_scene_triggered
+                      entity_id: "{{ last_scene_entity }}"
                     data:
                       value: "{{ scene_day_var }}"
               - conditions:
@@ -1179,7 +1127,7 @@ action:
                 sequence:
                   - service: input_text.set_value
                     target:
-                      entity_id: input_text.last_scene_triggered
+                      entity_id: "{{ last_scene_entity }}"
                     data:
                       value: "{{ scene_night_var }}"
 
@@ -1411,7 +1359,7 @@ action:
                     {% elif day_lights_var is iterable %}
                       {% set lights_on = day_lights_var | select('string') | list %}
                     {% endif %}
-                    {% set motion = expand(motion_sensors | default([])) | selectattr('state','eq','on') | list %}
+                    {% set motion = expand(motion_sensors_var | default([])) | selectattr('state','eq','on') | list %}
                     {{ lights_on | select('is_state','on') | list | count > 0 and motion | count == 0 }}
               sequence:
                 - service: light.turn_off
@@ -1467,11 +1415,13 @@ action:
             
             - conditions:
                 - condition: template
-                  value_template: "{{ off_scene_day_var is string and off_scene_day_var != '' }}"
+                  value_template: >
+                    {{ off_scene_day_var is string and off_scene_day_var != '' and
+                       expand(motion_sensors_var | default([])) | selectattr('state','eq','on') | list | count == 0 }}
               sequence:
                 - service: scene.turn_on
                   target:
-                    entity_id: "{{ off_scene_day_id }}"
+                    entity_id: "{{ off_scene_day_var }}"
                 - choose:
                     - conditions:
                         - condition: template
@@ -1488,13 +1438,13 @@ action:
                             name: Lighting Automation
                             message: "Auto-off Day: Day lights turned off and off scene day activated."
 
-            # CASE 3: Snapshot-restore
+            # CASE 3: Snapshot-återställning (om aktiverad och ingen off-scene)
             
             - conditions:
                 - condition: template
                   value_template: >
                     {{ off_scene_day_var == '' and enable_snapshot_restore_var and
-                       expand(motion_sensors | default([])) | selectattr('state','eq','on') | list | count == 0 }}
+                       expand(motion_sensors_var | default([])) | selectattr('state','eq','on') | list | count == 0 }}
               sequence:
                 - service: scene.turn_on
                   target:
@@ -1557,7 +1507,7 @@ action:
                     {% elif night_lights_var is iterable %}
                       {% set lights_on = night_lights_var | select('string') | list %}
                     {% endif %}
-                    {% set motion = expand(motion_sensors | default([])) | selectattr('state','eq','on') | list %}
+                    {% set motion = expand(motion_sensors_var | default([])) | selectattr('state','eq','on') | list %}
                     {{ lights_on | select('is_state','on') | list | count > 0 and motion | count == 0 }}
               sequence:
                 - service: light.turn_off
@@ -1613,11 +1563,13 @@ action:
             
             - conditions:
                 - condition: template
-                  value_template: "{{ off_scene_night_var is string and off_scene_night_var != '' }}"
+                  value_template: >
+                    {{ off_scene_night_var is string and off_scene_night_var != '' and
+                       expand(motion_sensors_var | default([])) | selectattr('state','eq','on') | list | count == 0 }}
               sequence:
                 - service: scene.turn_on
                   target:
-                    entity_id: "{{ off_scene_night_id }}"
+                    entity_id: "{{ off_scene_night_var }}"
                 - choose:
                     - conditions:
                         - condition: template
@@ -1640,7 +1592,7 @@ action:
                 - condition: template
                   value_template: >
                     {{ off_scene_night_var == '' and enable_snapshot_restore_var and
-                       expand(motion_sensors | default([])) | selectattr('state','eq','on') | list | count == 0 }}
+                       expand(motion_sensors_var | default([])) | selectattr('state','eq','on') | list | count == 0 }}
               sequence:
                 - service: scene.turn_on
                   target:
@@ -1716,7 +1668,7 @@ action:
         - condition: template
           value_template: "{{ now().strftime('%a').lower() in fixed_on_weekdays_1_var }}"
       sequence:
-        - service: switch.turn_on
+        - service: homeassistant.turn_on
           target:
             entity_id: >
               {% set entities = [] %}
@@ -1749,7 +1701,7 @@ action:
         - condition: template
           value_template: "{{ now().strftime('%a').lower() in fixed_on_weekdays_2_var }}"
       sequence:
-        - service: switch.turn_on
+        - service: homeassistant.turn_on
           target:
             entity_id: >
               {% set entities = [] %}
@@ -1948,7 +1900,7 @@ action:
               {{ lights | select('is_state','on') | list | count > 0 }}
           - condition: template
             value_template: >
-              {{ expand(motion_sensors | default([])) 
+              {{ expand(motion_sensors_var | default([])) 
                   | selectattr('state','eq','on') 
                   | list | count == 0 }}
         sequence:
@@ -2037,10 +1989,14 @@ action:
             {% set t = now().time() %}
             {% set start = strptime(day_start_var, '%H:%M:%S').time() %}
             {% set end   = strptime(day_end_var, '%H:%M:%S').time() %}
-            {{ t >= start and t <= end }}
+            {% if start <= end %}
+              {{ t >= start and t <= end }}
+            {% else %}
+              {{ t >= start or t <= end }}
+            {% endif %}
         - condition: template
           value_template: >
-            {{ expand(motion_sensors | default([])) | selectattr('state','eq','on') | list | count == 0 }}
+            {{ expand(motion_sensors_var | default([])) | selectattr('state','eq','on') | list | count == 0 }}
       sequence:
         - delay:
             minutes: "{{ failsafe_timer_day_var | default(0) | float }}"
@@ -2095,13 +2051,13 @@ action:
           value_template: "{{ enable_failsafe_var and off_scene_day_var is string and off_scene_day_var != '' }}"
         - condition: template
           value_template: >
-            {{ expand(motion_sensors | default([])) | selectattr('state','eq','on') | list | count == 0 }}
+            {{ expand(motion_sensors_var | default([])) | selectattr('state','eq','on') | list | count == 0 }}
       sequence:
         - delay:
             minutes: "{{ failsafe_timer_day_var | default(0) | float }}"
         - service: scene.turn_on
           target:
-            entity_id: "{{ off_scene_day_id }}"
+            entity_id: "{{ off_scene_day_var }}"
         - choose:
             - conditions:
                 - condition: template
@@ -2125,7 +2081,7 @@ action:
           value_template: "{{ enable_failsafe_var and off_scene_day_var == '' and enable_snapshot_restore_var }}"
         - condition: template
           value_template: >
-            {{ expand(motion_sensors | default([])) | selectattr('state','eq','on') | list | count == 0 }}
+            {{ expand(motion_sensors_var | default([])) | selectattr('state','eq','on') | list | count == 0 }}
       sequence:
         - service: scene.turn_on
           target:
@@ -2178,7 +2134,7 @@ action:
             {% endif %}
         - condition: template
           value_template: >
-            {{ expand(motion_sensors | default([])) | selectattr('state','eq','on') | list | count == 0 }}
+            {{ expand(motion_sensors_var | default([])) | selectattr('state','eq','on') | list | count == 0 }}
       sequence:
         - delay:
             minutes: "{{ failsafe_timer_night_var | default(0) | float }}"
@@ -2226,20 +2182,20 @@ action:
                       {% endif %}
                       Failsafe Night: {{ expand(lights) | map(attribute='name') | join(', ') | default('No lights') }} turned off automatically.
 
-    # CASE 2: Aktivate off-scene
+    # CASE 2: Activate off-scene
     
     - conditions:
         - condition: template
           value_template: "{{ enable_failsafe_var and off_scene_night_var is string and off_scene_night_var != '' }}"
         - condition: template
           value_template: >
-            {{ expand(motion_sensors | default([])) | selectattr('state','eq','on') | list | count == 0 }}
+            {{ expand(motion_sensors_var | default([])) | selectattr('state','eq','on') | list | count == 0 }}
       sequence:
         - delay:
             minutes: "{{ failsafe_timer_night_var | default(0) | float }}"
         - service: scene.turn_on
           target:
-            entity_id: "{{ off_scene_night_id }}"
+            entity_id: "{{ off_scene_night_var }}"
         - choose:
             - conditions:
                 - condition: template
@@ -2263,7 +2219,7 @@ action:
           value_template: "{{ enable_failsafe_var and off_scene_night_var == '' and enable_snapshot_restore_var }}"
         - condition: template
           value_template: >
-            {{ expand(motion_sensors | default([])) | selectattr('state','eq','on') | list | count == 0 }}
+            {{ expand(motion_sensors_var | default([])) | selectattr('state','eq','on') | list | count == 0 }}
       sequence:
         - service: scene.turn_on
           target:
@@ -2358,7 +2314,7 @@ action:
       sequence:
         - service: scene.turn_on
           target:
-            entity_id: "{{ states(last_scene_id) }}"
+            entity_id: "{{ states(last_scene_entity) }}"
         - choose:
             - conditions:
                 - condition: template

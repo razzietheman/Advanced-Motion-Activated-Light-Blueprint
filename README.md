@@ -1,14 +1,14 @@
-# ✨🌟 Advanced Lighting Automation 6.18.3 🌟✨
+# ✨🌟 Advanced Lighting Automation 1.0 🌟✨
 # 💡 Where smart home meets real magic
 
-Welcome to Advanced Lighting Automation 6.18.3 – the most complete, flexible, and robust solution for motion-controlled lighting in Home Assistant.
-Here, intelligence, safety, and style come together.
+Welcome to Advanced Lighting Automation 1.0 – the most complete, flexible, and robust solution for motion-controlled lighting in Home Assistant.
+Here, intelligence, safety, and style come together. Total new code
 
 ✅ Super safe | ✅ Maximally flexible | ✅ Scene- and light-smart
 
 ---
 
-# 🚀 What's New in 6.18.3
+# 🚀 What's New in 1.0
 
 - 🎨 New GUI design – easier than ever
 
@@ -122,6 +122,6 @@ Result: a sleeker, more intuitive GUI that makes configuring the automation fun
 
 # 👨‍💻 **Creator**
 
-Built with ❤️ by **Rasmus Sjöberg** [razzietheman](https://github.com/razzietheman/) – 2025
+Built with ❤️ by **Rasmus Sjöberg** [razzietheman](https://github.com/razzietheman/) – 2026
 
-✨ **Motion-Controlled Lighting 6.18.3** – maximum automation when you want it, **full control when you need it**.
+✨ **Motion-Controlled Lighting 1.0** – maximum automation when you want it, **full control when you need it**.
